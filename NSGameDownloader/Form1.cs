@@ -155,10 +155,7 @@ namespace NSGameDownloader
         {
             WebRefresh();
         }
-        [DllImport("wininet.dll", CharSet = CharSet.Auto, SetLastError = true)]
-        public static extern bool InternetSetCookie(string lpszUrlName, string lbszCookieName, string lpszCookieData);
-
-
+   
         private void Navigate(string url)
         {
             //todo 多线程
@@ -186,6 +183,7 @@ namespace NSGameDownloader
         {
             if (listView1.SelectedItems.Count == 0) return;
             curTid = listView1.SelectedItems[0].Text;
+            var g = Titlekeys[curTid].ToObject<JObject>();
             curTid = curTid.Substring(0, 13) + "000";
             var ty = listView1.SelectedItems[0].SubItems[2].Text;
             radioButton_DLC.Checked = ty == "DLC" || ty == "UPD";
@@ -195,7 +193,7 @@ namespace NSGameDownloader
 
             Console.WriteLine(curTid);
 
-            var g = Titlekeys[curTid].ToObject<JObject>();
+           
             if (!g.ContainsKey("info"))
             {
                 var i = GetGameInfo(curTid);
