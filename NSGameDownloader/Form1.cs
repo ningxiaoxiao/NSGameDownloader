@@ -4,7 +4,6 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
-using System.Net.Http;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
@@ -149,7 +148,7 @@ namespace NSGameDownloader
 
         private void radioButton_DLC_CheckedChanged(object sender, EventArgs e)
         {
-            WebRefresh();
+
         }
 
         private void radioButton_xci_CheckedChanged(object sender, EventArgs e)
@@ -174,7 +173,7 @@ namespace NSGameDownloader
             listView1.Items.Clear();
             foreach (var titlekey in Titlekeys)
                 //不显示demo
-                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
                     listView1.Items.Add(new ListViewItem(new[]
                     {
                         titlekey.Value["title"].ToString(),
@@ -187,6 +186,9 @@ namespace NSGameDownloader
         {
             if (listView1.SelectedItems.Count == 0) return;
             curTid = listView1.SelectedItems[0].Text;
+            curTid = curTid.Substring(0, 13) + "000";
+            var ty = listView1.SelectedItems[0].SubItems[2].Text;
+            radioButton_DLC.Checked = ty == "DLC" || ty == "UPD";
 
             WebRefresh();
 
@@ -222,10 +224,10 @@ namespace NSGameDownloader
         public static string ConvertBytes(long len)
         {
             if (len > 1073741824)
-                return (len / 1024.0 / 1024 / 1024).ToString("F") + "GB";
+                return (len / 1073741824.0).ToString("F") + "GB";
             if (len > 1048576)
-                return (len / 1024 / 1024).ToString("F") + "MB";
-            return (len / 1024).ToString("F") + "KB";
+                return (len / 1048576.0).ToString("F") + "MB";
+            return (len / 1024.0).ToString("F") + "KB";
         }
 
         private void GetGameImage(object otid)

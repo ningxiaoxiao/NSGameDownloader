@@ -36,11 +36,11 @@
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
             this.radioButton_DLC = new System.Windows.Forms.RadioButton();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -125,6 +125,11 @@
             this.columnHeader2.Text = "name";
             this.columnHeader2.Width = 190;
             // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "type";
+            this.columnHeader3.Width = 70;
+            // 
             // pictureBox1
             // 
             this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
@@ -147,6 +152,7 @@
             // radioButton_DLC
             // 
             this.radioButton_DLC.AutoSize = true;
+            this.radioButton_DLC.Enabled = false;
             this.radioButton_DLC.Location = new System.Drawing.Point(106, 39);
             this.radioButton_DLC.Name = "radioButton_DLC";
             this.radioButton_DLC.Size = new System.Drawing.Size(65, 16);
@@ -169,11 +175,6 @@
             this.linkLabel1.TabStop = true;
             this.linkLabel1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "type";
-            this.columnHeader3.Width = 70;
             // 
             // Form1
             // 
