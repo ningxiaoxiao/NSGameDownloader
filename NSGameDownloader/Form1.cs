@@ -21,13 +21,25 @@ namespace NSGameDownloader
         private const string NspPw = "vb4v";
         private const string XciPw = "fi4r";
         private const string TitleKeysURL = "https://snip.li/nutdb";
+        private const string XCITitleKeysURL = "http://nswdb.com/xml.php";
         private const string TitleKeysPath = "keys.json";
+        private const string NSPTitleKeysPath = "NSPkeys.json";
+        private const string XCITitleKeysPath = "XCIkeys.json";
+        private const string UPDTitleKeysPath = "UPDkeys.json";
+        private const string DLCTitleKeysPath = "DLCkeys.json";
+        private const string DEMOTitleKeysPath = "DEMOkeys.json";
         private string curTid;
         private JObject Titlekeys;
+        private JObject NSPTitlekeys;
+        private JObject XCITitlekeys;
+        private JObject UPDTitlekeys;
+        private JObject DLCTitlekeys;
+        private JObject DEMOTitlekeys;
 
         public Form1()
         {
             InitializeComponent();
+            //UpdateTitleKey();
         }
 
 
@@ -36,7 +48,7 @@ namespace NSGameDownloader
             return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
                               + "#list/path=/"
                               + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
-                              + (radioButton_xci.Checked ? "" : radioButton_DLC.Checked ? "/UPD + DLC" : "/NSP")
+                              + (radioButton_xci.Checked ? "" : radioButton_UPD.Checked ? "/UPD + DLC" : "/NSP")
                               + "/" + tid.Substring(0, 5)
                               + "/" + tid
                               + "&parentPath=/";
@@ -45,6 +57,10 @@ namespace NSGameDownloader
         public void UpdateTitleKey()
         {
             Titlekeys = new JObject();
+            NSPTitlekeys = new JObject();
+            UPDTitlekeys = new JObject();
+            DLCTitlekeys = new JObject();
+            DEMOTitlekeys = new JObject();
             var http = new WebClient { Encoding = Encoding.UTF8 };
 
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
@@ -71,14 +87,36 @@ namespace NSGameDownloader
                     ["title"] = kan[0].Trim().Substring(0, 16),
                     ["key"] = kan[2].Trim(),
                     ["name"] = kan[6].Trim(),
-                    ["type"] = kan[3] == "1" ? "UPD" : kan[4] == "1" ? "DLC" : kan[5] == "1" ? "DEMO" : "BASE"
+                    ["type"] = kan[3] == "1" ? "UPD" : kan[4] == "1" ? "DLC" : kan[5] == "1" ? "DEMO" : "NSP"
                 };
+
+                switch (jtemp.Value<string>("type"))
+                {
+                    case "NSP":
+                        NSPTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "UPD":
+                        UPDTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "DLC":
+                        DLCTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "DEMO":
+                        DEMOTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+
+                }
+                 
 
                 Titlekeys[kan[0].Trim()] = jtemp;
             }
 
 
             File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+            File.WriteAllText(NSPTitleKeysPath, NSPTitlekeys.ToString());
+            File.WriteAllText(UPDTitleKeysPath, UPDTitlekeys.ToString());
+            File.WriteAllText(DLCTitleKeysPath, DLCTitlekeys.ToString());
+            File.WriteAllText(DEMOTitleKeysPath, DEMOTitlekeys.ToString());
         }
 
 
@@ -126,12 +164,33 @@ namespace NSGameDownloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(TitleKeysPath))
+
+            if (!File.Exists(TitleKeysPath)&&!File.Exists(NSPTitleKeysPath) && !File.Exists(UPDTitleKeysPath) && !File.Exists(DLCTitleKeysPath) && !File.Exists(DEMOTitleKeysPath))
                 UpdateTitleKey();
             else
+            //Titlekeys = JObject.Parse(File.ReadAllText(TitleKeysPath));
+            {
                 Titlekeys = JObject.Parse(File.ReadAllText(TitleKeysPath));
+                NSPTitlekeys = JObject.Parse(File.ReadAllText(NSPTitleKeysPath));
+                UPDTitlekeys = JObject.Parse(File.ReadAllText(UPDTitleKeysPath));
+                DLCTitlekeys = JObject.Parse(File.ReadAllText(DLCTitleKeysPath));
+                DEMOTitlekeys = JObject.Parse(File.ReadAllText(DEMOTitleKeysPath));
+            }
+                
 
             if (!Directory.Exists("image")) Directory.CreateDirectory("image");
+
+            listView1.Items.Clear();
+            foreach (var titlekey in NSPTitlekeys)
+                //默认显示NSP
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                    listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+
         }
 
 
@@ -146,7 +205,7 @@ namespace NSGameDownloader
             Navigate(GetUrl(curTid));
         }
 
-        private void radioButton_DLC_CheckedChanged(object sender, EventArgs e)
+        private void radioButton_UPD_CheckedChanged(object sender, EventArgs e)
         {
 
         }
@@ -166,17 +225,70 @@ namespace NSGameDownloader
         private void button_search_Click(object sender, EventArgs e)
         {
             //var keys = Titlekeys.Root.Where(x => x.Contains(textBox_keyword.Text.Trim()));
-
+            
             listView1.Items.Clear();
-            foreach (var titlekey in Titlekeys)
-                //不显示demo
-                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
-                    listView1.Items.Add(new ListViewItem(new[]
-                    {
+            if (radioButton_nsp.Checked)
+            {
+                foreach (var titlekey in NSPTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
                         titlekey.Value["title"].ToString(),
                         titlekey.Value["name"].ToString(),
                         titlekey.Value["type"].ToString()
                     }));
+            }
+            else if (radioButton_UPD.Checked)
+            {
+                foreach (var titlekey in UPDTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else if (radioButton_DLC.Checked)
+            {
+                foreach (var titlekey in DLCTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else if (radioButton_xci.Checked)
+            {
+                foreach (var titlekey in Titlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else
+            {
+                foreach (var titlekey in Titlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            
+
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -186,7 +298,7 @@ namespace NSGameDownloader
             var g = Titlekeys[curTid].ToObject<JObject>();
             curTid = curTid.Substring(0, 13) + "000";
             var ty = listView1.SelectedItems[0].SubItems[2].Text;
-            radioButton_DLC.Checked = ty == "DLC" || ty == "UPD";
+            radioButton_UPD.Checked = ty == "DLC" || ty == "UPD";
 
             WebRefresh();
 
@@ -304,7 +416,17 @@ namespace NSGameDownloader
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+            //File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+        }
+
+        private void radioButton_DLC_CheckedChanged_1(object sender, EventArgs e)
+        {
+
+        }
+
+        private void button_updata_Click(object sender, EventArgs e)
+        {
+            UpdateTitleKey();
         }
     }
 }
