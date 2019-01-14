@@ -284,7 +284,8 @@ namespace NSGameDownloader
             listView1.Items.Clear();
             foreach (var titlekey in XCITitlekeys)
             {
-                listView1.Items.Add(new ListViewItem(new[]
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                    listView1.Items.Add(new ListViewItem(new[]
                     {
                         titlekey.Value["title"].ToString(),
                         titlekey.Value["name"].ToString(),
@@ -387,7 +388,23 @@ namespace NSGameDownloader
             curTid = curTid.Substring(0, 13) + "000";
             curType = listView1.SelectedItems[0].SubItems[2].Text;
             //radioButton_UPD.Checked = ty == "DLC" || ty == "UPD";
-
+            if (curType == "DLC")
+            {
+                var tid = curTid.Substring(0, 12);
+                foreach(var str in NSPTitlekeys)
+                {
+                    var strr = str.Value["title"].ToString().Substring(0,12);
+                    if(tid == strr)
+                    {
+                        curTid = str.Value["title"].ToString();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                curTid = curTid.Substring(0, 13) + "000";
+            }
             WebRefresh();
 
 
@@ -520,7 +537,7 @@ namespace NSGameDownloader
                         titlekey.Value["type"].ToString()
                     }));
             }
-            WebRefresh();
+            //WebRefresh();
 
         }
 
@@ -552,7 +569,7 @@ namespace NSGameDownloader
                         titlekey.Value["type"].ToString()
                     }));
             }
-            WebRefresh();
+            //WebRefresh();
         }
     }
 }
