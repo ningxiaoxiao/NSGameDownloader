@@ -196,6 +196,17 @@ namespace NSGameDownloader
 
         private void radioButton_nsp_CheckedChanged(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in NSPTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
             WebRefresh();
         }
 
@@ -207,11 +218,34 @@ namespace NSGameDownloader
 
         private void radioButton_UPD_CheckedChanged(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in UPDTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }            
+                    
 
+            WebRefresh();
         }
 
         private void radioButton_xci_CheckedChanged(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in UPDTitlekeys)
+            {
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
             WebRefresh();
         }
    
@@ -421,6 +455,18 @@ namespace NSGameDownloader
 
         private void radioButton_DLC_CheckedChanged_1(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in DLCTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            WebRefresh();
 
         }
 
