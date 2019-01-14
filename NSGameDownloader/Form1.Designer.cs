@@ -28,57 +28,71 @@
         /// </summary>
         private void InitializeComponent()
         {
+            System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.textBox_keyword = new System.Windows.Forms.TextBox();
             this.button_search = new System.Windows.Forms.Button();
-            this.webBrowser1 = new System.Windows.Forms.WebBrowser();
+            this.panWebBrowser = new System.Windows.Forms.WebBrowser();
             this.radioButton_nsp = new System.Windows.Forms.RadioButton();
             this.radioButton_xci = new System.Windows.Forms.RadioButton();
             this.listView1 = new System.Windows.Forms.ListView();
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.label2 = new System.Windows.Forms.Label();
+            this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
+            this.label_info = new System.Windows.Forms.Label();
             this.radioButton_DLC = new System.Windows.Forms.RadioButton();
-            this.linkLabel1 = new System.Windows.Forms.LinkLabel();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            this.menuStrip1 = new System.Windows.Forms.MenuStrip();
+            this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.更新TitleId文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.statusStrip1 = new System.Windows.Forms.StatusStrip();
+            this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
+            this.label1 = new System.Windows.Forms.Label();
+            this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.查看帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.发送反馈ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem1 = new System.Windows.Forms.ToolStripSeparator();
+            this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
+            this.menuStrip1.SuspendLayout();
+            this.statusStrip1.SuspendLayout();
             this.SuspendLayout();
             // 
             // textBox_keyword
             // 
-            this.textBox_keyword.Location = new System.Drawing.Point(12, 12);
+            this.textBox_keyword.Location = new System.Drawing.Point(10, 28);
             this.textBox_keyword.Name = "textBox_keyword";
             this.textBox_keyword.Size = new System.Drawing.Size(342, 21);
-            this.textBox_keyword.TabIndex = 0;
+            this.textBox_keyword.TabIndex = 99;
             this.textBox_keyword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_keyword_KeyPress);
             // 
             // button_search
             // 
-            this.button_search.Location = new System.Drawing.Point(360, 12);
+            this.button_search.Location = new System.Drawing.Point(358, 28);
             this.button_search.Name = "button_search";
-            this.button_search.Size = new System.Drawing.Size(63, 23);
+            this.button_search.Size = new System.Drawing.Size(63, 21);
             this.button_search.TabIndex = 1;
             this.button_search.Text = "搜索";
             this.button_search.UseVisualStyleBackColor = true;
             this.button_search.Click += new System.EventHandler(this.button_search_Click);
             // 
-            // webBrowser1
+            // panWebBrowser
             // 
-            this.webBrowser1.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.webBrowser1.Location = new System.Drawing.Point(441, 12);
-            this.webBrowser1.MinimumSize = new System.Drawing.Size(20, 20);
-            this.webBrowser1.Name = "webBrowser1";
-            this.webBrowser1.Size = new System.Drawing.Size(589, 530);
-            this.webBrowser1.TabIndex = 2;
-            this.webBrowser1.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser1_DocumentCompleted);
+            this.panWebBrowser.Location = new System.Drawing.Point(441, 28);
+            this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.panWebBrowser.Name = "panWebBrowser";
+            this.panWebBrowser.Size = new System.Drawing.Size(589, 496);
+            this.panWebBrowser.TabIndex = 2;
+            this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
             // radioButton_nsp
             // 
             this.radioButton_nsp.AutoSize = true;
             this.radioButton_nsp.Checked = true;
-            this.radioButton_nsp.Location = new System.Drawing.Point(12, 39);
+            this.radioButton_nsp.Location = new System.Drawing.Point(12, 55);
             this.radioButton_nsp.Name = "radioButton_nsp";
             this.radioButton_nsp.Size = new System.Drawing.Size(41, 16);
             this.radioButton_nsp.TabIndex = 3;
@@ -90,7 +104,7 @@
             // radioButton_xci
             // 
             this.radioButton_xci.AutoSize = true;
-            this.radioButton_xci.Location = new System.Drawing.Point(59, 39);
+            this.radioButton_xci.Location = new System.Drawing.Point(59, 55);
             this.radioButton_xci.Name = "radioButton_xci";
             this.radioButton_xci.Size = new System.Drawing.Size(41, 16);
             this.radioButton_xci.TabIndex = 4;
@@ -107,10 +121,10 @@
             this.columnHeader3});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 61);
+            this.listView1.Location = new System.Drawing.Point(12, 77);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(411, 244);
-            this.listView1.TabIndex = 6;
+            this.listView1.Size = new System.Drawing.Size(411, 228);
+            this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
             this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
@@ -130,72 +144,163 @@
             this.columnHeader3.Text = "type";
             this.columnHeader3.Width = 70;
             // 
-            // pictureBox1
+            // pictureBox_gameicon
             // 
-            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.pictureBox1.ImageLocation = "";
-            this.pictureBox1.Location = new System.Drawing.Point(12, 311);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox1.TabIndex = 7;
-            this.pictureBox1.TabStop = false;
+            this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.pictureBox_gameicon.ImageLocation = "";
+            this.pictureBox_gameicon.Location = new System.Drawing.Point(12, 311);
+            this.pictureBox_gameicon.Name = "pictureBox_gameicon";
+            this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
+            this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_gameicon.TabIndex = 7;
+            this.pictureBox_gameicon.TabStop = false;
             // 
-            // label2
+            // label_info
             // 
-            this.label2.Location = new System.Drawing.Point(118, 311);
-            this.label2.Name = "label2";
-            this.label2.Size = new System.Drawing.Size(305, 217);
-            this.label2.TabIndex = 8;
-            this.label2.Text = "label2";
+            this.label_info.Location = new System.Drawing.Point(118, 311);
+            this.label_info.Name = "label_info";
+            this.label_info.Size = new System.Drawing.Size(305, 182);
+            this.label_info.TabIndex = 8;
+            this.label_info.Text = "0GB";
             // 
             // radioButton_DLC
             // 
             this.radioButton_DLC.AutoSize = true;
             this.radioButton_DLC.Enabled = false;
-            this.radioButton_DLC.Location = new System.Drawing.Point(106, 39);
+            this.radioButton_DLC.Location = new System.Drawing.Point(106, 55);
             this.radioButton_DLC.Name = "radioButton_DLC";
             this.radioButton_DLC.Size = new System.Drawing.Size(65, 16);
             this.radioButton_DLC.TabIndex = 9;
             this.radioButton_DLC.TabStop = true;
             this.radioButton_DLC.Text = "UPD+DLC";
             this.radioButton_DLC.UseVisualStyleBackColor = true;
-            this.radioButton_DLC.CheckedChanged += new System.EventHandler(this.radioButton_DLC_CheckedChanged);
             // 
-            // linkLabel1
+            // menuStrip1
             // 
-            this.linkLabel1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.linkLabel1.AutoSize = true;
-            this.linkLabel1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
-            this.linkLabel1.LinkColor = System.Drawing.Color.Silver;
-            this.linkLabel1.Location = new System.Drawing.Point(9, 528);
-            this.linkLabel1.Name = "linkLabel1";
-            this.linkLabel1.Size = new System.Drawing.Size(217, 17);
-            this.linkLabel1.TabIndex = 10;
-            this.linkLabel1.TabStop = true;
-            this.linkLabel1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
-            this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
+            this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.文件ToolStripMenuItem,
+            this.帮助ToolStripMenuItem});
+            this.menuStrip1.Location = new System.Drawing.Point(0, 0);
+            this.menuStrip1.Name = "menuStrip1";
+            this.menuStrip1.Size = new System.Drawing.Size(1042, 25);
+            this.menuStrip1.TabIndex = 100;
+            this.menuStrip1.Text = "menuStrip1";
+            // 
+            // 文件ToolStripMenuItem
+            // 
+            this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.更新TitleId文件ToolStripMenuItem});
+            this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.文件ToolStripMenuItem.Text = "文件";
+            // 
+            // 更新TitleId文件ToolStripMenuItem
+            // 
+            this.更新TitleId文件ToolStripMenuItem.Name = "更新TitleId文件ToolStripMenuItem";
+            this.更新TitleId文件ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.更新TitleId文件ToolStripMenuItem.Text = "更新TitleId文件";
+            this.更新TitleId文件ToolStripMenuItem.Click += new System.EventHandler(this.更新TitleId文件ToolStripMenuItem_Click);
+            // 
+            // statusStrip1
+            // 
+            this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.toolStripProgressBar_download});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 532);
+            this.statusStrip1.Name = "statusStrip1";
+            this.statusStrip1.Size = new System.Drawing.Size(1042, 22);
+            this.statusStrip1.TabIndex = 101;
+            this.statusStrip1.Text = "statusStrip1";
+            // 
+            // toolStripProgressBar_download
+            // 
+            this.toolStripProgressBar_download.Maximum = 5000;
+            this.toolStripProgressBar_download.Name = "toolStripProgressBar_download";
+            this.toolStripProgressBar_download.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar_download.Visible = false;
+            // 
+            // label1
+            // 
+            this.label1.AutoSize = true;
+            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
+            this.label1.ForeColor = System.Drawing.Color.DimGray;
+            this.label1.Location = new System.Drawing.Point(12, 512);
+            this.label1.Name = "label1";
+            this.label1.Size = new System.Drawing.Size(215, 12);
+            this.label1.TabIndex = 102;
+            this.label1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
+            this.label1.Click += new System.EventHandler(this.label1_Click);
+            // 
+            // 帮助ToolStripMenuItem
+            // 
+            this.帮助ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.查看帮助ToolStripMenuItem,
+            this.toolStripSeparator1,
+            this.发送反馈ToolStripMenuItem,
+            this.toolStripMenuItem1,
+            this.关于ToolStripMenuItem});
+            this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.帮助ToolStripMenuItem.Text = "帮助";
+            // 
+            // 查看帮助ToolStripMenuItem
+            // 
+            this.查看帮助ToolStripMenuItem.Name = "查看帮助ToolStripMenuItem";
+            this.查看帮助ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.查看帮助ToolStripMenuItem.Text = "查看帮助";
+            this.查看帮助ToolStripMenuItem.Click += new System.EventHandler(this.查看帮助ToolStripMenuItem_Click);
+            // 
+            // 发送反馈ToolStripMenuItem
+            // 
+            this.发送反馈ToolStripMenuItem.Name = "发送反馈ToolStripMenuItem";
+            this.发送反馈ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.发送反馈ToolStripMenuItem.Text = "发送反馈";
+            this.发送反馈ToolStripMenuItem.Click += new System.EventHandler(this.发送反馈ToolStripMenuItem_Click);
+            // 
+            // toolStripMenuItem1
+            // 
+            this.toolStripMenuItem1.Name = "toolStripMenuItem1";
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(177, 6);
+            // 
+            // 关于ToolStripMenuItem
+            // 
+            this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(180, 22);
+            this.关于ToolStripMenuItem.Text = "关于";
+            this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
+            // 
+            // toolStripSeparator1
+            // 
+            this.toolStripSeparator1.Name = "toolStripSeparator1";
+            this.toolStripSeparator1.Size = new System.Drawing.Size(177, 6);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1042, 554);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.label1);
+            this.Controls.Add(this.statusStrip1);
+            this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.radioButton_DLC);
-            this.Controls.Add(this.label2);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.label_info);
+            this.Controls.Add(this.pictureBox_gameicon);
             this.Controls.Add(this.listView1);
             this.Controls.Add(this.radioButton_xci);
             this.Controls.Add(this.radioButton_nsp);
-            this.Controls.Add(this.webBrowser1);
+            this.Controls.Add(this.panWebBrowser);
             this.Controls.Add(this.button_search);
             this.Controls.Add(this.textBox_keyword);
+            this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
+            this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
             this.Text = "NSGameDownloader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).EndInit();
+            this.menuStrip1.ResumeLayout(false);
+            this.menuStrip1.PerformLayout();
+            this.statusStrip1.ResumeLayout(false);
+            this.statusStrip1.PerformLayout();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -205,17 +310,28 @@
 
         private System.Windows.Forms.TextBox textBox_keyword;
         private System.Windows.Forms.Button button_search;
-        private System.Windows.Forms.WebBrowser webBrowser1;
+        private System.Windows.Forms.WebBrowser panWebBrowser;
         private System.Windows.Forms.RadioButton radioButton_nsp;
         private System.Windows.Forms.RadioButton radioButton_xci;
         private System.Windows.Forms.ListView listView1;
-        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.PictureBox pictureBox_gameicon;
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
-        private System.Windows.Forms.Label label2;
+        private System.Windows.Forms.Label label_info;
         private System.Windows.Forms.RadioButton radioButton_DLC;
-        private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.MenuStrip menuStrip1;
+        private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 更新TitleId文件ToolStripMenuItem;
+        private System.Windows.Forms.StatusStrip statusStrip1;
+        private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_download;
+        private System.Windows.Forms.Label label1;
+        private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 查看帮助ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 发送反馈ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
+        private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
     }
 }
 
