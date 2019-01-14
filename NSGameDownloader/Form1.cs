@@ -8,6 +8,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using System.Xml;
 using Newtonsoft.Json.Linq;
 using NSGameDownloader.Properties;
 
@@ -21,30 +22,83 @@ namespace NSGameDownloader
         private const string NspPw = "vb4v";
         private const string XciPw = "fi4r";
         private const string TitleKeysURL = "https://snip.li/nutdb";
+        private const string XCITitleKeysURL = "http://nswdb.com/xml.php";
         private const string TitleKeysPath = "keys.json";
+        private const string NSPTitleKeysPath = "NSPkeys.json";
+        private const string XCITitleKeysPath = "XCIkeys.json";
+        private const string UPDTitleKeysPath = "UPDkeys.json";
+        private const string DLCTitleKeysPath = "DLCkeys.json";
+        private const string DEMOTitleKeysPath = "DEMOkeys.json";
         private string curTid;
+        private string curType;
         private JObject Titlekeys;
+        private JObject NSPTitlekeys;
+        private JObject XCITitlekeys;
+        private JObject UPDTitlekeys;
+        private JObject DLCTitlekeys;
+        private JObject DEMOTitlekeys;
 
         public Form1()
         {
             InitializeComponent();
+            //UpdateTitleKey();
         }
 
 
-        private string GetUrl(string tid)
+        private string GetUrl(string tid,string type)
         {
+            /*
             return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
                               + "#list/path=/"
                               + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
-                              + (radioButton_xci.Checked ? "" : radioButton_DLC.Checked ? "/UPD + DLC" : "/NSP")
+                              + (radioButton_xci.Checked ? "" : radioButton_UPD.Checked ? "/UPD + DLC" : "/NSP")
                               + "/" + tid.Substring(0, 5)
                               + "/" + tid
                               + "&parentPath=/";
+            */
+            return PanUrlHead + (type == "XCI" ? XciPanKey : NspPanKey)
+                  + "#list/path=/"
+                  + (type == "XCI" ? "XCI" : "Nintendo Switch Games")
+                  + (type == "XCI" ? "" : type == "NSP" ?  "/NSP":"/UPD + DLC")
+                  + "/" + tid.Substring(0, 5)
+                  + "/" + tid
+                  + "&parentPath=/";
+        }
+        public void UpdateXciTitleKey()
+        {
+            XCITitlekeys = new JObject();
+            var http = new WebClient { Encoding = Encoding.UTF8 };
+
+            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            var html = http.DownloadString(XCITitleKeysURL);
+            XmlDocument xmlDoc = new XmlDocument();
+            xmlDoc.LoadXml(html);
+            //XmlNode rootNode = xmlDoc.SelectSingleNode("releases");
+            XmlElement root = xmlDoc.DocumentElement;
+            XmlNodeList nodeLists = root.GetElementsByTagName("release");
+            foreach(XmlNode node in nodeLists)
+            {
+                var jtemp = new JObject
+                {
+                    ["title"] = ((XmlElement)node).GetElementsByTagName("titleid")[0].InnerText,
+                    ["key"] = "00000000000000000000000000000000",
+                    ["name"] = ((XmlElement)node).GetElementsByTagName("name")[0].InnerText,
+                    ["type"] ="XCI"
+                };
+                XCITitlekeys[jtemp.Value<string>("title")] = jtemp;
+            }
+            File.WriteAllText(XCITitleKeysPath, XCITitlekeys.ToString());
         }
 
         public void UpdateTitleKey()
         {
             Titlekeys = new JObject();
+            NSPTitlekeys = new JObject();
+            XCITitlekeys = new JObject();
+            UPDTitlekeys = new JObject();
+            DLCTitlekeys = new JObject();
+            DEMOTitlekeys = new JObject();
             var http = new WebClient { Encoding = Encoding.UTF8 };
 
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
@@ -71,14 +125,36 @@ namespace NSGameDownloader
                     ["title"] = kan[0].Trim().Substring(0, 16),
                     ["key"] = kan[2].Trim(),
                     ["name"] = kan[6].Trim(),
-                    ["type"] = kan[3] == "1" ? "UPD" : kan[4] == "1" ? "DLC" : kan[5] == "1" ? "DEMO" : "BASE"
+                    ["type"] = kan[3] == "1" ? "UPD" : kan[4] == "1" ? "DLC" : kan[5] == "1" ? "DEMO" : "NSP"
                 };
+
+                switch (jtemp.Value<string>("type"))
+                {
+                    case "NSP":
+                        NSPTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "UPD":
+                        UPDTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "DLC":
+                        DLCTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+                    case "DEMO":
+                        DEMOTitlekeys[kan[0].Trim()] = jtemp;
+                        break;
+
+                }
+                 
 
                 Titlekeys[kan[0].Trim()] = jtemp;
             }
 
 
             File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+            File.WriteAllText(NSPTitleKeysPath, NSPTitlekeys.ToString());
+            File.WriteAllText(UPDTitleKeysPath, UPDTitlekeys.ToString());
+            File.WriteAllText(DLCTitleKeysPath, DLCTitlekeys.ToString());
+            File.WriteAllText(DEMOTitleKeysPath, DEMOTitlekeys.ToString());
         }
 
 
@@ -126,34 +202,97 @@ namespace NSGameDownloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
-            if (!File.Exists(TitleKeysPath))
-                UpdateTitleKey();
-            else
+
+            if (File.Exists(TitleKeysPath) && File.Exists(NSPTitleKeysPath) && File.Exists(UPDTitleKeysPath) && File.Exists(DLCTitleKeysPath) && File.Exists(DEMOTitleKeysPath) && File.Exists(XCITitleKeysPath))
+            {
                 Titlekeys = JObject.Parse(File.ReadAllText(TitleKeysPath));
+                NSPTitlekeys = JObject.Parse(File.ReadAllText(NSPTitleKeysPath));
+                XCITitlekeys = JObject.Parse(File.ReadAllText(XCITitleKeysPath));
+                UPDTitlekeys = JObject.Parse(File.ReadAllText(UPDTitleKeysPath));
+                DLCTitlekeys = JObject.Parse(File.ReadAllText(DLCTitleKeysPath));
+                DEMOTitlekeys = JObject.Parse(File.ReadAllText(DEMOTitleKeysPath));
+
+            }
+            else
+            //Titlekeys = JObject.Parse(File.ReadAllText(TitleKeysPath));
+            {
+                UpdateTitleKey();
+                UpdateXciTitleKey();
+            }
+                
 
             if (!Directory.Exists("image")) Directory.CreateDirectory("image");
+
+            listView1.Items.Clear();
+            foreach (var titlekey in NSPTitlekeys)
+                //默认显示NSP
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                    listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+
+            
+
         }
 
 
         private void radioButton_nsp_CheckedChanged(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in NSPTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
             WebRefresh();
         }
 
         private void WebRefresh()
         {
             if (curTid == null) return;
-            Navigate(GetUrl(curTid));
+            Navigate(GetUrl(curTid,curType));
         }
 
-        private void radioButton_DLC_CheckedChanged(object sender, EventArgs e)
+        private void radioButton_UPD_CheckedChanged(object sender, EventArgs e)
         {
+            listView1.Items.Clear();
+            foreach (var titlekey in UPDTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }            
+                    
 
+           // WebRefresh();
         }
 
         private void radioButton_xci_CheckedChanged(object sender, EventArgs e)
         {
-            WebRefresh();
+            listView1.Items.Clear();
+            foreach (var titlekey in XCITitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                    listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            //WebRefresh();
         }
    
         private void Navigate(string url)
@@ -166,17 +305,79 @@ namespace NSGameDownloader
         private void button_search_Click(object sender, EventArgs e)
         {
             //var keys = Titlekeys.Root.Where(x => x.Contains(textBox_keyword.Text.Trim()));
-
+            
             listView1.Items.Clear();
-            foreach (var titlekey in Titlekeys)
-                //不显示demo
-                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
-                    listView1.Items.Add(new ListViewItem(new[]
-                    {
+            if (radioButton_nsp.Checked)
+            {
+                foreach (var titlekey in NSPTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
                         titlekey.Value["title"].ToString(),
                         titlekey.Value["name"].ToString(),
                         titlekey.Value["type"].ToString()
                     }));
+            }
+            else if (radioButton_UPD.Checked)
+            {
+                foreach (var titlekey in UPDTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else if (radioButton_DLC.Checked)
+            {
+                foreach (var titlekey in DLCTitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else if (radioButton_xci.Checked)
+            {
+                foreach (var titlekey in XCITitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            else
+            {
+                foreach (var titlekey in Titlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+                foreach (var titlekey in XCITitlekeys)
+                    //不显示demo
+                    if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                        listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            
+
         }
 
         private void listView1_SelectedIndexChanged(object sender, EventArgs e)
@@ -185,9 +386,25 @@ namespace NSGameDownloader
             curTid = listView1.SelectedItems[0].Text;
             var g = Titlekeys[curTid].ToObject<JObject>();
             curTid = curTid.Substring(0, 13) + "000";
-            var ty = listView1.SelectedItems[0].SubItems[2].Text;
-            radioButton_DLC.Checked = ty == "DLC" || ty == "UPD";
-
+            curType = listView1.SelectedItems[0].SubItems[2].Text;
+            //radioButton_UPD.Checked = ty == "DLC" || ty == "UPD";
+            if (curType == "DLC")
+            {
+                var tid = curTid.Substring(0, 12);
+                foreach(var str in NSPTitlekeys)
+                {
+                    var strr = str.Value["title"].ToString().Substring(0,12);
+                    if(tid == strr)
+                    {
+                        curTid = str.Value["title"].ToString();
+                        break;
+                    }
+                }
+            }
+            else
+            {
+                curTid = curTid.Substring(0, 13) + "000";
+            }
             WebRefresh();
 
 
@@ -304,7 +521,55 @@ namespace NSGameDownloader
 
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+            //File.WriteAllText(TitleKeysPath, Titlekeys.ToString());
+        }
+
+        private void radioButton_DLC_CheckedChanged_1(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();
+            foreach (var titlekey in DLCTitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()))
+                listView1.Items.Add(new ListViewItem(new[]
+                    {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            //WebRefresh();
+
+        }
+
+        private void button_updata_Click(object sender, EventArgs e)
+        {
+            UpdateTitleKey();
+        }
+
+        private void radioButton_ALL_CheckedChanged(object sender, EventArgs e)
+        {
+            listView1.Items.Clear();
+            foreach (var titlekey in Titlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                    listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            foreach (var titlekey in XCITitlekeys)
+            {
+                if (titlekey.Value["name"].ToString().Contains(textBox_keyword.Text.Trim()) && titlekey.Value["type"].ToString() != "DEMO")
+                    listView1.Items.Add(new ListViewItem(new[]
+                        {
+                        titlekey.Value["title"].ToString(),
+                        titlekey.Value["name"].ToString(),
+                        titlekey.Value["type"].ToString()
+                    }));
+            }
+            //WebRefresh();
         }
     }
 }

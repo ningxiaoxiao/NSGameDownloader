@@ -39,8 +39,11 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox1 = new System.Windows.Forms.PictureBox();
             this.label2 = new System.Windows.Forms.Label();
-            this.radioButton_DLC = new System.Windows.Forms.RadioButton();
+            this.radioButton_UPD = new System.Windows.Forms.RadioButton();
             this.linkLabel1 = new System.Windows.Forms.LinkLabel();
+            this.radioButton_DLC = new System.Windows.Forms.RadioButton();
+            this.radioButton_ALL = new System.Windows.Forms.RadioButton();
+            this.button_updata = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
@@ -107,6 +110,7 @@
             this.columnHeader3});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 61);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(411, 244);
@@ -149,18 +153,17 @@
             this.label2.TabIndex = 8;
             this.label2.Text = "label2";
             // 
-            // radioButton_DLC
+            // radioButton_UPD
             // 
-            this.radioButton_DLC.AutoSize = true;
-            this.radioButton_DLC.Enabled = false;
-            this.radioButton_DLC.Location = new System.Drawing.Point(106, 39);
-            this.radioButton_DLC.Name = "radioButton_DLC";
-            this.radioButton_DLC.Size = new System.Drawing.Size(65, 16);
-            this.radioButton_DLC.TabIndex = 9;
-            this.radioButton_DLC.TabStop = true;
-            this.radioButton_DLC.Text = "UPD+DLC";
-            this.radioButton_DLC.UseVisualStyleBackColor = true;
-            this.radioButton_DLC.CheckedChanged += new System.EventHandler(this.radioButton_DLC_CheckedChanged);
+            this.radioButton_UPD.AutoSize = true;
+            this.radioButton_UPD.Location = new System.Drawing.Point(106, 39);
+            this.radioButton_UPD.Name = "radioButton_UPD";
+            this.radioButton_UPD.Size = new System.Drawing.Size(41, 16);
+            this.radioButton_UPD.TabIndex = 9;
+            this.radioButton_UPD.TabStop = true;
+            this.radioButton_UPD.Text = "UPD";
+            this.radioButton_UPD.UseVisualStyleBackColor = true;
+            this.radioButton_UPD.CheckedChanged += new System.EventHandler(this.radioButton_UPD_CheckedChanged);
             // 
             // linkLabel1
             // 
@@ -176,13 +179,50 @@
             this.linkLabel1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
             this.linkLabel1.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.linkLabel1_LinkClicked);
             // 
+            // radioButton_DLC
+            // 
+            this.radioButton_DLC.AutoSize = true;
+            this.radioButton_DLC.Location = new System.Drawing.Point(153, 39);
+            this.radioButton_DLC.Name = "radioButton_DLC";
+            this.radioButton_DLC.Size = new System.Drawing.Size(41, 16);
+            this.radioButton_DLC.TabIndex = 11;
+            this.radioButton_DLC.TabStop = true;
+            this.radioButton_DLC.Text = "DLC";
+            this.radioButton_DLC.UseVisualStyleBackColor = true;
+            this.radioButton_DLC.CheckedChanged += new System.EventHandler(this.radioButton_DLC_CheckedChanged_1);
+            // 
+            // radioButton_ALL
+            // 
+            this.radioButton_ALL.AutoSize = true;
+            this.radioButton_ALL.Location = new System.Drawing.Point(200, 39);
+            this.radioButton_ALL.Name = "radioButton_ALL";
+            this.radioButton_ALL.Size = new System.Drawing.Size(41, 16);
+            this.radioButton_ALL.TabIndex = 12;
+            this.radioButton_ALL.TabStop = true;
+            this.radioButton_ALL.Text = "ALL";
+            this.radioButton_ALL.UseVisualStyleBackColor = true;
+            this.radioButton_ALL.CheckedChanged += new System.EventHandler(this.radioButton_ALL_CheckedChanged);
+            // 
+            // button_updata
+            // 
+            this.button_updata.Location = new System.Drawing.Point(332, 36);
+            this.button_updata.Name = "button_updata";
+            this.button_updata.Size = new System.Drawing.Size(91, 23);
+            this.button_updata.TabIndex = 13;
+            this.button_updata.Text = "更新本地数据";
+            this.button_updata.UseVisualStyleBackColor = true;
+            this.button_updata.Click += new System.EventHandler(this.button_updata_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1042, 554);
-            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.button_updata);
+            this.Controls.Add(this.radioButton_ALL);
             this.Controls.Add(this.radioButton_DLC);
+            this.Controls.Add(this.linkLabel1);
+            this.Controls.Add(this.radioButton_UPD);
             this.Controls.Add(this.label2);
             this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.listView1);
@@ -213,9 +253,12 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label label2;
-        private System.Windows.Forms.RadioButton radioButton_DLC;
+        private System.Windows.Forms.RadioButton radioButton_UPD;
         private System.Windows.Forms.LinkLabel linkLabel1;
         private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.RadioButton radioButton_DLC;
+        private System.Windows.Forms.RadioButton radioButton_ALL;
+        private System.Windows.Forms.Button button_updata;
     }
 }
 
