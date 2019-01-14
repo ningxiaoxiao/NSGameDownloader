@@ -252,7 +252,7 @@ namespace NSGameDownloader
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             try
             {
-                web.DownloadFile("https://terannet.sirv.com/CDNSP/" + tid + ".jpg", filename);
+                web.DownloadFile("https://terannet.sirv.com/CDNSP/" + tid.ToLower() + ".jpg", filename);
                 pictureBox1.Image = Image.FromFile(filename);
 
             }
