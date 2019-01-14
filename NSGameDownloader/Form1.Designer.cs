@@ -110,6 +110,7 @@
             this.columnHeader3});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.HideSelection = false;
             this.listView1.Location = new System.Drawing.Point(12, 61);
             this.listView1.Name = "listView1";
             this.listView1.Size = new System.Drawing.Size(411, 244);
@@ -200,6 +201,7 @@
             this.radioButton_ALL.TabStop = true;
             this.radioButton_ALL.Text = "ALL";
             this.radioButton_ALL.UseVisualStyleBackColor = true;
+            this.radioButton_ALL.CheckedChanged += new System.EventHandler(this.radioButton_ALL_CheckedChanged);
             // 
             // button_updata
             // 
