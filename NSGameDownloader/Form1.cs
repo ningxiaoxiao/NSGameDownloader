@@ -158,7 +158,7 @@ namespace NSGameDownloader
 
 
             Console.WriteLine("log:" + oUrl);
-
+            if (panWebBrowser.Document.Body == null) return;
             if (panWebBrowser.Document.Body.InnerText != null &&
                 panWebBrowser.Document.Body.InnerText.Contains("请输入提取码"))
             {
@@ -238,9 +238,9 @@ namespace NSGameDownloader
             //如果是dlc 第13位退1
             if (_titlekeys[_curTid]["type"].ToString() == "DLC")
             {
-                var t16 = Convert.ToInt64("0x" + _curBaseTid.Substring(12), 16);
+                var t16 = Convert.ToInt64("0x" + _curBaseTid, 16);
                 t16 -= 4096;
-                _curBaseTid = _curBaseTid.Substring(0, 12) + t16.ToString("X");
+                _curBaseTid = t16.ToString("x16").ToUpper();
             }
 
             var ty = listView1.SelectedItems[0].SubItems[2].Text;
@@ -272,8 +272,8 @@ namespace NSGameDownloader
                 {
                     try
                     {
-                        //todo 找到更近的eshop
-                        var html = web.DownloadString($"https://ec.nintendo.com/apps/{_curBaseTid}/AU");
+                        //todo 找到更近的eshop 分析游戏区
+                        var html = web.DownloadString($"https://ec.nintendo.com/apps/{_curBaseTid}/JP");
                         html = html.Split(new[] {"NXSTORE.titleDetail.jsonData = "},
                                 StringSplitOptions.RemoveEmptyEntries)[1]
                             .Split(new[] {"NXSTORE.titleDetail"}, StringSplitOptions.RemoveEmptyEntries)[0]
@@ -308,7 +308,7 @@ namespace NSGameDownloader
                 }
                 catch
                 {
-                    File.Delete(filename);
+                    // ignored
                 }
 
             var web = new WebClient {Encoding = Encoding.UTF8};
