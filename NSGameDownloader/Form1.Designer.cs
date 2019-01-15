@@ -39,6 +39,8 @@
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
             this.label_info = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -54,7 +56,7 @@
             this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
             this.label1 = new System.Windows.Forms.Label();
             this.label_count = new System.Windows.Forms.Label();
-            this.button_lookUdpDlc = new System.Windows.Forms.Button();
+            this.radioButton_upd = new System.Windows.Forms.RadioButton();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -64,13 +66,13 @@
             // 
             this.textBox_keyword.Location = new System.Drawing.Point(10, 28);
             this.textBox_keyword.Name = "textBox_keyword";
-            this.textBox_keyword.Size = new System.Drawing.Size(342, 21);
+            this.textBox_keyword.Size = new System.Drawing.Size(301, 21);
             this.textBox_keyword.TabIndex = 99;
             this.textBox_keyword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_keyword_KeyPress);
             // 
             // button_search
             // 
-            this.button_search.Location = new System.Drawing.Point(358, 28);
+            this.button_search.Location = new System.Drawing.Point(317, 28);
             this.button_search.Name = "button_search";
             this.button_search.Size = new System.Drawing.Size(63, 21);
             this.button_search.TabIndex = 1;
@@ -83,10 +85,10 @@
             this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panWebBrowser.Location = new System.Drawing.Point(441, 28);
+            this.panWebBrowser.Location = new System.Drawing.Point(494, 28);
             this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(589, 496);
+            this.panWebBrowser.Size = new System.Drawing.Size(536, 496);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
@@ -94,26 +96,26 @@
             // 
             this.radioButton_nsp.AutoSize = true;
             this.radioButton_nsp.Checked = true;
-            this.radioButton_nsp.Location = new System.Drawing.Point(12, 55);
+            this.radioButton_nsp.Location = new System.Drawing.Point(245, 311);
             this.radioButton_nsp.Name = "radioButton_nsp";
-            this.radioButton_nsp.Size = new System.Drawing.Size(41, 16);
+            this.radioButton_nsp.Size = new System.Drawing.Size(65, 16);
             this.radioButton_nsp.TabIndex = 3;
             this.radioButton_nsp.TabStop = true;
-            this.radioButton_nsp.Text = "NSP";
+            this.radioButton_nsp.Text = "查看NSP";
             this.radioButton_nsp.UseVisualStyleBackColor = true;
-            this.radioButton_nsp.CheckedChanged += new System.EventHandler(this.radioButton_nsp_CheckedChanged);
+            this.radioButton_nsp.Click += new System.EventHandler(this.radioButton_Click);
             // 
             // radioButton_xci
             // 
             this.radioButton_xci.AutoSize = true;
-            this.radioButton_xci.Location = new System.Drawing.Point(59, 55);
+            this.radioButton_xci.Location = new System.Drawing.Point(316, 311);
             this.radioButton_xci.Name = "radioButton_xci";
-            this.radioButton_xci.Size = new System.Drawing.Size(41, 16);
+            this.radioButton_xci.Size = new System.Drawing.Size(65, 16);
             this.radioButton_xci.TabIndex = 4;
             this.radioButton_xci.TabStop = true;
-            this.radioButton_xci.Text = "XCI";
+            this.radioButton_xci.Text = "查看XCI";
             this.radioButton_xci.UseVisualStyleBackColor = true;
-            this.radioButton_xci.CheckedChanged += new System.EventHandler(this.radioButton_xci_CheckedChanged);
+            this.radioButton_xci.Click += new System.EventHandler(this.radioButton_Click);
             // 
             // listView1
             // 
@@ -121,12 +123,14 @@
             this.columnHeader1,
             this.columnHeader2,
             this.columnHeader3,
-            this.columnHeader4});
+            this.columnHeader4,
+            this.columnHeader5,
+            this.columnHeader6});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(12, 77);
+            this.listView1.Location = new System.Drawing.Point(10, 55);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(411, 228);
+            this.listView1.Size = new System.Drawing.Size(466, 250);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -140,23 +144,33 @@
             // columnHeader2
             // 
             this.columnHeader2.Text = "NAME";
-            this.columnHeader2.Width = 258;
+            this.columnHeader2.Width = 243;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "DLC";
+            this.columnHeader3.Text = "NSP";
             this.columnHeader3.Width = 33;
             // 
             // columnHeader4
             // 
-            this.columnHeader4.Text = "UPD";
+            this.columnHeader4.Text = "XCI";
             this.columnHeader4.Width = 34;
+            // 
+            // columnHeader5
+            // 
+            this.columnHeader5.Text = "UPD";
+            this.columnHeader5.Width = 36;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "DLC";
+            this.columnHeader6.Width = 34;
             // 
             // pictureBox_gameicon
             // 
             this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pictureBox_gameicon.ImageLocation = "";
-            this.pictureBox_gameicon.Location = new System.Drawing.Point(12, 311);
+            this.pictureBox_gameicon.Location = new System.Drawing.Point(10, 337);
             this.pictureBox_gameicon.Name = "pictureBox_gameicon";
             this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
             this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -169,7 +183,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.label_info.Location = new System.Drawing.Point(118, 337);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(305, 149);
+            this.label_info.Size = new System.Drawing.Size(358, 175);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
@@ -265,7 +279,7 @@
             this.label1.AutoSize = true;
             this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label1.ForeColor = System.Drawing.Color.DimGray;
-            this.label1.Location = new System.Drawing.Point(12, 512);
+            this.label1.Location = new System.Drawing.Point(8, 512);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(215, 12);
             this.label1.TabIndex = 102;
@@ -274,30 +288,31 @@
             // 
             // label_count
             // 
-            this.label_count.Location = new System.Drawing.Point(295, 55);
+            this.label_count.Location = new System.Drawing.Point(386, 28);
             this.label_count.Name = "label_count";
-            this.label_count.Size = new System.Drawing.Size(128, 19);
+            this.label_count.Size = new System.Drawing.Size(88, 21);
             this.label_count.TabIndex = 103;
-            this.label_count.Text = "count:11";
+            this.label_count.Text = "count:99999";
             this.label_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
             // 
-            // button_lookUdpDlc
+            // radioButton_upd
             // 
-            this.button_lookUdpDlc.Location = new System.Drawing.Point(335, 311);
-            this.button_lookUdpDlc.Name = "button_lookUdpDlc";
-            this.button_lookUdpDlc.Size = new System.Drawing.Size(88, 23);
-            this.button_lookUdpDlc.TabIndex = 104;
-            this.button_lookUdpDlc.Text = "查看UPD+DLC";
-            this.button_lookUdpDlc.UseVisualStyleBackColor = true;
-            this.button_lookUdpDlc.Visible = false;
-            this.button_lookUdpDlc.Click += new System.EventHandler(this.button_lookUdpDlc_Click);
+            this.radioButton_upd.AutoSize = true;
+            this.radioButton_upd.Location = new System.Drawing.Point(387, 311);
+            this.radioButton_upd.Name = "radioButton_upd";
+            this.radioButton_upd.Size = new System.Drawing.Size(89, 16);
+            this.radioButton_upd.TabIndex = 104;
+            this.radioButton_upd.TabStop = true;
+            this.radioButton_upd.Text = "查看UPD+DLC";
+            this.radioButton_upd.UseVisualStyleBackColor = true;
+            this.radioButton_upd.Click += new System.EventHandler(this.radioButton_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1042, 554);
-            this.Controls.Add(this.button_lookUdpDlc);
+            this.Controls.Add(this.radioButton_upd);
             this.Controls.Add(this.label_count);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
@@ -353,7 +368,9 @@
         private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
         private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Label label_count;
-        private System.Windows.Forms.Button button_lookUdpDlc;
+        private System.Windows.Forms.RadioButton radioButton_upd;
+        private System.Windows.Forms.ColumnHeader columnHeader5;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
     }
 }
 

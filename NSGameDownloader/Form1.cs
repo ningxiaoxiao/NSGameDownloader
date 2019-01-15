@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
@@ -8,6 +9,7 @@ using System.Runtime.InteropServices;
 using System.Text;
 using System.Threading;
 using System.Windows.Forms;
+using ExcelDataReader;
 using Newtonsoft.Json.Linq;
 using NSGameDownloader.Properties;
 
@@ -24,6 +26,7 @@ namespace NSGameDownloader
         private const string XciPw = "fi4r";
         private const string NutdbUrl = "https://snip.li/nutdb";
         private const string TitleKeysPath = "keys.json";
+        private const string ExcelPath = "db.xlsx";
         private const int EM_SETCUEBANNER = 0x1501;
 
         /// <summary>
@@ -32,12 +35,71 @@ namespace NSGameDownloader
         private string _curTid;
 
         private JObject _titlekeys;
+        private DataSet TitleDataSet;
 
         public Form1()
         {
             InitializeComponent();
         }
 
+        private void ReadExcel()
+        {
+            var fs = File.Open(ExcelPath, FileMode.Open, FileAccess.Read);
+            var er = ExcelReaderFactory.CreateReader(fs);
+
+            TitleDataSet = er.AsDataSet(new ExcelDataSetConfiguration
+            {
+                UseColumnDataType = true,
+                ConfigureDataTable = r => new ExcelDataTableConfiguration
+                {
+                    UseHeaderRow = true
+                }
+            });
+
+            //读出第一个表 
+            //0         1       2       3       4       5       6
+            //tid       iszh    cname   oname   ext     ver     havedlc
+            var dt = TitleDataSet.Tables[0];
+            Invoke(new Action(() =>
+            {
+                toolStripProgressBar_download.Maximum = dt.Rows.Count;
+                toolStripProgressBar_download.Value = 0;
+            }));
+            foreach (DataRow row in dt.Rows)
+            {
+                var tid = row[0].ToString();
+                var iszh = row[1].ToString() != "x";
+                var cname = row[2].ToString();
+                var allnames = row[3].ToString();
+                var haveXci = row[4].ToString().Contains("XCI");
+                var haveNsp = row[4].ToString().Contains("NSP");
+                var haveUpd = row[5].ToString() != "v0";
+                var haveDlc = row[6].ToString() != "×";
+
+
+                var jtemp = new JObject
+                {
+                    ["tid"] = tid,
+                    ["iszh"] = iszh,
+                    ["cname"] = cname,
+                    ["allnames"] = allnames,
+
+                    ["xci"] = haveXci,
+                    ["nsp"] = haveNsp,
+                    ["upd"] = haveUpd,
+                    ["dlc"] = haveDlc,
+                    ["ver"] = row[5].ToString(),
+                    ["region"] = "AU",
+                    ["ename"] = "",
+
+                };
+                _titlekeys[tid] = jtemp;
+                Invoke(new Action(() => { toolStripProgressBar_download.Value++; }));
+            }
+
+
+            fs.Close();
+        }
 
         private void Form1_Load(object sender, EventArgs e)
         {
@@ -74,7 +136,6 @@ namespace NSGameDownloader
 
         public void UpdateTitleKey()
         {
-            //todo 从nswdb 上得到xci的文件的列表.
             Invoke(new Action(() =>
             {
                 toolStripProgressBar_download.Visible = true;
@@ -85,23 +146,47 @@ namespace NSGameDownloader
                 textBox_keyword.Enabled = false;
             }));
 
-            var http = new WebClient { Encoding = Encoding.UTF8 };
+            _titlekeys = new JObject();
 
-            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            List<string> keys;
             try
             {
-                var html = http.DownloadString(NutdbUrl);
-                keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
-                if (keys.Count == 0) throw new Exception("没有得到数据");
-                _titlekeys = new JObject();
+                ReadExcel();
+                Invoke(new Action(() =>
+                {
+                    toolStripProgressBar_download.Maximum = 2;
+                    toolStripProgressBar_download.Value = 1;
+                }));
+                ReadNutDb();
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "更新titleid出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
+
+            Invoke(new Action(() =>
+            {
+                button_search.Text = "搜索";
+                button_search.Enabled = true;
+                textBox_keyword.Enabled = true;
+                toolStripProgressBar_download.Visible = false;
+                SearchGameName();
+            }));
+        }
+
+        private void ReadNutDb()
+        {
+            var http = new WebClient { Encoding = Encoding.UTF8 };
+
+            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+
+            var html = http.DownloadString(NutdbUrl);
+            var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+            if (keys.Count == 0) throw new Exception("没有得到数据");
+
 
             //前3行 不要
             keys.RemoveAt(0);
@@ -121,58 +206,26 @@ namespace NSGameDownloader
                 var ver = kan[8];
                 var region = kan[9] == "US" ? "AU" : kan[9]; //美区用不了.换掉
 
-                switch (kan[3] + kan[4] + kan[5])
+                if (_titlekeys.ContainsKey(tid)) //只会得到本体
                 {
-                    case "000": //base
-
-                        break;
-                    case "100": //upd
-                        tid = tid.Substring(0, 13) + "000";
-                        _titlekeys[tid]["upd"] = true;
-                        continue;
-                    case "010": //dlc
-                        tid = GetBaseTidFormDlcTid(tid);
-                        _titlekeys[tid]["dlc"] = true;
-                        continue;
-                    case "001": //demo 无用
-                        continue;
+                    _titlekeys[tid]["ver"] = ver;
+                    _titlekeys[tid]["region"] = region;
+                    _titlekeys[tid]["ename"] = name;
                 }
 
-                var jtemp = new JObject
-                {
-                    ["tid"] = tid,
-                    ["name"] = name,
-                    ["dlc"] = false,
-                    ["upd"] = false,
-                    ["ver"] = ver,
-                    ["region"] = region
-                };
                 Invoke(new Action(() => { toolStripProgressBar_download.Value = ++count; }));
-                _titlekeys[tid] = jtemp;
             }
-
-
-            File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
-
-            Invoke(new Action(() =>
-            {
-                button_search.Text = "搜索";
-                button_search.Enabled = true;
-                textBox_keyword.Enabled = true;
-                toolStripProgressBar_download.Visible = false;
-                SearchGameName();
-            }));
         }
 
-        private string GetPanUrl(string tid, bool dlc)
+        private string GetPanUrl(string tid)
         {
             return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
-                   + "#list/path=/"
-                   + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
-                   + (radioButton_xci.Checked ? "" : dlc ? "/UPD + DLC" : "/NSP")
-                   + "/" + tid.Substring(0, 5)
-                   + "/" + tid
-                   + "&parentPath=/";
+                              + "#list/path=/"
+                              + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
+                              + (radioButton_xci.Checked ? "" : radioButton_upd.Checked ? "/UPD + DLC" : "/NSP")
+                              + "/" + tid.Substring(0, 5)
+                              + "/" + tid
+                              + "&parentPath=/";
         }
 
         private void writePw(string pw)
@@ -214,18 +267,17 @@ namespace NSGameDownloader
         private void WebRefresh()
         {
             if (_curTid == null) return;
-            Navigate(GetPanUrl(_curTid, false)); //点击刷新 只找本体
+            Navigate(GetPanUrl(_curTid)); //点击刷新 只找本体
         }
 
-        private void radioButton_nsp_CheckedChanged(object sender, EventArgs e)
+
+        private void radioButton_Click(object sender, EventArgs e)
         {
+            var r = sender as RadioButton;
+            if (!r.Checked) return;
             WebRefresh();
         }
 
-        private void radioButton_xci_CheckedChanged(object sender, EventArgs e)
-        {
-            WebRefresh();
-        }
 
         private void Navigate(string url)
         {
@@ -251,13 +303,17 @@ namespace NSGameDownloader
                 //todo 多关键字处理
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
-                    if (titlekey.Value["name"].ToString().ToLower().Contains(keywords.Trim().ToLower()))
+                    if (titlekey.Value["cname"].ToString().ToLower().Contains(keywords.Trim().ToLower()))
                         listView1.Items.Add(new ListViewItem(new[]
                         {
                             titlekey.Value["tid"].ToString(),
-                            titlekey.Value["name"].ToString(),
-                            titlekey.Value["dlc"].ToObject<bool>() ? "●" : "",
-                            titlekey.Value["upd"].ToObject<bool>() ? "●" : ""
+                            titlekey.Value["cname"].ToString().Trim() == ""
+                                ? titlekey.Value["allnames"].ToString()
+                                : titlekey.Value["cname"].ToString(), //防止没有中文名
+                            titlekey.Value["nsp"].ToObject<bool>() ? "●" : "",
+                            titlekey.Value["xci"].ToObject<bool>() ? "●" : "",
+                            titlekey.Value["upd"].ToObject<bool>() ? "●" : "",
+                            titlekey.Value["dlc"].ToObject<bool>() ? "●" : ""
                         }));
                 label_count.Text = "count:" + listView1.Items.Count;
             }));
@@ -279,8 +335,14 @@ namespace NSGameDownloader
 
 
             //如果点击的是dlc 或者是 upd 那要跳到upd+dlc的目录
-            button_lookUdpDlc.Visible = _titlekeys[_curTid]["dlc"].ToObject<bool>() ||
-                                        _titlekeys[_curTid]["upd"].ToObject<bool>();
+            radioButton_upd.Enabled = _titlekeys[_curTid]["dlc"].ToObject<bool>() ||
+                                   _titlekeys[_curTid]["upd"].ToObject<bool>();
+            radioButton_nsp.Enabled = _titlekeys[_curTid]["nsp"].ToObject<bool>();
+            radioButton_xci.Enabled = _titlekeys[_curTid]["xci"].ToObject<bool>();
+
+            if (!radioButton_nsp.Enabled && radioButton_nsp.Checked) radioButton_xci.Checked = true;
+            if (!radioButton_xci.Enabled && radioButton_xci.Checked) radioButton_nsp.Checked = true;
+            
 
             WebRefresh();
 
@@ -416,12 +478,6 @@ namespace NSGameDownloader
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
-        }
-
-        private void button_lookUdpDlc_Click(object sender, EventArgs e)
-        {
-            if (_curTid == null) return;
-            Navigate(GetPanUrl(_curTid, true));
         }
     }
 }
