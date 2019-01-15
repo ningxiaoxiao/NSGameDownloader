@@ -38,6 +38,7 @@
             this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
             this.label_info = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
@@ -52,6 +53,8 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
             this.label1 = new System.Windows.Forms.Label();
+            this.label_count = new System.Windows.Forms.Label();
+            this.button_lookUdpDlc = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -117,7 +120,8 @@
             this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
             this.columnHeader1,
             this.columnHeader2,
-            this.columnHeader3});
+            this.columnHeader3,
+            this.columnHeader4});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
             this.listView1.Location = new System.Drawing.Point(12, 77);
@@ -130,18 +134,23 @@
             // 
             // columnHeader1
             // 
-            this.columnHeader1.Text = "key";
-            this.columnHeader1.Width = 111;
+            this.columnHeader1.Text = "TID";
+            this.columnHeader1.Width = 59;
             // 
             // columnHeader2
             // 
-            this.columnHeader2.Text = "name";
-            this.columnHeader2.Width = 190;
+            this.columnHeader2.Text = "NAME";
+            this.columnHeader2.Width = 258;
             // 
             // columnHeader3
             // 
-            this.columnHeader3.Text = "type";
-            this.columnHeader3.Width = 70;
+            this.columnHeader3.Text = "DLC";
+            this.columnHeader3.Width = 33;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "UPD";
+            this.columnHeader4.Width = 34;
             // 
             // pictureBox_gameicon
             // 
@@ -158,9 +167,9 @@
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_info.Location = new System.Drawing.Point(118, 311);
+            this.label_info.Location = new System.Drawing.Point(118, 337);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(305, 182);
+            this.label_info.Size = new System.Drawing.Size(305, 149);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
@@ -263,11 +272,33 @@
             this.label1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
+            // label_count
+            // 
+            this.label_count.Location = new System.Drawing.Point(295, 55);
+            this.label_count.Name = "label_count";
+            this.label_count.Size = new System.Drawing.Size(128, 19);
+            this.label_count.TabIndex = 103;
+            this.label_count.Text = "count:11";
+            this.label_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
+            // 
+            // button_lookUdpDlc
+            // 
+            this.button_lookUdpDlc.Location = new System.Drawing.Point(335, 311);
+            this.button_lookUdpDlc.Name = "button_lookUdpDlc";
+            this.button_lookUdpDlc.Size = new System.Drawing.Size(88, 23);
+            this.button_lookUdpDlc.TabIndex = 104;
+            this.button_lookUdpDlc.Text = "查看UPD+DLC";
+            this.button_lookUdpDlc.UseVisualStyleBackColor = true;
+            this.button_lookUdpDlc.Visible = false;
+            this.button_lookUdpDlc.Click += new System.EventHandler(this.button_lookUdpDlc_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1042, 554);
+            this.Controls.Add(this.button_lookUdpDlc);
+            this.Controls.Add(this.label_count);
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
@@ -320,6 +351,9 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.Label label_count;
+        private System.Windows.Forms.Button button_lookUdpDlc;
     }
 }
 
