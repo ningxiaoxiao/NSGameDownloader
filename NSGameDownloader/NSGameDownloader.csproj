@@ -32,7 +32,7 @@
     <WarningLevel>4</WarningLevel>
   </PropertyGroup>
   <PropertyGroup>
-    <ApplicationIcon>TegraRcmGUI_00001.ico</ApplicationIcon>
+    <ApplicationIcon>Resources\main.ico</ApplicationIcon>
   </PropertyGroup>
   <PropertyGroup />
   <ItemGroup>
@@ -88,13 +88,13 @@
     <None Include="App.config" />
   </ItemGroup>
   <ItemGroup>
-    <None Include="Resources\下载.png" />
+    <None Include="Resources\download404.png" />
   </ItemGroup>
   <ItemGroup>
     <None Include="Resources\load.gif" />
   </ItemGroup>
   <ItemGroup>
-    <Content Include="TegraRcmGUI_00001.ico" />
+    <Content Include="Resources\main.ico" />
   </ItemGroup>
   <Import Project="$(MSBuildToolsPath)\Microsoft.CSharp.targets" />
 </Project>
