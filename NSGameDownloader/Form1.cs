@@ -250,6 +250,9 @@ namespace NSGameDownloader
 
             Console.WriteLine("log:" + oUrl);
             if (panWebBrowser.Document.Body == null) return;
+            //缩放页面
+            ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
+                SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
             if (panWebBrowser.Document.Body.InnerText != null &&
                 panWebBrowser.Document.Body.InnerText.Contains("请输入提取码"))
             {
@@ -342,7 +345,7 @@ namespace NSGameDownloader
 
             if (!radioButton_nsp.Enabled && radioButton_nsp.Checked) radioButton_xci.Checked = true;
             if (!radioButton_xci.Enabled && radioButton_xci.Checked) radioButton_nsp.Checked = true;
-            
+
 
             WebRefresh();
 
