@@ -85,7 +85,7 @@ namespace NSGameDownloader
                 textBox_keyword.Enabled = false;
             }));
 
-            var http = new WebClient {Encoding = Encoding.UTF8};
+            var http = new WebClient { Encoding = Encoding.UTF8 };
 
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -93,7 +93,7 @@ namespace NSGameDownloader
             try
             {
                 var html = http.DownloadString(NutdbUrl);
-                keys = new List<string>(html.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+                keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
                 if (keys.Count == 0) throw new Exception("没有得到数据");
                 _titlekeys = new JObject();
             }
@@ -249,10 +249,9 @@ namespace NSGameDownloader
             Invoke(new Action(() =>
             {
                 //todo 多关键字处理
-                //todo 查找时 对大小写进行转换
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
-                    if (titlekey.Value["name"].ToString().Contains(keywords.Trim()))
+                    if (titlekey.Value["name"].ToString().ToLower().Contains(keywords.Trim().ToLower()))
                         listView1.Items.Add(new ListViewItem(new[]
                         {
                             titlekey.Value["tid"].ToString(),
@@ -304,16 +303,16 @@ namespace NSGameDownloader
             //todo 从http://www.eshop-switch.com 拿数据
             var g = _titlekeys[_curTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
-                using (var web = new WebClient {Encoding = Encoding.UTF8})
+                using (var web = new WebClient { Encoding = Encoding.UTF8 })
                 {
                     try
                     {
                         var url = $"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}";
                         Console.WriteLine(url);
                         var html = web.DownloadString(url);
-                        html = html.Split(new[] {"NXSTORE.titleDetail.jsonData = "},
+                        html = html.Split(new[] { "NXSTORE.titleDetail.jsonData = " },
                                 StringSplitOptions.RemoveEmptyEntries)[1]
-                            .Split(new[] {"NXSTORE.titleDetail"}, StringSplitOptions.RemoveEmptyEntries)[0]
+                            .Split(new[] { "NXSTORE.titleDetail" }, StringSplitOptions.RemoveEmptyEntries)[0]
                             .Replace(";", "");
 
                         _titlekeys[_curTid]["info"] = JObject.Parse(html);
@@ -348,7 +347,7 @@ namespace NSGameDownloader
                     // ignored
                 }
 
-            var web = new WebClient {Encoding = Encoding.UTF8};
+            var web = new WebClient { Encoding = Encoding.UTF8 };
             // 解决WebClient不能通过https下载内容问题
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -383,7 +382,7 @@ namespace NSGameDownloader
 
         private void textBox_keyword_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != (char) Keys.Enter) return;
+            if (e.KeyChar != (char)Keys.Enter) return;
             e.Handled = true; //防止向上冒泡
             SearchGameName(textBox_keyword.Text);
         }
