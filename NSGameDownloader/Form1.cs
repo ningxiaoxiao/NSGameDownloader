@@ -13,6 +13,8 @@ using NSGameDownloader.Properties;
 
 namespace NSGameDownloader
 {
+    //todo 增加在外部浏览器打开的功能
+    //todo 尝试进行从百度云直接得到真实下载地址 
     public partial class Form1 : Form
     {
         private const string PanUrlHead = "https://pan.baidu.com/s/";
@@ -72,6 +74,7 @@ namespace NSGameDownloader
 
         public void UpdateTitleKey()
         {
+            //todo 从nswdb 上得到xci的文件的列表.
             Invoke(new Action(() =>
             {
                 toolStripProgressBar_download.Visible = true;
@@ -246,6 +249,7 @@ namespace NSGameDownloader
             Invoke(new Action(() =>
             {
                 //todo 多关键字处理
+                //todo 查找时 对大小写进行转换
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
                     if (titlekey.Value["name"].ToString().Contains(keywords.Trim()))
