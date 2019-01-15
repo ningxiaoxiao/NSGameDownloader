@@ -40,7 +40,6 @@
             this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
             this.label_info = new System.Windows.Forms.Label();
-            this.radioButton_DLC = new System.Windows.Forms.RadioButton();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.更新TitleId文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
@@ -165,18 +164,6 @@
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
-            // radioButton_DLC
-            // 
-            this.radioButton_DLC.AutoSize = true;
-            this.radioButton_DLC.Enabled = false;
-            this.radioButton_DLC.Location = new System.Drawing.Point(106, 55);
-            this.radioButton_DLC.Name = "radioButton_DLC";
-            this.radioButton_DLC.Size = new System.Drawing.Size(65, 16);
-            this.radioButton_DLC.TabIndex = 9;
-            this.radioButton_DLC.TabStop = true;
-            this.radioButton_DLC.Text = "UPD+DLC";
-            this.radioButton_DLC.UseVisualStyleBackColor = true;
-            // 
             // menuStrip1
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
@@ -284,7 +271,6 @@
             this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
-            this.Controls.Add(this.radioButton_DLC);
             this.Controls.Add(this.label_info);
             this.Controls.Add(this.pictureBox_gameicon);
             this.Controls.Add(this.listView1);
@@ -321,7 +307,6 @@
         private System.Windows.Forms.ColumnHeader columnHeader1;
         private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label label_info;
-        private System.Windows.Forms.RadioButton radioButton_DLC;
         private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;

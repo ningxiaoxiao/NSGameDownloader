@@ -35,6 +35,7 @@ namespace NSGameDownloader
         private string _curTid;
 
         private JObject _titlekeys;
+        private bool _isDLC { get; set; }
 
         public Form1()
         {
@@ -79,14 +80,14 @@ namespace NSGameDownloader
         {
             _titlekeys = new JObject();
 
-            var http = new WebClient {Encoding = Encoding.UTF8};
+            var http = new WebClient { Encoding = Encoding.UTF8 };
 
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             var html = http.DownloadString(NutdbUrl);
 
-            var keys = new List<string>(html.Split(new[] {"\n"}, StringSplitOptions.RemoveEmptyEntries));
+            var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
 
             //前3行 不要
             keys.RemoveAt(0);
@@ -131,7 +132,7 @@ namespace NSGameDownloader
             return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
                               + "#list/path=/"
                               + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
-                              + (radioButton_xci.Checked ? "" : radioButton_DLC.Checked ? "/UPD + DLC" : "/NSP")
+                              + (radioButton_xci.Checked ? "" : _isDLC ? "/UPD + DLC" : "/NSP")
                               + "/" + tid.Substring(0, 5)
                               + "/" + tid
                               + "&parentPath=/";
@@ -245,7 +246,7 @@ namespace NSGameDownloader
 
             var ty = listView1.SelectedItems[0].SubItems[2].Text;
             //如果点击的是dlc 或者是 upd 那要跳到upd+dlc的目录
-            radioButton_DLC.Checked = ty == "DLC" || ty == "UPD";
+            _isDLC = ty == "DLC" || ty == "UPD";
 
             WebRefresh();
 
@@ -268,15 +269,15 @@ namespace NSGameDownloader
             //todo 从http://www.eshop-switch.com 拿数据
             var g = _titlekeys[_curBaseTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
-                using (var web = new WebClient {Encoding = Encoding.UTF8})
+                using (var web = new WebClient { Encoding = Encoding.UTF8 })
                 {
                     try
                     {
                         //todo 找到更近的eshop 分析游戏区
                         var html = web.DownloadString($"https://ec.nintendo.com/apps/{_curBaseTid}/JP");
-                        html = html.Split(new[] {"NXSTORE.titleDetail.jsonData = "},
+                        html = html.Split(new[] { "NXSTORE.titleDetail.jsonData = " },
                                 StringSplitOptions.RemoveEmptyEntries)[1]
-                            .Split(new[] {"NXSTORE.titleDetail"}, StringSplitOptions.RemoveEmptyEntries)[0]
+                            .Split(new[] { "NXSTORE.titleDetail" }, StringSplitOptions.RemoveEmptyEntries)[0]
                             .Replace(";", "");
 
                         _titlekeys[_curBaseTid]["info"] = JObject.Parse(html);
@@ -311,7 +312,7 @@ namespace NSGameDownloader
                     // ignored
                 }
 
-            var web = new WebClient {Encoding = Encoding.UTF8};
+            var web = new WebClient { Encoding = Encoding.UTF8 };
             // 解决WebClient不能通过https下载内容问题
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
@@ -346,7 +347,7 @@ namespace NSGameDownloader
 
         private void textBox_keyword_KeyPress(object sender, KeyPressEventArgs e)
         {
-            if (e.KeyChar != (char) Keys.Enter) return;
+            if (e.KeyChar != (char)Keys.Enter) return;
             e.Handled = true; //防止向上冒泡
             SearchGameName(textBox_keyword.Text);
         }
