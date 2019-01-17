@@ -246,7 +246,7 @@ namespace NSGameDownloader
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
             var oUrl = WebUtility.UrlDecode(e.Url.ToString());
-
+            label_url.Text = oUrl;
 
             Console.WriteLine("log:" + oUrl);
             if (panWebBrowser.Document.Body == null) return;
@@ -487,6 +487,20 @@ namespace NSGameDownloader
         private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
+        }
+
+        private void label_url_Click(object sender, EventArgs e)
+        {
+            try
+            {
+                Clipboard.SetDataObject(label_url.Text, true);
+                MessageBox.Show("已经复制到剪贴版上", "复制成功", MessageBoxButtons.OK, MessageBoxIcon.Information);
+            }
+            catch (Exception exception)
+            {
+                MessageBox.Show(exception.Message, "复制失败", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+
         }
     }
 }

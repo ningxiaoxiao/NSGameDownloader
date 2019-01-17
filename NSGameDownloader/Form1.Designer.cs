@@ -57,6 +57,7 @@
             this.label1 = new System.Windows.Forms.Label();
             this.label_count = new System.Windows.Forms.Label();
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
+            this.label_url = new System.Windows.Forms.Label();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -85,10 +86,10 @@
             this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panWebBrowser.Location = new System.Drawing.Point(494, 28);
+            this.panWebBrowser.Location = new System.Drawing.Point(494, 55);
             this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(732, 503);
+            this.panWebBrowser.Size = new System.Drawing.Size(732, 476);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             // 
@@ -307,11 +308,23 @@
             this.radioButton_upd.UseVisualStyleBackColor = true;
             this.radioButton_upd.Click += new System.EventHandler(this.radioButton_Click);
             // 
+            // label_url
+            // 
+            this.label_url.Location = new System.Drawing.Point(494, 28);
+            this.label_url.Name = "label_url";
+            this.label_url.Size = new System.Drawing.Size(732, 21);
+            this.label_url.TabIndex = 105;
+            this.label_url.Text = "label2";
+            this.label_url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
+            this.label_url.UseMnemonic = false;
+            this.label_url.Click += new System.EventHandler(this.label_url_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 561);
+            this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
             this.Controls.Add(this.label_count);
             this.Controls.Add(this.label1);
@@ -371,6 +384,7 @@
         private System.Windows.Forms.RadioButton radioButton_upd;
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.Label label_url;
     }
 }
 
