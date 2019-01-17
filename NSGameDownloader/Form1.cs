@@ -123,8 +123,8 @@ namespace NSGameDownloader
             }
 
             if (!Directory.Exists("image")) Directory.CreateDirectory("image");
-            //使用api 做占位符
-            Invoke(new Action(() => { SendMessage(textBox_keyword.Handle, EM_SETCUEBANNER, 0, "在这里输入游戏名关键字.."); }));
+            //使用winapi 做占位符
+            Invoke(new Action(() => { SendMessage(textBox_keyword.Handle, EM_SETCUEBANNER, 0, "在这里输入 id,中文名,英文名 关键字..."); }));
 
             SearchGameName();
         }
@@ -306,7 +306,11 @@ namespace NSGameDownloader
                 //todo 多关键字处理
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
-                    if (titlekey.Value["cname"].ToString().ToLower().Contains(keywords.Trim().ToLower()))
+                {
+                    //全文件查找
+                    var allstr = titlekey.Value["tid"].ToString() + titlekey.Value["cname"] + titlekey.Value["ename"] + titlekey.Value["allnames"];
+
+                    if (allstr.ToLower().Contains(keywords.Trim().ToLower()))
                         listView1.Items.Add(new ListViewItem(new[]
                         {
                             titlekey.Value["tid"].ToString(),
@@ -318,6 +322,8 @@ namespace NSGameDownloader
                             titlekey.Value["upd"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["dlc"].ToObject<bool>() ? "●" : ""
                         }));
+                }
+
                 label_count.Text = "count:" + listView1.Items.Count;
             }));
         }
