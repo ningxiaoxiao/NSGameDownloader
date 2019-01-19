@@ -44,6 +44,7 @@ namespace NSGameDownloader
         public Form1()
         {
             InitializeComponent();
+            PanApi.Create(panWebBrowser);
         }
 
         private void ReadExcel()
@@ -294,7 +295,7 @@ namespace NSGameDownloader
             label_url.Text = oUrl;
 
             if (panWebBrowser.Document.Body == null) return;
-            GetCookies();
+            
             //缩放页面
             ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
                 SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
@@ -313,17 +314,7 @@ namespace NSGameDownloader
         }
 
         private CookieContainer _cookie = new CookieContainer();
-        private void GetCookies()
-        {
-            var str = panWebBrowser.Document.Cookie.Replace(",", "%2C");
-            var cookies = str.Split(';');
-            foreach (var c in cookies)
-            {
-                var kv = c.Split('=');
-                var cookie = new Cookie(kv[0].Trim(), kv.Length == 0 ? "" : kv[1].Trim());
-                _cookie.Add(new Uri("https://pan.baidu.com"), cookie);
-            }
-        }
+   
 
         private void WebRefresh()
         {
@@ -559,6 +550,11 @@ namespace NSGameDownloader
         private void panWebBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             //GetCookies();
+        }
+
+        private void button_download_Click(object sender, EventArgs e)
+        {
+            PanApi.Download();
         }
     }
 }

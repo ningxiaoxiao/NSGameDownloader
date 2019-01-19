@@ -58,6 +58,7 @@
             this.label_count = new System.Windows.Forms.Label();
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
+            this.button_download = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -321,11 +322,22 @@
             this.label_url.UseMnemonic = false;
             this.label_url.Click += new System.EventHandler(this.label_url_Click);
             // 
+            // button_download
+            // 
+            this.button_download.Location = new System.Drawing.Point(10, 443);
+            this.button_download.Name = "button_download";
+            this.button_download.Size = new System.Drawing.Size(100, 23);
+            this.button_download.TabIndex = 106;
+            this.button_download.Text = "下载";
+            this.button_download.UseVisualStyleBackColor = true;
+            this.button_download.Click += new System.EventHandler(this.button_download_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 561);
+            this.Controls.Add(this.button_download);
             this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
             this.Controls.Add(this.label_count);
@@ -387,6 +399,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
+        private System.Windows.Forms.Button button_download;
     }
 }
 
