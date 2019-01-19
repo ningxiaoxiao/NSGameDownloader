@@ -40,10 +40,11 @@ namespace NSGameDownloader
 
         private JObject _titlekeys;
         private DataSet TitleDataSet;
-
+        public static Form1 Inst;
         public Form1()
         {
             InitializeComponent();
+            Inst = this;
             PanApi.Create(panWebBrowser);
         }
 
@@ -295,7 +296,7 @@ namespace NSGameDownloader
             label_url.Text = oUrl;
 
             if (panWebBrowser.Document.Body == null) return;
-            
+
             //缩放页面
             ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
                 SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
@@ -314,7 +315,7 @@ namespace NSGameDownloader
         }
 
         private CookieContainer _cookie = new CookieContainer();
-   
+
 
         private void WebRefresh()
         {
@@ -528,6 +529,13 @@ namespace NSGameDownloader
             Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
         }
 
+        public void GetCode(string d)
+        {
+
+
+            pictureBox1.ImageLocation = d;
+        }
+
         private void label_url_Click(object sender, EventArgs e)
         {
             try
@@ -555,6 +563,11 @@ namespace NSGameDownloader
         private void button_download_Click(object sender, EventArgs e)
         {
             PanApi.Download();
+        }
+
+        private void button1_Click(object sender, EventArgs e)
+        {
+            PanApi.Download(textBox_code.Text.Trim());
         }
     }
 }

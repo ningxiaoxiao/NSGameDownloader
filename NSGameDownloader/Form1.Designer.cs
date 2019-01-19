@@ -59,9 +59,13 @@
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
             this.button_download = new System.Windows.Forms.Button();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
+            this.textBox_code = new System.Windows.Forms.TextBox();
+            this.button1 = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_keyword
@@ -90,7 +94,7 @@
             this.panWebBrowser.Location = new System.Drawing.Point(494, 55);
             this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(732, 476);
+            this.panWebBrowser.Size = new System.Drawing.Size(732, 553);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
@@ -187,7 +191,7 @@
             | System.Windows.Forms.AnchorStyles.Left)));
             this.label_info.Location = new System.Drawing.Point(118, 337);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(358, 182);
+            this.label_info.Size = new System.Drawing.Size(358, 259);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
@@ -264,7 +268,7 @@
             // 
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar_download});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 616);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Size = new System.Drawing.Size(1238, 22);
             this.statusStrip1.TabIndex = 101;
@@ -283,7 +287,7 @@
             this.label1.AutoSize = true;
             this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label1.ForeColor = System.Drawing.Color.DimGray;
-            this.label1.Location = new System.Drawing.Point(8, 519);
+            this.label1.Location = new System.Drawing.Point(8, 596);
             this.label1.Name = "label1";
             this.label1.Size = new System.Drawing.Size(215, 12);
             this.label1.TabIndex = 102;
@@ -332,11 +336,39 @@
             this.button_download.UseVisualStyleBackColor = true;
             this.button_download.Click += new System.EventHandler(this.button_download_Click);
             // 
+            // pictureBox1
+            // 
+            this.pictureBox1.Location = new System.Drawing.Point(10, 472);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(100, 47);
+            this.pictureBox1.TabIndex = 107;
+            this.pictureBox1.TabStop = false;
+            // 
+            // textBox_code
+            // 
+            this.textBox_code.Location = new System.Drawing.Point(10, 525);
+            this.textBox_code.Name = "textBox_code";
+            this.textBox_code.Size = new System.Drawing.Size(100, 21);
+            this.textBox_code.TabIndex = 108;
+            // 
+            // button1
+            // 
+            this.button1.Location = new System.Drawing.Point(10, 552);
+            this.button1.Name = "button1";
+            this.button1.Size = new System.Drawing.Size(100, 23);
+            this.button1.TabIndex = 109;
+            this.button1.Text = "提交";
+            this.button1.UseVisualStyleBackColor = true;
+            this.button1.Click += new System.EventHandler(this.button1_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1238, 561);
+            this.ClientSize = new System.Drawing.Size(1238, 638);
+            this.Controls.Add(this.button1);
+            this.Controls.Add(this.textBox_code);
+            this.Controls.Add(this.pictureBox1);
             this.Controls.Add(this.button_download);
             this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
@@ -363,6 +395,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -400,6 +433,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
         private System.Windows.Forms.Button button_download;
+        private System.Windows.Forms.PictureBox pictureBox1;
+        private System.Windows.Forms.TextBox textBox_code;
+        private System.Windows.Forms.Button button1;
     }
 }
 
