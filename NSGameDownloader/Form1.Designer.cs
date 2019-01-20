@@ -59,13 +59,13 @@
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
             this.button_download = new System.Windows.Forms.Button();
-            this.pictureBox1 = new System.Windows.Forms.PictureBox();
-            this.textBox_code = new System.Windows.Forms.TextBox();
-            this.button1 = new System.Windows.Forms.Button();
+            this.pictureBox_Vcode = new System.Windows.Forms.PictureBox();
+            this.textBox_Vcode = new System.Windows.Forms.TextBox();
+            this.button_SubmitVcode = new System.Windows.Forms.Button();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Vcode)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_keyword
@@ -336,39 +336,43 @@
             this.button_download.UseVisualStyleBackColor = true;
             this.button_download.Click += new System.EventHandler(this.button_download_Click);
             // 
-            // pictureBox1
+            // pictureBox_Vcode
             // 
-            this.pictureBox1.Location = new System.Drawing.Point(10, 472);
-            this.pictureBox1.Name = "pictureBox1";
-            this.pictureBox1.Size = new System.Drawing.Size(100, 47);
-            this.pictureBox1.TabIndex = 107;
-            this.pictureBox1.TabStop = false;
+            this.pictureBox_Vcode.Location = new System.Drawing.Point(10, 472);
+            this.pictureBox_Vcode.Name = "pictureBox_Vcode";
+            this.pictureBox_Vcode.Size = new System.Drawing.Size(100, 47);
+            this.pictureBox_Vcode.TabIndex = 107;
+            this.pictureBox_Vcode.TabStop = false;
+            this.pictureBox_Vcode.Visible = false;
+            this.pictureBox_Vcode.Click += new System.EventHandler(this.pictureBox_Vcode_Click);
             // 
-            // textBox_code
+            // textBox_Vcode
             // 
-            this.textBox_code.Location = new System.Drawing.Point(10, 525);
-            this.textBox_code.Name = "textBox_code";
-            this.textBox_code.Size = new System.Drawing.Size(100, 21);
-            this.textBox_code.TabIndex = 108;
+            this.textBox_Vcode.Location = new System.Drawing.Point(10, 525);
+            this.textBox_Vcode.Name = "textBox_Vcode";
+            this.textBox_Vcode.Size = new System.Drawing.Size(100, 21);
+            this.textBox_Vcode.TabIndex = 108;
+            this.textBox_Vcode.Visible = false;
             // 
-            // button1
+            // button_SubmitVcode
             // 
-            this.button1.Location = new System.Drawing.Point(10, 552);
-            this.button1.Name = "button1";
-            this.button1.Size = new System.Drawing.Size(100, 23);
-            this.button1.TabIndex = 109;
-            this.button1.Text = "提交";
-            this.button1.UseVisualStyleBackColor = true;
-            this.button1.Click += new System.EventHandler(this.button1_Click);
+            this.button_SubmitVcode.Location = new System.Drawing.Point(10, 552);
+            this.button_SubmitVcode.Name = "button_SubmitVcode";
+            this.button_SubmitVcode.Size = new System.Drawing.Size(100, 23);
+            this.button_SubmitVcode.TabIndex = 109;
+            this.button_SubmitVcode.Text = "提交";
+            this.button_SubmitVcode.UseVisualStyleBackColor = true;
+            this.button_SubmitVcode.Visible = false;
+            this.button_SubmitVcode.Click += new System.EventHandler(this.button_SubmitVcode_Click);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 638);
-            this.Controls.Add(this.button1);
-            this.Controls.Add(this.textBox_code);
-            this.Controls.Add(this.pictureBox1);
+            this.Controls.Add(this.button_SubmitVcode);
+            this.Controls.Add(this.textBox_Vcode);
+            this.Controls.Add(this.pictureBox_Vcode);
             this.Controls.Add(this.button_download);
             this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
@@ -395,7 +399,7 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Vcode)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -433,9 +437,9 @@
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
         private System.Windows.Forms.Button button_download;
-        private System.Windows.Forms.PictureBox pictureBox1;
-        private System.Windows.Forms.TextBox textBox_code;
-        private System.Windows.Forms.Button button1;
+        private System.Windows.Forms.PictureBox pictureBox_Vcode;
+        private System.Windows.Forms.TextBox textBox_Vcode;
+        private System.Windows.Forms.Button button_SubmitVcode;
     }
 }
 

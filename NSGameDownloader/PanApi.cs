@@ -23,9 +23,8 @@ namespace NSGameDownloader
         private const int INTERNET_FLAG_RESTRICTED_ZONE = 0x00020000;
         private static WebBrowser _webbrowser;
         private static int _pageno = 1;
-        private static HttpClient _client;
         private static string _extra = "";
-        private static List<panFile> _fileList;
+        private static List<PanFile> _fileList;
         private static string _vcode;
         private static JObject _yunData;
         private static int _getHlinkRetryLimit = 10;
@@ -102,36 +101,43 @@ namespace NSGameDownloader
             if (_webbrowser.Document == null) return;
             GetExtra();
             GetYunData();
-            var list = GetList(_webbrowser.Url.ToString());
-            _fileList = new List<panFile>();
-            var j = JObject.Parse(list);
+            var listhtml = GetList(_webbrowser.Url.ToString());
+
+            _fileList = new List<PanFile>();
+            var j = JObject.Parse(listhtml);
 
             foreach (var f in j["list"])
-                _fileList.Add(new panFile
+                _fileList.Add(new PanFile
                 {
                     path = f["path"].ToString(),
                     fid = f["fs_id"].ToObject<long>(),
-                    isdir = f["isdir"].ToString()
+                    isdir = f["isdir"].ToString(),
+                    size = f["size"].ToObject<long>()
                 });
 
-            var glinks = GetGlink(code);
+            var glinkhtml = GetGlink(code);
 
-            Console.WriteLine(list);
-            Console.WriteLine(glinks);
-            var glinksj = JObject.Parse(glinks);
-            if (glinksj["errno"].ToString() == "-20")
+            Console.WriteLine(listhtml);
+            Console.WriteLine(glinkhtml);
+            var glinksj = JObject.Parse(glinkhtml);
+
+            Form1.Inst.ShowVcodeInput = glinksj["errno"].ToString() == "-20";
+
+            if (Form1.Inst.ShowVcodeInput)
                 Form1.Inst.GetCode(GetVcode());
-            else
+            else if (glinksj["errno"].ToString() == "0")
                 foreach (var jf in glinksj["list"])
                 {
                     var file = _fileList.FirstOrDefault(f => f.fid == jf["fs_id"].ToObject<long>());
                     file.glink = jf["dlink"].ToString();
                     Console.WriteLine(file.glink);
                     _getHlinkRetryLimit = 10;
-                    var m = "";
-                    GetHlink(file.glink, ref m);
-                    file.md5 = m;
+                    GetHlink(file);
                 }
+            else
+            {
+                Console.WriteLine("未知错误号:" + glinkhtml);
+            }
         }
 
         /// <summary>
@@ -180,6 +186,9 @@ namespace NSGameDownloader
             _extra = j.ToString(Formatting.None);
         }
 
+        /// <summary>
+        /// 从网页中得到yundata
+        /// </summary>
         public static void GetYunData()
         {
             var html = _webbrowser.DocumentText;
@@ -192,13 +201,13 @@ namespace NSGameDownloader
         private static string GetList(string url)
         {
             var listurl =
-                $"https://pan.baidu.com/share/list?uk={_yunData["uk"]}&shareid={_yunData["shareid"]}&dir={HttpUtility.UrlEncode(getURLParameter(url, "path"))}&num=100&order=time&desc=1&clienttype=0&showempty=0&web=1&page={_pageno}";
+                $"https://pan.baidu.com/share/list?uk={_yunData["uk"]}&shareid={_yunData["shareid"]}&dir={HttpUtility.UrlEncode(GetUrlParameter(url, "path"))}&num=100&order=time&desc=1&clienttype=0&showempty=0&web=1&page={_pageno}";
 
             return GetHtmlWithCookie(listurl);
         }
 
         /// <summary>
-        ///     尝试得到高速地址
+        ///     获取下载地址
         /// </summary>
         /// <param name="code"></param>
         /// <returns></returns>
@@ -211,67 +220,76 @@ namespace NSGameDownloader
 
             foreach (var file in _fileList) fsidList.Add(file.fid);
 
-
-            var data = $"encrypt=0&product=share&uk={_yunData["uk"]}&primaryid=" + _yunData["shareid"];
-            data += "&fid_list=" + fsidList.ToString(Formatting.None);
-            data += "&extra=" + HttpUtility.UrlEncode(_extra);
-            data += "&type=nolimit";
-            if (code != null) data += "&vcode_str=" + _vcode + "&vcode_input=" + code;
-
-            var req = new HttpRequestMessage(HttpMethod.Post, url);
-            req.Content = new StringContent(data, Encoding.UTF8, "application/x-www-form-urlencoded");
-
-            using (var c = new HttpClient(new HttpClientHandler {UseCookies = false}))
+            var list = new List<KeyValuePair<string, string>>
             {
-                // req.Headers.Add("Accept", "application/json, text/javascript, */*; q=0.01");
-                // req.Headers.Add("Accept-Encoding", "gzip, deflate");//Accept-Language: zh-CN,zh;q=0.9
-                //req.Headers.Add("Accept-Language", "zh-CN,zh;q=0.9");//Accept-Language: 
+                new KeyValuePair<string, string>("encrypt", "0"),
+                new KeyValuePair<string, string>("product", "share"),
+                new KeyValuePair<string, string>("uk", _yunData["uk"].ToString()),
+                new KeyValuePair<string, string>("primaryid", _yunData["shareid"].ToString()),
+                new KeyValuePair<string, string>("fid_list", fsidList.ToString(Formatting.None)),
+                new KeyValuePair<string, string>("extra", _extra),
+                new KeyValuePair<string, string>("type", "nolimit")
+            };
+            if (code != null)
+            {
+                list.Add(new KeyValuePair<string, string>("vcode_str", _vcode));
+                list.Add(new KeyValuePair<string, string>("vcode_input", code));
 
-                // req.Headers.Add("User-Agent", "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
-                req.Headers.Add("Cookie", HttpUtility.UrlDecode(Cookies.GetCookieHeader(new Uri(url))));
-                var html = c.SendAsync(req).Result.Content.ReadAsStringAsync().Result;
-
-                return html;
             }
-        }
 
-        private static string GetHlink(string glink, ref string md5)
+
+            return GetHtmlWithCookie(url, new FormUrlEncodedContent(list));
+        }
+        /// <summary>
+        /// 尝试得到高速地址
+        /// </summary>
+        /// <param name="glink"></param>
+        /// <param name="md5"></param>
+        /// <returns></returns>
+        private static void GetHlink(PanFile file)
         {
-            using (var c = new HttpClient(new HttpClientHandler {UseCookies = false}))
+            using (var c = new HttpClient(new HttpClientHandler { UseCookies = false }))
             {
                 c.DefaultRequestHeaders.Add("Cookie",
                     HttpUtility.UrlDecode(Cookies.GetCookieHeader(new Uri("https://pan.baidu.com/"))));
-                var req = new HttpRequestMessage(HttpMethod.Head, glink);
+                var req = new HttpRequestMessage(HttpMethod.Head, file.glink);
 
                 var res = c.SendAsync(req, HttpCompletionOption.ResponseHeadersRead).Result;
                 if (res.IsSuccessStatusCode)
                 {
+                    Console.WriteLine("成功");
                     var url = res.RequestMessage.RequestUri.ToString();
-                    Console.WriteLine(url);
-                    md5 = Convert.ToBase64String(res.Content.Headers.ContentMD5);
+                    Console.WriteLine("hlink:" + url);
+                    file.md5 = Convert.ToBase64String(res.Content.Headers.ContentMD5);
 
-                    return url;
+                    file.hlinks =
+                        HlinkServers.Select(server => new UriBuilder(file.glink) { Host = server, Scheme = "http" })
+                                    .Select(u => u.ToString())
+                                    .ToArray();
                 }
-
-                //todo 线程
-                if (_getHlinkRetryLimit <= 0)
+                else
                 {
-                    md5 = null;
-                    return null;
+
+                    //todo 线程
+                    if (_getHlinkRetryLimit <= 0)
+                    {
+                        Console.WriteLine("失败");
+                        return;
+                    }
+
+                    Thread.Sleep(500);
+                    Console.WriteLine("重试:" + _getHlinkRetryLimit);
+                    _getHlinkRetryLimit--;
+
+                    GetHlink(file);
                 }
 
-                Thread.Sleep(500);
-                Console.WriteLine("重试:" + _getHlinkRetryLimit);
-                _getHlinkRetryLimit--;
 
-                GetHlink(glink, ref md5);
-
-                return null;
             }
         }
 
         /// <summary>
-        ///     验证码
+        ///     刷新验证码
         /// </summary>
         /// <returns></returns>
         public static string GetVcode()
@@ -281,30 +299,45 @@ namespace NSGameDownloader
             _vcode = j["vcode"].ToString();
             return j["img"].ToString();
         }
+        /// <summary>
+        /// post 方法
+        /// </summary>
+        /// <param name="url"></param>
+        /// <param name="data"></param>
+        /// <returns></returns>
+        private static string GetHtmlWithCookie(string url, FormUrlEncodedContent data)
+        {
 
+            var req = new HttpRequestMessage(HttpMethod.Post, url)
+            {
+                Content = data
+            };
+
+            return GetHtmlWithCookie(req, out _);
+        }
 
         private static string GetHtmlWithCookie(string url)
         {
-            HttpStatusCode c;
-            return GetHtmlWithCookie(url, out c);
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            return GetHtmlWithCookie(req, out _);
         }
-
-        private static string GetHtmlWithCookie(string url, out HttpStatusCode code)
+        private static string GetHtmlWithCookie(HttpRequestMessage req, out HttpStatusCode code)
         {
+
+
             try
             {
-                using (var c = new HttpClient(new HttpClientHandler {UseCookies = false}))
+                using (var c = new HttpClient(new HttpClientHandler { UseCookies = false }))
                 {
                     //todo 怎么才能从CookieContainer 带上 urldecode后的cookie?
                     c.DefaultRequestHeaders.Add("Cookie",
                         HttpUtility.UrlDecode(Cookies.GetCookieHeader(new Uri("https://pan.baidu.com/"))));
-
-
-                    var req = new HttpRequestMessage(HttpMethod.Get, url);
                     var res = c.SendAsync(req).Result;
                     code = res.StatusCode;
                     return res.Content.ReadAsStringAsync().Result;
                 }
+
+
             }
             catch (Exception e)
             {
@@ -312,34 +345,88 @@ namespace NSGameDownloader
                 code = HttpStatusCode.NotFound;
                 return null;
             }
+
         }
 
-        private static string getURLParameter(string url, string name)
+
+        private static string GetHtmlWithCookie(string url, out HttpStatusCode code)
+        {
+
+            var req = new HttpRequestMessage(HttpMethod.Get, url);
+            return GetHtmlWithCookie(req, out code);
+
+        }
+
+        private static string GetUrlParameter(string url, string name)
         {
             //https://pan.baidu.com/s/17mnLTOuwvpacOrDY4GJjCQ#list/path=%2F%E8%B6%85%E7%BA%A7%E9%A9%AC%E9%87%8C%E5%A5%A5&parentPath=%2F
             var u = HttpUtility.UrlDecode(url);
-            var array = u.Split(new[] {"#list/"}, StringSplitOptions.RemoveEmptyEntries)[1];
+            var array = u.Split(new[] { "#list/" }, StringSplitOptions.RemoveEmptyEntries)[1];
 
-            var ps = array.Split(new[] {"&"}, StringSplitOptions.RemoveEmptyEntries);
-            foreach (var s in ps)
-            {
-                var kv = s.Split(new[] {"="}, StringSplitOptions.RemoveEmptyEntries);
-                if (kv[0] == name) return kv[1];
-            }
-
-            return null;
+            var ps = array.Split(new[] { "&" }, StringSplitOptions.RemoveEmptyEntries);
+            return (
+                from s in ps
+                select s.Split(new[] { "=" }, StringSplitOptions.RemoveEmptyEntries) into kv
+                where kv[0] == name
+                select kv[1]
+                ).FirstOrDefault();
         }
+
+        private static readonly string[] HlinkServers = {
+            "qdall01.baidupcs.com",
+            "d11.baidupcs.com",
+            "d1.baidupcs.com",
+            "d2.baidupcs.com",
+            "d4.baidupcs.com",
+            "d6.baidupcs.com",
+            "d7.baidupcs.com",
+            "d8.baidupcs.com",
+            "d9.baidupcs.com",
+            "d10.baidupcs.com",
+            "d12.baidupcs.com",
+            "d13.baidupcs.com",
+            "d14.baidupcs.com",
+            "d16.baidupcs.com",
+            "nb.cache.baidupcs.com",
+            "nbcache00.baidupcs.com",
+            "nbcache02.baidupcs.com",
+            "nbcache03.baidupcs.com",
+            "nj02all01.baidupcs.com",
+            "nj01ct01.baidupcs.com",
+            "nj01ct02.baidupcs.com",
+            "nj01ct03.baidupcs.com",
+            "nj01ct04.baidupcs.com",
+            "nj01ct06.baidupcs.com",
+            "nj01ct07.baidupcs.com",
+            "yqall01.baidupcs.com",
+            "yqall02.baidupcs.com",
+            "yqall03.baidupcs.com",
+            "yqall04.baidupcs.com",
+            "yqall06.baidupcs.com",
+            "yqall07.baidupcs.com",
+            "bjbgp01.baidupcs.com",
+            "allall01.baidupcs.com",
+            "allall02.baidupcs.com",
+            "allall04.baidupcs.com",
+            "allall05.baidupcs.com",
+            "qdcache00.baidupcs.com",
+            "qdcache02.baidupcs.com",
+            "qdcache03.baidupcs.com",
+        };
+
     }
 
-    public class panFile
+    public class PanFile
     {
         public string path { get; set; }
         public long fid { get; set; }
         public string isdir { get; set; }
         public string md5 { get; set; }
-        public string size { get; set; }
+        public long size { get; set; }
         public string glink { get; set; }
-        public string hlinks { get; set; }
+
+        public string[] hlinks { get; set; }
+
 
         public string name
         {

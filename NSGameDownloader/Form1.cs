@@ -33,6 +33,17 @@ namespace NSGameDownloader
         private const string CookiePath = "cookie\\cookie";
         private const int EM_SETCUEBANNER = 0x1501;
 
+        public bool ShowVcodeInput
+        {
+            get => textBox_Vcode.Visible;
+            set
+            {
+                textBox_Vcode.Visible = value;
+                button_SubmitVcode.Visible = value;
+                pictureBox_Vcode.Visible = value;
+            }
+        }
+
         /// <summary>
         ///     原始值
         /// </summary>
@@ -359,6 +370,7 @@ namespace NSGameDownloader
                     if (allstr.ToLower().Contains(keywords.Trim().ToLower()))
                         listView1.Items.Add(new ListViewItem(new[]
                         {
+                            //todo 显示所有可用信息
                             titlekey.Value["tid"].ToString(),
                             titlekey.Value["cname"].ToString().Trim() == ""
                                 ? titlekey.Value["allnames"].ToString()
@@ -533,7 +545,7 @@ namespace NSGameDownloader
         {
 
 
-            pictureBox1.ImageLocation = d;
+            pictureBox_Vcode.ImageLocation = d;
         }
 
         private void label_url_Click(object sender, EventArgs e)
@@ -565,9 +577,14 @@ namespace NSGameDownloader
             PanApi.Download();
         }
 
-        private void button1_Click(object sender, EventArgs e)
+        private void button_SubmitVcode_Click(object sender, EventArgs e)
         {
-            PanApi.Download(textBox_code.Text.Trim());
+            PanApi.Download(textBox_Vcode.Text.Trim());
+        }
+
+        private void pictureBox_Vcode_Click(object sender, EventArgs e)
+        {
+            pictureBox_Vcode.ImageLocation = PanApi.GetVcode();
         }
     }
 }
