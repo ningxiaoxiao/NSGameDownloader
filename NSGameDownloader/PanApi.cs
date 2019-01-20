@@ -4,6 +4,7 @@ using System.IO;
 using System.Linq;
 using System.Net;
 using System.Net.Http;
+using System.Net.Http.Headers;
 using System.Runtime.InteropServices;
 using System.Text;
 using System.Text.RegularExpressions;
@@ -47,7 +48,7 @@ namespace NSGameDownloader
         private static void GetCookies()
         {
             var str = _webbrowser.Document.Cookie;
-            Console.WriteLine(str);
+            //Console.WriteLine(str);
             SetCookies(str);
         }
 
@@ -126,6 +127,7 @@ namespace NSGameDownloader
             if (Form1.Inst.ShowVcodeInput)
                 Form1.Inst.GetCode(GetVcode());
             else if (glinksj["errno"].ToString() == "0")
+            {
                 foreach (var jf in glinksj["list"])
                 {
                     var file = _fileList.FirstOrDefault(f => f.fid == jf["fs_id"].ToObject<long>());
@@ -133,11 +135,16 @@ namespace NSGameDownloader
                     Console.WriteLine(file.glink);
                     _getHlinkRetryLimit = 10;
                     GetHlink(file);
+                    Aria2cManager.Download(file);
                 }
+
+            }
             else
             {
                 Console.WriteLine("未知错误号:" + glinkhtml);
+                return;
             }
+
         }
 
         /// <summary>
@@ -252,20 +259,27 @@ namespace NSGameDownloader
             {
                 c.DefaultRequestHeaders.Add("Cookie",
                     HttpUtility.UrlDecode(Cookies.GetCookieHeader(new Uri("https://pan.baidu.com/"))));
+
                 var req = new HttpRequestMessage(HttpMethod.Head, file.glink);
 
                 var res = c.SendAsync(req, HttpCompletionOption.ResponseHeadersRead).Result;
                 if (res.IsSuccessStatusCode)
                 {
-                    Console.WriteLine("成功");
                     var url = res.RequestMessage.RequestUri.ToString();
-                    Console.WriteLine("hlink:" + url);
+
+                    Console.WriteLine("成功hlink:" + url);
                     file.md5 = Convert.ToBase64String(res.Content.Headers.ContentMD5);
 
                     file.hlinks =
-                        HlinkServers.Select(server => new UriBuilder(file.glink) { Host = server, Scheme = "http" })
-                                    .Select(u => u.ToString())
+                        HlinkServers.Select(server => new UriBuilder(url) { Host = server })
+                                    .Select(u =>
+                            {
+                                var k = u.ToString().Replace(":80", "").Replace("https", "http");
+                                //Console.WriteLine(k);
+                                return k;
+                            })
                                     .ToArray();
+                    filterHLinks(file);
                 }
                 else
                 {
@@ -287,6 +301,52 @@ namespace NSGameDownloader
 
             }
         }
+
+        private static void filterHLinks(PanFile f)
+        {
+
+            var list = new List<string>();
+
+            using (var c = new HttpClient(new HttpClientHandler() { UseCookies = false }))
+            {
+                c.Timeout = TimeSpan.FromMilliseconds(3000);
+
+                c.DefaultRequestHeaders.UserAgent.ParseAdd("netdisk");
+                //c.DefaultRequestHeaders.Add("Cookie",
+                //  HttpUtility.UrlDecode(Cookies.GetCookieHeader(new Uri("https://pan.baidu.com/"))));
+
+                foreach (var url in f.hlinks)
+                {
+                    Console.WriteLine(url);
+                    var req = new HttpRequestMessage(HttpMethod.Head, url);
+                    try
+                    {
+                        var res = c.SendAsync(req, HttpCompletionOption.ResponseHeadersRead).Result;
+
+                        if (res.IsSuccessStatusCode)
+                        {
+                            Console.WriteLine("成功验证:" + url);
+                            list.Add(res.RequestMessage.RequestUri.ToString());
+                            f.md5 = Convert.ToBase64String(res.Content.Headers.ContentMD5);
+
+                        }
+                    }
+                    catch
+                    {
+
+                    }
+
+
+
+
+                }
+
+            }
+
+            f.hlinks = list.ToArray();
+            Console.WriteLine("可用连接数:" + list.Count);
+        }
+
 
         /// <summary>
         ///     刷新验证码

@@ -323,6 +323,7 @@ namespace NSGameDownloader
                   oUrl == "https://pan.baidu.com/s/1cwIw1-qsNOKaq6xrK0VUqQ#list/path=/")
                     WebRefresh(); //输入密码后会再一次来到根目录,要再跳一次
             }
+            button_download.Enabled = true;
         }
 
         private CookieContainer _cookie = new CookieContainer();
@@ -564,6 +565,7 @@ namespace NSGameDownloader
 
         private void panWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
+            button_download.Enabled = false;
             Console.WriteLine("Navigating:" + e.Url);
         }
 
@@ -585,6 +587,24 @@ namespace NSGameDownloader
         private void pictureBox_Vcode_Click(object sender, EventArgs e)
         {
             pictureBox_Vcode.ImageLocation = PanApi.GetVcode();
+        }
+
+        private void aria2c配置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+
+        }
+
+        private void 设置ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var s = new Setting();
+            s.ShowDialog();
+        }
+
+        private void textBox_Vcode_KeyPress(object sender, KeyPressEventArgs e)
+        {
+            if (e.KeyChar != (char)Keys.Enter) return;
+            e.Handled = true;
+            PanApi.Download(textBox_Vcode.Text.Trim());
         }
     }
 }

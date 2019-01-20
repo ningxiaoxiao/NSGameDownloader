@@ -63,6 +63,14 @@
     <Reference Include="System.Xml" />
   </ItemGroup>
   <ItemGroup>
+    <Compile Include="Aria2cManager.cs" />
+    <Compile Include="Config.cs" />
+    <Compile Include="Setting.cs">
+      <SubType>Form</SubType>
+    </Compile>
+    <Compile Include="Setting.Designer.cs">
+      <DependentUpon>Setting.cs</DependentUpon>
+    </Compile>
     <Compile Include="Form1.cs">
       <SubType>Form</SubType>
     </Compile>
@@ -72,6 +80,9 @@
     <Compile Include="PanApi.cs" />
     <Compile Include="Program.cs" />
     <Compile Include="Properties\AssemblyInfo.cs" />
+    <EmbeddedResource Include="Setting.resx">
+      <DependentUpon>Setting.cs</DependentUpon>
+    </EmbeddedResource>
     <EmbeddedResource Include="Form1.resx">
       <DependentUpon>Form1.cs</DependentUpon>
     </EmbeddedResource>

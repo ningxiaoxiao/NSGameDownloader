@@ -31,7 +31,6 @@
             System.ComponentModel.ComponentResourceManager resources = new System.ComponentModel.ComponentResourceManager(typeof(Form1));
             this.textBox_keyword = new System.Windows.Forms.TextBox();
             this.button_search = new System.Windows.Forms.Button();
-            this.panWebBrowser = new System.Windows.Forms.WebBrowser();
             this.radioButton_nsp = new System.Windows.Forms.RadioButton();
             this.radioButton_xci = new System.Windows.Forms.RadioButton();
             this.listView1 = new System.Windows.Forms.ListView();
@@ -41,11 +40,17 @@
             this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
             this.label_info = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.更新TitleId文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.下载设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.使用百度网盘客户端ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.只复制连接地址ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.使用aria2cToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.toolStripMenuItem2 = new System.Windows.Forms.ToolStripSeparator();
+            this.aria2c配置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.设置ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.查看帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -59,13 +64,15 @@
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
             this.button_download = new System.Windows.Forms.Button();
-            this.pictureBox_Vcode = new System.Windows.Forms.PictureBox();
             this.textBox_Vcode = new System.Windows.Forms.TextBox();
             this.button_SubmitVcode = new System.Windows.Forms.Button();
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
+            this.pictureBox_Vcode = new System.Windows.Forms.PictureBox();
+            this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
+            this.panWebBrowser = new System.Windows.Forms.WebBrowser();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Vcode)).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_keyword
@@ -85,20 +92,6 @@
             this.button_search.Text = "搜索";
             this.button_search.UseVisualStyleBackColor = true;
             this.button_search.Click += new System.EventHandler(this.button_search_Click);
-            // 
-            // panWebBrowser
-            // 
-            this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
-            | System.Windows.Forms.AnchorStyles.Left) 
-            | System.Windows.Forms.AnchorStyles.Right)));
-            this.panWebBrowser.Location = new System.Drawing.Point(494, 55);
-            this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
-            this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(732, 553);
-            this.panWebBrowser.TabIndex = 2;
-            this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
-            this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
-            this.panWebBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.panWebBrowser_Navigating);
             // 
             // radioButton_nsp
             // 
@@ -174,17 +167,6 @@
             this.columnHeader6.Text = "DLC";
             this.columnHeader6.Width = 34;
             // 
-            // pictureBox_gameicon
-            // 
-            this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
-            this.pictureBox_gameicon.ImageLocation = "";
-            this.pictureBox_gameicon.Location = new System.Drawing.Point(10, 337);
-            this.pictureBox_gameicon.Name = "pictureBox_gameicon";
-            this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
-            this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
-            this.pictureBox_gameicon.TabIndex = 7;
-            this.pictureBox_gameicon.TabStop = false;
-            // 
             // label_info
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
@@ -199,6 +181,8 @@
             // 
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
+            this.下载设置ToolStripMenuItem,
+            this.设置ToolStripMenuItem,
             this.帮助ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
@@ -220,6 +204,57 @@
             this.更新TitleId文件ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
             this.更新TitleId文件ToolStripMenuItem.Text = "更新TitleId文件";
             this.更新TitleId文件ToolStripMenuItem.Click += new System.EventHandler(this.更新TitleId文件ToolStripMenuItem_Click);
+            // 
+            // 下载设置ToolStripMenuItem
+            // 
+            this.下载设置ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
+            this.使用百度网盘客户端ToolStripMenuItem,
+            this.只复制连接地址ToolStripMenuItem,
+            this.使用aria2cToolStripMenuItem,
+            this.toolStripMenuItem2,
+            this.aria2c配置ToolStripMenuItem});
+            this.下载设置ToolStripMenuItem.Name = "下载设置ToolStripMenuItem";
+            this.下载设置ToolStripMenuItem.Size = new System.Drawing.Size(68, 21);
+            this.下载设置ToolStripMenuItem.Text = "下载设置";
+            // 
+            // 使用百度网盘客户端ToolStripMenuItem
+            // 
+            this.使用百度网盘客户端ToolStripMenuItem.Checked = true;
+            this.使用百度网盘客户端ToolStripMenuItem.CheckState = System.Windows.Forms.CheckState.Checked;
+            this.使用百度网盘客户端ToolStripMenuItem.Name = "使用百度网盘客户端ToolStripMenuItem";
+            this.使用百度网盘客户端ToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.使用百度网盘客户端ToolStripMenuItem.Text = "使用百度网盘客户端";
+            // 
+            // 只复制连接地址ToolStripMenuItem
+            // 
+            this.只复制连接地址ToolStripMenuItem.Name = "只复制连接地址ToolStripMenuItem";
+            this.只复制连接地址ToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.只复制连接地址ToolStripMenuItem.Text = "只复制连接地址";
+            // 
+            // 使用aria2cToolStripMenuItem
+            // 
+            this.使用aria2cToolStripMenuItem.Name = "使用aria2cToolStripMenuItem";
+            this.使用aria2cToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.使用aria2cToolStripMenuItem.Text = "使用aria2c";
+            // 
+            // toolStripMenuItem2
+            // 
+            this.toolStripMenuItem2.Name = "toolStripMenuItem2";
+            this.toolStripMenuItem2.Size = new System.Drawing.Size(181, 6);
+            // 
+            // aria2c配置ToolStripMenuItem
+            // 
+            this.aria2c配置ToolStripMenuItem.Name = "aria2c配置ToolStripMenuItem";
+            this.aria2c配置ToolStripMenuItem.Size = new System.Drawing.Size(184, 22);
+            this.aria2c配置ToolStripMenuItem.Text = "aria2c配置";
+            this.aria2c配置ToolStripMenuItem.Click += new System.EventHandler(this.aria2c配置ToolStripMenuItem_Click);
+            // 
+            // 设置ToolStripMenuItem
+            // 
+            this.设置ToolStripMenuItem.Name = "设置ToolStripMenuItem";
+            this.设置ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.设置ToolStripMenuItem.Text = "设置";
+            this.设置ToolStripMenuItem.Click += new System.EventHandler(this.设置ToolStripMenuItem_Click);
             // 
             // 帮助ToolStripMenuItem
             // 
@@ -310,7 +345,6 @@
             this.radioButton_upd.Name = "radioButton_upd";
             this.radioButton_upd.Size = new System.Drawing.Size(89, 16);
             this.radioButton_upd.TabIndex = 104;
-            this.radioButton_upd.TabStop = true;
             this.radioButton_upd.Text = "查看UPD+DLC";
             this.radioButton_upd.UseVisualStyleBackColor = true;
             this.radioButton_upd.Click += new System.EventHandler(this.radioButton_Click);
@@ -328,23 +362,14 @@
             // 
             // button_download
             // 
-            this.button_download.Location = new System.Drawing.Point(10, 443);
+            this.button_download.Enabled = false;
+            this.button_download.Location = new System.Drawing.Point(10, 417);
             this.button_download.Name = "button_download";
             this.button_download.Size = new System.Drawing.Size(100, 23);
             this.button_download.TabIndex = 106;
             this.button_download.Text = "下载";
             this.button_download.UseVisualStyleBackColor = true;
             this.button_download.Click += new System.EventHandler(this.button_download_Click);
-            // 
-            // pictureBox_Vcode
-            // 
-            this.pictureBox_Vcode.Location = new System.Drawing.Point(10, 472);
-            this.pictureBox_Vcode.Name = "pictureBox_Vcode";
-            this.pictureBox_Vcode.Size = new System.Drawing.Size(100, 47);
-            this.pictureBox_Vcode.TabIndex = 107;
-            this.pictureBox_Vcode.TabStop = false;
-            this.pictureBox_Vcode.Visible = false;
-            this.pictureBox_Vcode.Click += new System.EventHandler(this.pictureBox_Vcode_Click);
             // 
             // textBox_Vcode
             // 
@@ -353,6 +378,7 @@
             this.textBox_Vcode.Size = new System.Drawing.Size(100, 21);
             this.textBox_Vcode.TabIndex = 108;
             this.textBox_Vcode.Visible = false;
+            this.textBox_Vcode.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_Vcode_KeyPress);
             // 
             // button_SubmitVcode
             // 
@@ -364,6 +390,41 @@
             this.button_SubmitVcode.UseVisualStyleBackColor = true;
             this.button_SubmitVcode.Visible = false;
             this.button_SubmitVcode.Click += new System.EventHandler(this.button_SubmitVcode_Click);
+            // 
+            // pictureBox_Vcode
+            // 
+            this.pictureBox_Vcode.Location = new System.Drawing.Point(10, 472);
+            this.pictureBox_Vcode.Name = "pictureBox_Vcode";
+            this.pictureBox_Vcode.Size = new System.Drawing.Size(100, 47);
+            this.pictureBox_Vcode.TabIndex = 107;
+            this.pictureBox_Vcode.TabStop = false;
+            this.pictureBox_Vcode.Visible = false;
+            this.pictureBox_Vcode.Click += new System.EventHandler(this.pictureBox_Vcode_Click);
+            // 
+            // pictureBox_gameicon
+            // 
+            this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.pictureBox_gameicon.ImageLocation = "";
+            this.pictureBox_gameicon.Location = new System.Drawing.Point(10, 311);
+            this.pictureBox_gameicon.Name = "pictureBox_gameicon";
+            this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
+            this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox_gameicon.TabIndex = 7;
+            this.pictureBox_gameicon.TabStop = false;
+            // 
+            // panWebBrowser
+            // 
+            this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
+            | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.panWebBrowser.Location = new System.Drawing.Point(494, 55);
+            this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.panWebBrowser.Name = "panWebBrowser";
+            this.panWebBrowser.Size = new System.Drawing.Size(732, 553);
+            this.panWebBrowser.TabIndex = 2;
+            this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
+            this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
+            this.panWebBrowser.Navigating += new System.Windows.Forms.WebBrowserNavigatingEventHandler(this.panWebBrowser_Navigating);
             // 
             // Form1
             // 
@@ -391,15 +452,16 @@
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
             this.Name = "Form1";
+            this.StartPosition = System.Windows.Forms.FormStartPosition.CenterScreen;
             this.Text = "NSGameDownloader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
             this.Load += new System.EventHandler(this.Form1_Load);
-            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).EndInit();
             this.menuStrip1.ResumeLayout(false);
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_Vcode)).EndInit();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -440,6 +502,13 @@
         private System.Windows.Forms.PictureBox pictureBox_Vcode;
         private System.Windows.Forms.TextBox textBox_Vcode;
         private System.Windows.Forms.Button button_SubmitVcode;
+        private System.Windows.Forms.ToolStripMenuItem 下载设置ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 使用百度网盘客户端ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 只复制连接地址ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 使用aria2cToolStripMenuItem;
+        private System.Windows.Forms.ToolStripSeparator toolStripMenuItem2;
+        private System.Windows.Forms.ToolStripMenuItem aria2c配置ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem 设置ToolStripMenuItem;
     }
 }
 
