@@ -75,8 +75,11 @@ namespace NSGameDownloader
         {
             GetCookies();
             AddJs();
+            Console.WriteLine(e.Url);
         }
-
+        /// <summary>
+        /// 注入js
+        /// </summary>
         private static void AddJs()
         {
             if (_webbrowser.Document == null) return;
@@ -88,11 +91,43 @@ namespace NSGameDownloader
 
             head.AppendChild(scriptEl);
             _webbrowser.Document.InvokeScript("init");
+
         }
+
+        private static void WebApi(string url, Action<string> cb, string data = null)
+        {
+            _webbrowser.Document.InvokeScript("api", new[] { url, data });
+            var nv = _webbrowser.Document.GetElementById("ajaxres").InnerText;
+            while (_webbrowser.Document.GetElementById("ajaxres").InnerText == nv)
+            {
+                Application.DoEvents();
+                Thread.Sleep(200);
+            }
+
+            cb.Invoke(_webbrowser.Document.GetElementById("ajaxres").InnerText);
+
+            /*
+            WebApi("/api/list", (x) =>
+            {
+                Console.WriteLine(x);
+            });
+            return;
+            */
+
+        }
+
+
 
 
         public static void Download(string code = null)
         {
+
+            WebApi("/api/list", (x) =>
+            {
+                Console.WriteLine(x);
+            });
+            return;
+
             if (!IsLogin())
             {
                 Console.WriteLine("没有登录");
@@ -211,6 +246,35 @@ namespace NSGameDownloader
                 $"https://pan.baidu.com/share/list?uk={_yunData["uk"]}&shareid={_yunData["shareid"]}&dir={HttpUtility.UrlEncode(GetUrlParameter(url, "path"))}&num=100&order=time&desc=1&clienttype=0&showempty=0&web=1&page={_pageno}";
 
             return GetHtmlWithCookie(listurl);
+        }
+
+        private static void Save(string path)
+        {
+            JObject homelist = GetHomeList();
+            if (homelist == null) return;
+            if (!homelist.ContainsKey(path))
+            {
+                NewHomePath();
+            }
+
+            Transfer();
+        }
+
+        private static void Transfer()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static void NewHomePath()
+        {
+            throw new NotImplementedException();
+        }
+
+        private static JObject GetHomeList()
+        {
+            var url =
+                $"https://pan.baidu.com/api/list?channel=chunlei&app_id=250528&bdstoken=undefined&dir=%2F&order=name&desc=0&start=0&limit=500&t=0.774071296994866&channel=chunlei&web=1&app_id=250528&bdstoken={_yunData["bdstoken"]}&logid=MTU0ODA3ODkxNDI3NjAuOTk0MzY2OTYyNTQ5MzU5&clienttype=0";
+            return null;
         }
 
         /// <summary>
