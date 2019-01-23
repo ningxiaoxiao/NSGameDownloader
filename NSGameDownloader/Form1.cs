@@ -25,8 +25,8 @@ namespace NSGameDownloader
         private const string PanUrlHead = "https://pan.baidu.com/s/";
         private const string NspPanKey = "1tOFTvpJwikcdo2W12Z8dEw";
         private const string XciPanKey = "1cwIw1-qsNOKaq6xrK0VUqQ";
-        private const string NspPw = "vb4v";
-        private const string XciPw = "fi4r";
+        private const string NspCookie = "jbJABRU1bnEGv8WXwo5SPqGZ5GNKy6fsGzJ2MLbGawM=";
+        private const string XciCookie = "83YnXyahT%2BktyGqrzphpP87nP1jVU3HIj0Jj2VXPmV4=";
         private const string NutdbUrl = "https://snip.li/nutdb";
         private const string TitleKeysPath = "keys.json";
         private const string ExcelPath = "db.xlsx";
@@ -298,6 +298,7 @@ namespace NSGameDownloader
             //缩放页面
             ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
                 SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
+            /*
             //识别是不是要输入提取码
             if (panWebBrowser.Document.Body.InnerText.Contains("请输入提取码"))
             {
@@ -309,7 +310,7 @@ namespace NSGameDownloader
                 if (oUrl == "https://pan.baidu.com/s/1tOFTvpJwikcdo2W12Z8dEw#list/path=/" ||
                   oUrl == "https://pan.baidu.com/s/1cwIw1-qsNOKaq6xrK0VUqQ#list/path=/")
                     WebRefresh(); //输入密码后会再一次来到根目录,要再跳一次
-            }
+            }*/
         }
 
         private CookieContainer _cookie = new CookieContainer();
@@ -553,6 +554,10 @@ namespace NSGameDownloader
 
         private void panWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
+            //使用cookie方法免写密码
+            InternetSetCookie("https://pan.baidu.com/", "BDCLND",
+                e.Url.ToString().Contains(NspPanKey.Substring(3)) ? NspCookie : XciCookie);
+
             Console.WriteLine("Navigating:" + e.Url);
         }
 
