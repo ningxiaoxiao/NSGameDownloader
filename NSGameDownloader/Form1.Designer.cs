@@ -312,11 +312,12 @@
             // 
             // label_url
             // 
+            this.label_url.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
             this.label_url.Location = new System.Drawing.Point(494, 28);
             this.label_url.Name = "label_url";
             this.label_url.Size = new System.Drawing.Size(732, 21);
             this.label_url.TabIndex = 105;
-            this.label_url.Text = "label2";
             this.label_url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_url.UseMnemonic = false;
             this.label_url.Click += new System.EventHandler(this.label_url_Click);

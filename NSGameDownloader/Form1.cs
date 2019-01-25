@@ -147,23 +147,6 @@ namespace NSGameDownloader
             // WriteCookieFile();
         }
 
-        private void WriteCookieFile()
-        {
-            File.WriteAllText(CookiePath, JsonConvert.SerializeObject(_cookie));
-        }
-
-        private void ReadCookieFile()
-        {
-            if (File.Exists(CookiePath))
-                _cookie = JsonConvert.DeserializeObject<CookieContainer>(File.ReadAllText(CookiePath));
-            /*
-            var cs = _cookie.GetCookies(new Uri("https://pan.baidu.com"));
-            foreach (Cookie cookie in cs)
-            {
-                InternetSetCookie("https://pan.baidu.com", cookie.Name, cookie.Value);
-            }*/
-        }
-
 
         [DllImport("user32.dll", CharSet = CharSet.Auto)]
         private static extern int SendMessage(IntPtr hWnd, int msg, int wParam,
@@ -265,52 +248,18 @@ namespace NSGameDownloader
                               + "&parentPath=/";
         }
 
-        private void writePw(string pw)
-        {
-            //<input class="QKKaIE LxgeIt" id="zvbpPbMk" tabindex="1" type="text">
-            //得到id
-            Console.WriteLine("填密码:" + pw);
-
-            var html = panWebBrowser.DocumentText;
-            var m = Regex.Match(html, "<input class=.*id=\"([\\s\\S]*?)\" tabindex=\"1");
-            var id = m.Groups[1].Value;
-            var element = panWebBrowser.Document.GetElementById(id);
-            if (element == null) return;
-            element.SetAttribute("value", pw);
-
-
-            var alla = panWebBrowser.Document.GetElementsByTagName("a");
-            foreach (HtmlElement a in alla)
-                if (a.InnerText == "提取文件")
-                {
-                    a.InvokeMember("Click");
-                    break;
-                }
-        }
+      
 
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
-            var oUrl = WebUtility.UrlDecode(e.Url.ToString());
-            label_url.Text = oUrl;
 
+            label_url.Text = e.Url.ToString();
             if (panWebBrowser.Document.Body == null) return;
             GetCookies();
             //缩放页面
             ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
                 SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
-            /*
-            //识别是不是要输入提取码
-            if (panWebBrowser.Document.Body.InnerText.Contains("请输入提取码"))
-            {
-                if (e.Url.ToString().Contains(NspPanKey.Substring(3))) writePw(NspPw);
-                else if (e.Url.ToString().Contains(XciPanKey.Substring(3))) writePw(XciPw);
-            }
-            else
-            {
-                if (oUrl == "https://pan.baidu.com/s/1tOFTvpJwikcdo2W12Z8dEw#list/path=/" ||
-                  oUrl == "https://pan.baidu.com/s/1cwIw1-qsNOKaq6xrK0VUqQ#list/path=/")
-                    WebRefresh(); //输入密码后会再一次来到根目录,要再跳一次
-            }*/
+      
         }
 
         private CookieContainer _cookie = new CookieContainer();
@@ -331,6 +280,11 @@ namespace NSGameDownloader
             if (_curTid == null) return;
             var url = GetPanUrl(_curTid);
             Console.WriteLine("打开:" + url);
+
+            //使用cookie方法免写密码,只有手动时 才更新cookie
+            InternetSetCookie("https://pan.baidu.com/", "BDCLND",
+                radioButton_xci.Checked ? XciCookie : NspCookie);
+
             panWebBrowser.Navigate(url); //点击刷新 只找本体
         }
 
@@ -554,9 +508,7 @@ namespace NSGameDownloader
 
         private void panWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            //使用cookie方法免写密码
-            InternetSetCookie("https://pan.baidu.com/", "BDCLND",
-                e.Url.ToString().Contains(NspPanKey.Substring(3)) ? NspCookie : XciCookie);
+            
 
             Console.WriteLine("Navigating:" + e.Url);
         }
