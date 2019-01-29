@@ -417,12 +417,6 @@ namespace NSGameDownloader
             //刷新来自eshop的信息
             var t = new Thread(GetGameInfoFromEShop);
             t.Start();
-
-
-            //得到图片
-            //todo 更好的图片地址
-            t = new Thread(GetGameImage);
-            t.Start();
         }
 
         private void GetGameInfoFromEShop()
@@ -445,20 +439,47 @@ namespace NSGameDownloader
                     }
                     catch
                     {
-                        Invoke(new Action(() => { label_info.Text = "0KB\n获取信息错误"; }));
+                        Invoke(new Action(() => {
+                            label_info.Text = "获取简介信息错误";
+                            label_info_size.Text = "大小：获取信息错误";
+                            label_info_launch_date.Text = "发布日期：获取信息错误";
+                            label_info_support_lan.Text = "支持语言：获取信息错误";
+                        }));
                         return;
                     }
                 }
 
             var info = _titlekeys[_curTid]["info"];
             var size = info["total_rom_size"].ToObject<long>();
-            Invoke(new Action(() => { label_info.Text = $"{ConvertBytes(size)}\n{info["description"]}"; }));
+            var launch_date = info["release_date_on_eshop"].ToString();
+            var description = info["description"].ToString();
+            var lans = info["languages"].ToArray();
+            var lan_str = "";
+            foreach (var lan in lans) {
+                lan_str += lan["name"].ToString();
+                lan_str += " ";
+            }
+
+            Invoke(new Action(() => {
+                label_info_size.Text = $"大小：{ConvertBytes(size)}";
+                label_info_launch_date.Text = $"发布日期：{launch_date}";
+                label_info_support_lan.Text = $"支持语言：{lan_str}";
+                label_info.Text = $"{info["description"]}";
+            }));
+
+            if (info["hero_banner_url"] != null)
+            {
+                GetGameImage(info["hero_banner_url"].ToString());
+            }
+            else
+            {
+                pictureBox_gameicon.Image = Resources.error;
+            }
         }
 
-        private void GetGameImage()
+        private void GetGameImage(String url)
         {
             pictureBox_gameicon.Image = Resources.load;
-
 
             var filename = "image\\" + _curTid + ".jpg";
 
@@ -479,7 +500,7 @@ namespace NSGameDownloader
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
             try
             {
-                web.DownloadFile("https://terannet.sirv.com/CDNSP/" + _curTid.ToLower() + ".jpg", filename);
+                web.DownloadFile(url, filename);
                 pictureBox_gameicon.Image = Image.FromFile(filename);
             }
             catch
@@ -517,11 +538,6 @@ namespace NSGameDownloader
         {
             var t = new Thread(UpdateTitleKey);
             t.Start();
-        }
-
-        private void label1_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://www.91wii.com/thread-104797-1-1.html");
         }
 
         private void 查看帮助ToolStripMenuItem_Click(object sender, EventArgs e)
@@ -565,6 +581,18 @@ namespace NSGameDownloader
         private void panWebBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             //GetCookies();
+        }
+
+        private void ToolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://www.91wii.com/thread-104797-1-1.html");
+        }
+
+        private void Label_info_shop_link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            var g = _titlekeys[_curTid].ToObject<JObject>();
+            if (!g.ContainsKey("info")) { return; }
+            Process.Start($"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}");
         }
     }
 }
