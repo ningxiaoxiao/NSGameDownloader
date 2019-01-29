@@ -58,6 +58,7 @@
             this.label_count = new System.Windows.Forms.Label();
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -65,17 +66,19 @@
             // 
             // textBox_keyword
             // 
-            this.textBox_keyword.Location = new System.Drawing.Point(10, 28);
+            this.textBox_keyword.Location = new System.Drawing.Point(13, 35);
+            this.textBox_keyword.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.textBox_keyword.Name = "textBox_keyword";
-            this.textBox_keyword.Size = new System.Drawing.Size(301, 21);
+            this.textBox_keyword.Size = new System.Drawing.Size(400, 25);
             this.textBox_keyword.TabIndex = 99;
             this.textBox_keyword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_keyword_KeyPress);
             // 
             // button_search
             // 
-            this.button_search.Location = new System.Drawing.Point(317, 28);
+            this.button_search.Location = new System.Drawing.Point(423, 35);
+            this.button_search.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.button_search.Name = "button_search";
-            this.button_search.Size = new System.Drawing.Size(63, 21);
+            this.button_search.Size = new System.Drawing.Size(84, 26);
             this.button_search.TabIndex = 1;
             this.button_search.Text = "搜索";
             this.button_search.UseVisualStyleBackColor = true;
@@ -86,10 +89,11 @@
             this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panWebBrowser.Location = new System.Drawing.Point(494, 55);
-            this.panWebBrowser.MinimumSize = new System.Drawing.Size(20, 20);
+            this.panWebBrowser.Location = new System.Drawing.Point(659, 69);
+            this.panWebBrowser.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
+            this.panWebBrowser.MinimumSize = new System.Drawing.Size(27, 25);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(732, 476);
+            this.panWebBrowser.Size = new System.Drawing.Size(976, 595);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
@@ -99,9 +103,10 @@
             // 
             this.radioButton_nsp.AutoSize = true;
             this.radioButton_nsp.Checked = true;
-            this.radioButton_nsp.Location = new System.Drawing.Point(245, 311);
+            this.radioButton_nsp.Location = new System.Drawing.Point(327, 389);
+            this.radioButton_nsp.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_nsp.Name = "radioButton_nsp";
-            this.radioButton_nsp.Size = new System.Drawing.Size(65, 16);
+            this.radioButton_nsp.Size = new System.Drawing.Size(82, 19);
             this.radioButton_nsp.TabIndex = 3;
             this.radioButton_nsp.TabStop = true;
             this.radioButton_nsp.Text = "查看NSP";
@@ -111,9 +116,10 @@
             // radioButton_xci
             // 
             this.radioButton_xci.AutoSize = true;
-            this.radioButton_xci.Location = new System.Drawing.Point(316, 311);
+            this.radioButton_xci.Location = new System.Drawing.Point(421, 389);
+            this.radioButton_xci.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_xci.Name = "radioButton_xci";
-            this.radioButton_xci.Size = new System.Drawing.Size(65, 16);
+            this.radioButton_xci.Size = new System.Drawing.Size(82, 19);
             this.radioButton_xci.TabIndex = 4;
             this.radioButton_xci.TabStop = true;
             this.radioButton_xci.Text = "查看XCI";
@@ -128,12 +134,14 @@
             this.columnHeader3,
             this.columnHeader4,
             this.columnHeader5,
-            this.columnHeader6});
+            this.columnHeader6,
+            this.columnHeader7});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
-            this.listView1.Location = new System.Drawing.Point(10, 55);
+            this.listView1.Location = new System.Drawing.Point(13, 69);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(466, 250);
+            this.listView1.Size = new System.Drawing.Size(620, 312);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -173,9 +181,10 @@
             // 
             this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pictureBox_gameicon.ImageLocation = "";
-            this.pictureBox_gameicon.Location = new System.Drawing.Point(10, 337);
+            this.pictureBox_gameicon.Location = new System.Drawing.Point(13, 421);
+            this.pictureBox_gameicon.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.pictureBox_gameicon.Name = "pictureBox_gameicon";
-            this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
+            this.pictureBox_gameicon.Size = new System.Drawing.Size(133, 125);
             this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox_gameicon.TabIndex = 7;
             this.pictureBox_gameicon.TabStop = false;
@@ -184,20 +193,23 @@
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_info.Location = new System.Drawing.Point(118, 337);
+            this.label_info.Location = new System.Drawing.Point(157, 421);
+            this.label_info.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(358, 182);
+            this.label_info.Size = new System.Drawing.Size(477, 228);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
             // menuStrip1
             // 
+            this.menuStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.menuStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.文件ToolStripMenuItem,
             this.帮助ToolStripMenuItem});
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
-            this.menuStrip1.Size = new System.Drawing.Size(1238, 25);
+            this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
+            this.menuStrip1.Size = new System.Drawing.Size(1651, 28);
             this.menuStrip1.TabIndex = 100;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -206,13 +218,13 @@
             this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.更新TitleId文件ToolStripMenuItem});
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
-            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.文件ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
             this.文件ToolStripMenuItem.Text = "文件";
             // 
             // 更新TitleId文件ToolStripMenuItem
             // 
             this.更新TitleId文件ToolStripMenuItem.Name = "更新TitleId文件ToolStripMenuItem";
-            this.更新TitleId文件ToolStripMenuItem.Size = new System.Drawing.Size(160, 22);
+            this.更新TitleId文件ToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
             this.更新TitleId文件ToolStripMenuItem.Text = "更新TitleId文件";
             this.更新TitleId文件ToolStripMenuItem.Click += new System.EventHandler(this.更新TitleId文件ToolStripMenuItem_Click);
             // 
@@ -225,47 +237,49 @@
             this.toolStripMenuItem1,
             this.关于ToolStripMenuItem});
             this.帮助ToolStripMenuItem.Name = "帮助ToolStripMenuItem";
-            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(44, 21);
+            this.帮助ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
             this.帮助ToolStripMenuItem.Text = "帮助";
             // 
             // 查看帮助ToolStripMenuItem
             // 
             this.查看帮助ToolStripMenuItem.Name = "查看帮助ToolStripMenuItem";
-            this.查看帮助ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.查看帮助ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.查看帮助ToolStripMenuItem.Text = "查看帮助";
             this.查看帮助ToolStripMenuItem.Click += new System.EventHandler(this.查看帮助ToolStripMenuItem_Click);
             // 
             // toolStripSeparator1
             // 
             this.toolStripSeparator1.Name = "toolStripSeparator1";
-            this.toolStripSeparator1.Size = new System.Drawing.Size(121, 6);
+            this.toolStripSeparator1.Size = new System.Drawing.Size(141, 6);
             // 
             // 发送反馈ToolStripMenuItem
             // 
             this.发送反馈ToolStripMenuItem.Name = "发送反馈ToolStripMenuItem";
-            this.发送反馈ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.发送反馈ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.发送反馈ToolStripMenuItem.Text = "发送反馈";
             this.发送反馈ToolStripMenuItem.Click += new System.EventHandler(this.发送反馈ToolStripMenuItem_Click);
             // 
             // toolStripMenuItem1
             // 
             this.toolStripMenuItem1.Name = "toolStripMenuItem1";
-            this.toolStripMenuItem1.Size = new System.Drawing.Size(121, 6);
+            this.toolStripMenuItem1.Size = new System.Drawing.Size(141, 6);
             // 
             // 关于ToolStripMenuItem
             // 
             this.关于ToolStripMenuItem.Name = "关于ToolStripMenuItem";
-            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(124, 22);
+            this.关于ToolStripMenuItem.Size = new System.Drawing.Size(144, 26);
             this.关于ToolStripMenuItem.Text = "关于";
             this.关于ToolStripMenuItem.Click += new System.EventHandler(this.关于ToolStripMenuItem_Click);
             // 
             // statusStrip1
             // 
+            this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar_download});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 539);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 679);
             this.statusStrip1.Name = "statusStrip1";
-            this.statusStrip1.Size = new System.Drawing.Size(1238, 22);
+            this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
+            this.statusStrip1.Size = new System.Drawing.Size(1651, 22);
             this.statusStrip1.TabIndex = 101;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -273,7 +287,7 @@
             // 
             this.toolStripProgressBar_download.Maximum = 5000;
             this.toolStripProgressBar_download.Name = "toolStripProgressBar_download";
-            this.toolStripProgressBar_download.Size = new System.Drawing.Size(100, 16);
+            this.toolStripProgressBar_download.Size = new System.Drawing.Size(133, 20);
             this.toolStripProgressBar_download.Visible = false;
             // 
             // label1
@@ -282,18 +296,20 @@
             this.label1.AutoSize = true;
             this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
             this.label1.ForeColor = System.Drawing.Color.DimGray;
-            this.label1.Location = new System.Drawing.Point(8, 519);
+            this.label1.Location = new System.Drawing.Point(11, 649);
+            this.label1.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(215, 12);
+            this.label1.Size = new System.Drawing.Size(283, 15);
             this.label1.TabIndex = 102;
             this.label1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
             this.label1.Click += new System.EventHandler(this.label1_Click);
             // 
             // label_count
             // 
-            this.label_count.Location = new System.Drawing.Point(386, 28);
+            this.label_count.Location = new System.Drawing.Point(515, 35);
+            this.label_count.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_count.Name = "label_count";
-            this.label_count.Size = new System.Drawing.Size(88, 21);
+            this.label_count.Size = new System.Drawing.Size(117, 26);
             this.label_count.TabIndex = 103;
             this.label_count.Text = "count:99999";
             this.label_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -301,9 +317,10 @@
             // radioButton_upd
             // 
             this.radioButton_upd.AutoSize = true;
-            this.radioButton_upd.Location = new System.Drawing.Point(387, 311);
+            this.radioButton_upd.Location = new System.Drawing.Point(516, 389);
+            this.radioButton_upd.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.radioButton_upd.Name = "radioButton_upd";
-            this.radioButton_upd.Size = new System.Drawing.Size(89, 16);
+            this.radioButton_upd.Size = new System.Drawing.Size(114, 19);
             this.radioButton_upd.TabIndex = 104;
             this.radioButton_upd.TabStop = true;
             this.radioButton_upd.Text = "查看UPD+DLC";
@@ -312,20 +329,25 @@
             // 
             // label_url
             // 
-            this.label_url.Location = new System.Drawing.Point(494, 28);
+            this.label_url.Location = new System.Drawing.Point(659, 35);
+            this.label_url.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_url.Name = "label_url";
-            this.label_url.Size = new System.Drawing.Size(732, 21);
+            this.label_url.Size = new System.Drawing.Size(976, 26);
             this.label_url.TabIndex = 105;
             this.label_url.Text = "label2";
             this.label_url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
             this.label_url.UseMnemonic = false;
             this.label_url.Click += new System.EventHandler(this.label_url_Click);
             // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "中文";
+            // 
             // Form1
             // 
-            this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
+            this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1238, 561);
+            this.ClientSize = new System.Drawing.Size(1651, 701);
             this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
             this.Controls.Add(this.label_count);
@@ -342,6 +364,7 @@
             this.Controls.Add(this.textBox_keyword);
             this.Icon = ((System.Drawing.Icon)(resources.GetObject("$this.Icon")));
             this.MainMenuStrip = this.menuStrip1;
+            this.Margin = new System.Windows.Forms.Padding(4, 4, 4, 4);
             this.Name = "Form1";
             this.Text = "NSGameDownloader";
             this.FormClosing += new System.Windows.Forms.FormClosingEventHandler(this.Form1_FormClosing);
@@ -387,6 +410,7 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
     }
 }
 

@@ -72,7 +72,7 @@ namespace NSGameDownloader
             foreach (DataRow row in dt.Rows)
             {
                 var tid = row[0].ToString();
-                var iszh = row[1].ToString() != "x";
+                var iszh = row[1].ToString() != "×";
                 var cname = row[2].ToString();
                 var allnames = row[3].ToString();
                 var haveXci = row[4].ToString().Contains("XCI");
@@ -375,7 +375,8 @@ namespace NSGameDownloader
                             titlekey.Value["nsp"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["xci"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["upd"].ToObject<bool>() ? "●" : "",
-                            titlekey.Value["dlc"].ToObject<bool>() ? "●" : ""
+                            titlekey.Value["dlc"].ToObject<bool>() ? "●" : "",
+                            titlekey.Value["iszh"].ToObject<bool>() ? "●" : ""
                         }));
                 }
 
