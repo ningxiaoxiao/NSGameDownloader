@@ -32,7 +32,6 @@ namespace NSGameDownloader
         private string _curTid;
 
         private JObject _titlekeys;
-        private DataSet TitleDataSet;
 
         public Form1()
         {
@@ -45,7 +44,7 @@ namespace NSGameDownloader
             var fs = File.Open(ExcelPath, FileMode.Open, FileAccess.Read);
             var er = ExcelReaderFactory.CreateReader(fs);
 
-            TitleDataSet = er.AsDataSet(new ExcelDataSetConfiguration
+            var titleDataSet = er.AsDataSet(new ExcelDataSetConfiguration
             {
                 UseColumnDataType = true,
                 ConfigureDataTable = r => new ExcelDataTableConfiguration
@@ -57,7 +56,7 @@ namespace NSGameDownloader
             //读出第一个表 
             //0         1       2       3       4       5       6
             //tid       iszh    cname   oname   ext     ver     havedlc
-            var dt = TitleDataSet.Tables[0];
+            var dt = titleDataSet.Tables[0];
             Invoke(new Action(() =>
             {
                 toolStripProgressBar_download.Maximum = dt.Rows.Count;
@@ -143,7 +142,7 @@ namespace NSGameDownloader
                     var jstr = http.DownloadString("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/config.json");
                     _config = JsonConvert.DeserializeObject<Config>(jstr);
                 }
-                catch (Exception e)
+                catch 
                 {
                     MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络","错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
                 }
@@ -180,6 +179,7 @@ namespace NSGameDownloader
 
             try
             {
+                //todo 从github下载新的文件,
                 ReadExcel();
                 Invoke(new Action(() =>
                 {
