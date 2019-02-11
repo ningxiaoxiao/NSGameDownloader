@@ -22,17 +22,10 @@ namespace NSGameDownloader
     //todo 尝试进行从百度云直接得到真实下载地址 
     public partial class Form1 : Form
     {
-        private const string PanUrlHead = "https://pan.baidu.com/s/";
-        private const string NspPanKey = "1YSo7_H28r2Q_xYtB1vI2QA";
-        private const string XciPanKey = "1cwIw1-qsNOKaq6xrK0VUqQ";
-        private const string NspCookie = @"jbJABRU1bnEilqgFANDScp7THxrIkl57hfDd/wzv29o=";
-        private const string XciCookie = "83YnXyahT%2BktyGqrzphpP87nP1jVU3HIj0Jj2VXPmV4=";
-        private const string NutdbUrl = "https://snip.li/nutdb";
-        private const string TitleKeysPath = "keys.json";
-        private const string ExcelPath = "db.xlsx";
-        private const string CookiePath = "cookie\\cookie";
-        private const int EM_SETCUEBANNER = 0x1501;
 
+        private const string ExcelPath = "db.xlsx";
+        private const int EM_SETCUEBANNER = 0x1501;
+        private Config _config = new Config();
         /// <summary>
         ///     原始值
         /// </summary>
@@ -44,6 +37,7 @@ namespace NSGameDownloader
         public Form1()
         {
             InitializeComponent();
+
         }
 
         private void ReadExcel()
@@ -119,19 +113,17 @@ namespace NSGameDownloader
         /// </summary>
         private void ThreadLoad()
         {
-            if (!Directory.Exists("cookie"))
-                Directory.CreateDirectory("cookie");
+            LoadConfigFormGithub();
 
-            // ReadCookieFile();
 
-            if (!File.Exists(TitleKeysPath))
+            if (!File.Exists(_config.TitleKeysPath))
             {
                 var t = new Thread(UpdateTitleKey);
                 t.Start();
             }
             else
             {
-                _titlekeys = JObject.Parse(File.ReadAllText(TitleKeysPath));
+                _titlekeys = JObject.Parse(File.ReadAllText(_config.TitleKeysPath));
             }
 
             if (!Directory.Exists("image")) Directory.CreateDirectory("image");
@@ -141,10 +133,28 @@ namespace NSGameDownloader
             SearchGameName();
         }
 
+        private void LoadConfigFormGithub()
+        {
+            using (var http = new WebClient())
+            {
+                try
+                {
+
+                    var jstr = http.DownloadString("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/config.json");
+                    _config = JsonConvert.DeserializeObject<Config>(jstr);
+                }
+                catch (Exception e)
+                {
+                    MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络","错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                }
+
+            }
+
+        }
+
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
-            File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
-            // WriteCookieFile();
+            File.WriteAllText(_config.TitleKeysPath, _titlekeys.ToString());
         }
 
 
@@ -184,7 +194,7 @@ namespace NSGameDownloader
                 return;
             }
 
-            File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
+            File.WriteAllText(_config.TitleKeysPath, _titlekeys.ToString());
 
             Invoke(new Action(() =>
             {
@@ -203,7 +213,7 @@ namespace NSGameDownloader
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            var html = http.DownloadString(NutdbUrl);
+            var html = http.DownloadString(_config.NutdbUrl);
             var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
             if (keys.Count == 0) throw new Exception("没有得到数据");
 
@@ -239,7 +249,7 @@ namespace NSGameDownloader
 
         private string GetPanUrl(string tid)
         {
-            return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
+            return _config.PanUrlHead + (radioButton_xci.Checked ? _config.XciPanKey : _config.NspPanKey)
                               + "#list/path=/"
                               + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
                               + (radioButton_xci.Checked ? "" : radioButton_upd.Checked ? "/UPD + DLC" : "/NSP")
@@ -248,7 +258,7 @@ namespace NSGameDownloader
                               + "&parentPath=/";
         }
 
-      
+
 
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
         {
@@ -259,7 +269,7 @@ namespace NSGameDownloader
             //缩放页面
             ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
                 SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
-      
+
         }
 
         private CookieContainer _cookie = new CookieContainer();
@@ -283,7 +293,7 @@ namespace NSGameDownloader
 
             //使用cookie方法免写密码,只有手动时 才更新cookie
             InternetSetCookie("https://pan.baidu.com/", "BDCLND",
-                radioButton_xci.Checked ? XciCookie : NspCookie);
+                radioButton_xci.Checked ? _config.XciCookie : _config.NspCookie);
 
             panWebBrowser.Navigate(url); //点击刷新 只找本体
         }
@@ -508,7 +518,7 @@ namespace NSGameDownloader
 
         private void panWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            
+
 
             Console.WriteLine("Navigating:" + e.Url);
         }
