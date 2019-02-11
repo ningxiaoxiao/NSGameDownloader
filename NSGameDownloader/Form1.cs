@@ -23,9 +23,9 @@ namespace NSGameDownloader
     public partial class Form1 : Form
     {
         private const string PanUrlHead = "https://pan.baidu.com/s/";
-        private const string NspPanKey = "1tOFTvpJwikcdo2W12Z8dEw";
+        private const string NspPanKey = "1YSo7_H28r2Q_xYtB1vI2QA";
         private const string XciPanKey = "1cwIw1-qsNOKaq6xrK0VUqQ";
-        private const string NspCookie = "jbJABRU1bnEGv8WXwo5SPqGZ5GNKy6fsGzJ2MLbGawM=";
+        private const string NspCookie = @"jbJABRU1bnEilqgFANDScp7THxrIkl57hfDd/wzv29o=";
         private const string XciCookie = "83YnXyahT%2BktyGqrzphpP87nP1jVU3HIj0Jj2VXPmV4=";
         private const string NutdbUrl = "https://snip.li/nutdb";
         private const string TitleKeysPath = "keys.json";
