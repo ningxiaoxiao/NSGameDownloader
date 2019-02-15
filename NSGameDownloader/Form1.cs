@@ -101,7 +101,7 @@ namespace NSGameDownloader
         private void Form1_Load(object sender, EventArgs e)
         {
 
-
+            LoadConfigFormGithub();
 
             var tl = new Thread(ThreadLoad);
             tl.Start();
@@ -112,7 +112,7 @@ namespace NSGameDownloader
         /// </summary>
         private void ThreadLoad()
         {
-            LoadConfigFormGithub();
+           
 
 
             if (!File.Exists(_config.TitleKeysPath))
