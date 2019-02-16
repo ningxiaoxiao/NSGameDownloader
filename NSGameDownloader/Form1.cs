@@ -4,11 +4,9 @@ using System.Data;
 using System.Diagnostics;
 using System.Drawing;
 using System.IO;
-using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ExcelDataReader;
@@ -36,7 +34,6 @@ namespace NSGameDownloader
         public Form1()
         {
             InitializeComponent();
-
         }
 
         private void ReadExcel()
@@ -112,9 +109,6 @@ namespace NSGameDownloader
         /// </summary>
         private void ThreadLoad()
         {
-           
-
-
             if (!File.Exists(_config.TitleKeysPath))
             {
                 var t = new Thread(UpdateTitleKey);
@@ -129,7 +123,7 @@ namespace NSGameDownloader
             //使用winapi 做占位符
             Invoke(new Action(() => { SendMessage(textBox_keyword.Handle, EM_SETCUEBANNER, 0, "在这里输入 id,中文名,英文名 关键字..."); }));
 
-            SearchGameName();
+            SearchGame();
         }
 
         private void LoadConfigFormGithub()
@@ -138,13 +132,12 @@ namespace NSGameDownloader
             {
                 try
                 {
-
                     var jstr = http.DownloadString("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/config.json");
                     _config = JsonConvert.DeserializeObject<Config>(jstr);
                 }
-                catch 
+                catch
                 {
-                    MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络","错误",MessageBoxButtons.OK,MessageBoxIcon.Error);
+                    MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 }
 
             }
@@ -179,7 +172,8 @@ namespace NSGameDownloader
 
             try
             {
-                //todo 从github下载新的文件,
+                //从github下载新的文件,
+                DownloadExcel();
                 ReadExcel();
                 Invoke(new Action(() =>
                 {
@@ -202,49 +196,78 @@ namespace NSGameDownloader
                 button_search.Enabled = true;
                 textBox_keyword.Enabled = true;
                 toolStripProgressBar_download.Visible = false;
-                SearchGameName();
+                SearchGame();
             }));
+        }
+
+        private void DownloadExcel()
+        {
+            try
+            {
+
+                using (var http = new GZipWebClient())
+                {
+                    http.Headers.Add("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+                    http.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
+                    http.Headers.Add("Accept-Encoding: gzip, deflate, br");
+                    http.Headers.Add("Upgrade-Insecure-Requests: 1");
+
+                    http.DownloadFile("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/db.xlsx", ExcelPath);
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+
         }
 
         private void ReadNutDb()
         {
-            var http = new WebClient { Encoding = Encoding.UTF8 };
-
-            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-
-            var html = http.DownloadString(_config.NutdbUrl);
-            var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
-            if (keys.Count == 0) throw new Exception("没有得到数据");
-
-
-            //前3行 不要
-            keys.RemoveAt(0);
-            keys.RemoveAt(0);
-            keys.RemoveAt(0);
-            Invoke(new Action(() => { toolStripProgressBar_download.Maximum = keys.Count; }));
-            var count = 0;
-            foreach (var key in keys)
+            using (var http = new GZipWebClient { Encoding = Encoding.UTF8 })
             {
-                var kan = key.Split('|');
-                //0                 |1                                  |2                                  |3          |4      |5      |6              |7              |8      |9
-                //id                |rightsId                           |key                                |isUpdate   |isDLC  |isDemo |baseName       |name           |version|region
-                //01000320000CC000  |01000320000CC0000000000000000000   |F64FBE562E753B662F7CC8D6C8B4EE79   |0          |0      |0      |1-2-Switch™    |1-2-Switch™    |0      |US
 
-                var tid = kan[0];
-                var name = kan[7];
-                var ver = kan[8];
-                var region = kan[9] == "US" ? "AU" : kan[9]; //美区用不了.换掉
+                http.Headers.Add("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+                http.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
+                http.Headers.Add("Accept-Encoding: gzip, deflate, br");
+                http.Headers.Add("Upgrade-Insecure-Requests: 1");
 
-                if (_titlekeys.ContainsKey(tid)) //只会得到本体
+                var html = http.DownloadString(_config.NutdbUrl);
+                var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
+                if (keys.Count == 0) throw new Exception("没有得到数据");
+
+
+                //前3行 不要
+                keys.RemoveAt(0);
+                keys.RemoveAt(0);
+                keys.RemoveAt(0);
+                Invoke(new Action(() => { toolStripProgressBar_download.Maximum = keys.Count; }));
+                var count = 0;
+                foreach (var key in keys)
                 {
-                    _titlekeys[tid]["ver"] = ver;
-                    _titlekeys[tid]["region"] = region;
-                    _titlekeys[tid]["ename"] = name;
-                }
+                    var kan = key.Split('|');
+                    //0                 |1                                  |2                                  |3          |4      |5      |6              |7              |8      |9
+                    //id                |rightsId                           |key                                |isUpdate   |isDLC  |isDemo |baseName       |name           |version|region
+                    //01000320000CC000  |01000320000CC0000000000000000000   |F64FBE562E753B662F7CC8D6C8B4EE79   |0          |0      |0      |1-2-Switch™    |1-2-Switch™    |0      |US
 
-                Invoke(new Action(() => { toolStripProgressBar_download.Value = ++count; }));
+                    var tid = kan[0];
+                    var name = kan[7];
+                    var ver = kan[8];
+                    var region = kan[9] == "US" ? "AU" : kan[9]; //美区用不了.换掉
+
+                    if (_titlekeys.ContainsKey(tid)) //只会得到本体
+                    {
+                        _titlekeys[tid]["ver"] = ver;
+                        _titlekeys[tid]["region"] = region;
+                        _titlekeys[tid]["ename"] = name;
+                    }
+
+                    Invoke(new Action(() => { toolStripProgressBar_download.Value = ++count; }));
+                }
             }
+
+
         }
 
         private string GetPanUrl(string tid)
@@ -310,12 +333,10 @@ namespace NSGameDownloader
 
         private void button_search_Click(object sender, EventArgs e)
         {
-            //var keys = Titlekeys.Root.Where(x => x.Contains(textBox_keyword.Text.Trim()));
-
-            SearchGameName(textBox_keyword.Text);
+            SearchGame(textBox_keyword.Text);
         }
 
-        private void SearchGameName(string keywords = "")
+        private void SearchGame(string keywords = "")
         {
             if (_titlekeys == null) return;
             if (_titlekeys.Count == 0) return;
@@ -326,7 +347,7 @@ namespace NSGameDownloader
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
                 {
-                    //全文件查找
+                    //全文查找
                     var allstr = titlekey.Value["tid"].ToString() + titlekey.Value["cname"] + titlekey.Value["ename"] + titlekey.Value["allnames"];
 
                     if (allstr.ToLower().Contains(keywords.Trim().ToLower()))
@@ -473,7 +494,7 @@ namespace NSGameDownloader
         {
             if (e.KeyChar != (char)Keys.Enter) return;
             e.Handled = true; //防止向上冒泡
-            SearchGameName(textBox_keyword.Text);
+            SearchGame(textBox_keyword.Text);
         }
 
         private void 更新TitleId文件ToolStripMenuItem_Click(object sender, EventArgs e)
