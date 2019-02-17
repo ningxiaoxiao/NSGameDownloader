@@ -212,7 +212,7 @@ namespace NSGameDownloader
                     http.Headers.Add("Accept-Encoding: gzip, deflate, br");
                     http.Headers.Add("Upgrade-Insecure-Requests: 1");
 
-                    http.DownloadFile("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/db.xlsx", ExcelPath);
+                    http.DownloadFile("https://raw.githubusercontent.com/riggzh/ns/master/db.xlsx", ExcelPath);
                 }
             }
             catch (Exception e)
