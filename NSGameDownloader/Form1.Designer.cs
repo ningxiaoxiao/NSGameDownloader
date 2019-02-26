@@ -55,6 +55,7 @@
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.label_count = new System.Windows.Forms.Label();
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
@@ -65,7 +66,7 @@
             this.label_info_shop_link = new System.Windows.Forms.LinkLabel();
             this.localDirLabel = new System.Windows.Forms.LinkLabel();
             this.label_info_type = new System.Windows.Forms.Label();
-            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
+            this.checkbox_cn = new System.Windows.Forms.CheckBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -76,13 +77,13 @@
             this.textBox_keyword.Location = new System.Drawing.Point(13, 35);
             this.textBox_keyword.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_keyword.Name = "textBox_keyword";
-            this.textBox_keyword.Size = new System.Drawing.Size(400, 25);
+            this.textBox_keyword.Size = new System.Drawing.Size(327, 25);
             this.textBox_keyword.TabIndex = 99;
             this.textBox_keyword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_keyword_KeyPress);
             // 
             // button_search
             // 
-            this.button_search.Location = new System.Drawing.Point(423, 35);
+            this.button_search.Location = new System.Drawing.Point(413, 35);
             this.button_search.Margin = new System.Windows.Forms.Padding(4);
             this.button_search.Name = "button_search";
             this.button_search.Size = new System.Drawing.Size(84, 26);
@@ -276,10 +277,10 @@
             this.toolStripProgressBar_download,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 675);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 679);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1526, 26);
+            this.statusStrip1.Size = new System.Drawing.Size(1526, 22);
             this.statusStrip1.TabIndex = 101;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -299,13 +300,26 @@
             this.toolStripStatusLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.toolStripStatusLabel1.LinkColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(187, 21);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(187, 17);
             this.toolStripStatusLabel1.Text = "特别感谢 @ 91wii.riggzh";
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.ToolStripStatusLabel1_Click);
             // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.AccessibleRole = System.Windows.Forms.AccessibleRole.Cursor;
+            this.toolStripStatusLabel2.Font = new System.Drawing.Font("宋体", 9F);
+            this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.DimGray;
+            this.toolStripStatusLabel2.IsLink = true;
+            this.toolStripStatusLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
+            this.toolStripStatusLabel2.LinkColor = System.Drawing.Color.DimGray;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(183, 17);
+            this.toolStripStatusLabel2.Text = " @ github ningxiaoxiao";
+            this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
+            // 
             // label_count
             // 
-            this.label_count.Location = new System.Drawing.Point(515, 35);
+            this.label_count.Location = new System.Drawing.Point(583, 35);
             this.label_count.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_count.Name = "label_count";
             this.label_count.Size = new System.Drawing.Size(117, 26);
@@ -414,20 +428,23 @@
             this.label_info_type.TabIndex = 111;
             this.label_info_type.Text = "类型：";
             // 
-            // toolStripStatusLabel2
+            // checkbox_cn
             // 
-            this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.DimGray;
-            this.toolStripStatusLabel2.LinkColor = System.Drawing.Color.DimGray;
-            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 21);
-            this.toolStripStatusLabel2.Text = " @ github ningxiaoxiao";
-            this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
+            this.checkbox_cn.AutoSize = true;
+            this.checkbox_cn.Location = new System.Drawing.Point(347, 38);
+            this.checkbox_cn.Name = "checkbox_cn";
+            this.checkbox_cn.Size = new System.Drawing.Size(59, 19);
+            this.checkbox_cn.TabIndex = 112;
+            this.checkbox_cn.Text = "中文";
+            this.checkbox_cn.UseVisualStyleBackColor = true;
+            this.checkbox_cn.CheckedChanged += new System.EventHandler(this.checkbox_cn_CheckedChanged);
             // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1526, 701);
+            this.Controls.Add(this.checkbox_cn);
             this.Controls.Add(this.label_info_type);
             this.Controls.Add(this.localDirLabel);
             this.Controls.Add(this.label_info_shop_link);
@@ -503,6 +520,7 @@
         private System.Windows.Forms.LinkLabel localDirLabel;
         private System.Windows.Forms.Label label_info_type;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
+        private System.Windows.Forms.CheckBox checkbox_cn;
     }
 }
 

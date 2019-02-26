@@ -27,10 +27,11 @@ namespace NSGameDownloader
         private const string CookiePath = "cookie\\cookie";
         private const int EM_SETCUEBANNER = 0x1501;
 
-        /// <summary>
-        ///     原始值
-        /// </summary>
         private string _curTid;
+
+        // 只显示中文游戏
+        private bool _onlyShowCn;
+
 
         /**
          * panUrl: 百度盘地址
@@ -126,6 +127,7 @@ namespace NSGameDownloader
                 toolStripProgressBar_download.Value = 1;
                 button_search.Text = "下载中";
                 button_search.Enabled = false;
+                checkbox_cn.Enabled = false;
                 textBox_keyword.Enabled = false;
             }));
 
@@ -163,6 +165,7 @@ namespace NSGameDownloader
             {
                 button_search.Text = "搜索";
                 button_search.Enabled = true;
+                checkbox_cn.Enabled = true;
                 textBox_keyword.Enabled = true;
                 toolStripProgressBar_download.Visible = false;
                 SearchGameName();
@@ -369,6 +372,10 @@ namespace NSGameDownloader
                 {
                     //全文件查找
                     var allstr = titlekey.Value["tid"].ToString() + titlekey.Value["cname"] + titlekey.Value["ename"] + titlekey.Value["allnames"];
+
+                    if (_onlyShowCn && !titlekey.Value["iszh"].ToObject<bool>()) {
+                        continue;
+                    }
 
                     if (allstr.ToLower().Contains(keywords.Trim().ToLower()))
                         listView1.Items.Add(new ListViewItem(new[]
@@ -585,6 +592,13 @@ namespace NSGameDownloader
             Process.Start($"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}");
         }
 
+        private void checkbox_cn_CheckedChanged(object sender, EventArgs e)
+        {
+            _onlyShowCn = ((CheckBox)sender).Checked;
+            textBox_keyword.Text = "";
+            SearchGameName();
+        }
+
         private void 更新TitleId文件ToolStripMenuItem_Click(object sender, EventArgs e)
         {
             var t = new Thread(UpdateTitleKey);
@@ -623,5 +637,6 @@ namespace NSGameDownloader
         {
             Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
         }
+
     }
 }
