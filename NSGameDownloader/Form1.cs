@@ -8,7 +8,6 @@ using System.Linq;
 using System.Net;
 using System.Runtime.InteropServices;
 using System.Text;
-using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ExcelDataReader;
@@ -22,12 +21,7 @@ namespace NSGameDownloader
     //todo 尝试进行从百度云直接得到真实下载地址 
     public partial class Form1 : Form
     {
-        private const string PanUrlHead = "https://pan.baidu.com/s/";
-        private const string NspPanKey = "1tOFTvpJwikcdo2W12Z8dEw";
-        private const string XciPanKey = "1cwIw1-qsNOKaq6xrK0VUqQ";
-        private const string NspCookie = "jbJABRU1bnEGv8WXwo5SPqGZ5GNKy6fsGzJ2MLbGawM=";
-        private const string XciCookie = "83YnXyahT%2BktyGqrzphpP87nP1jVU3HIj0Jj2VXPmV4=";
-        private const string NutdbUrl = "https://snip.li/nutdb";
+        private const string ConfigPath = "config.json";
         private const string TitleKeysPath = "keys.json";
         private const string ExcelPath = "db.xlsx";
         private const string CookiePath = "cookie\\cookie";
@@ -38,6 +32,11 @@ namespace NSGameDownloader
         /// </summary>
         private string _curTid;
 
+        /**
+         * panUrl: 百度盘地址
+         * nutDbUrl: nutDbUrl
+         */
+        private JObject _config;
         private JObject _titlekeys;
         private DataSet TitleDataSet;
 
@@ -46,70 +45,15 @@ namespace NSGameDownloader
             InitializeComponent();
         }
 
-        private void ReadExcel()
-        {
-            var fs = File.Open(ExcelPath, FileMode.Open, FileAccess.Read);
-            var er = ExcelReaderFactory.CreateReader(fs);
-
-            TitleDataSet = er.AsDataSet(new ExcelDataSetConfiguration
-            {
-                UseColumnDataType = true,
-                ConfigureDataTable = r => new ExcelDataTableConfiguration
-                {
-                    UseHeaderRow = true
-                }
-            });
-
-            //读出第一个表 
-            //0         1       2       3       4       5       6
-            //tid       iszh    cname   oname   ext     ver     havedlc
-            var dt = TitleDataSet.Tables[0];
-            Invoke(new Action(() =>
-            {
-                toolStripProgressBar_download.Maximum = dt.Rows.Count;
-                toolStripProgressBar_download.Value = 0;
-            }));
-            foreach (DataRow row in dt.Rows)
-            {
-                var tid = row[0].ToString();
-                var iszh = row[1].ToString() != "×";
-                var cname = row[2].ToString();
-                var allnames = row[3].ToString();
-                var haveXci = row[4].ToString().Contains("XCI");
-                var haveNsp = row[4].ToString().Contains("NSP");
-                var haveUpd = row[5].ToString() != "v0";
-                var haveDlc = row[6].ToString() != "×";
-
-
-                var jtemp = new JObject
-                {
-                    ["tid"] = tid,
-                    ["iszh"] = iszh,
-                    ["cname"] = cname,
-                    ["allnames"] = allnames,
-
-                    ["xci"] = haveXci,
-                    ["nsp"] = haveNsp,
-                    ["upd"] = haveUpd,
-                    ["dlc"] = haveDlc,
-                    ["ver"] = row[5].ToString(),
-                    ["region"] = "AU",
-                    ["ename"] = "",
-
-                };
-                _titlekeys[tid] = jtemp;
-                Invoke(new Action(() => { toolStripProgressBar_download.Value++; }));
-            }
-
-
-            fs.Close();
-        }
-
         private void Form1_Load(object sender, EventArgs e)
         {
-
-
-
+            if (File.Exists(ConfigPath))
+            {
+                _config = JObject.Parse(File.ReadAllText(ConfigPath));
+            } else {
+                MessageBox.Show("无法访问config.json配置文件", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
             var tl = new Thread(ThreadLoad);
             tl.Start();
         }
@@ -136,7 +80,9 @@ namespace NSGameDownloader
 
             if (!Directory.Exists("image")) Directory.CreateDirectory("image");
             //使用winapi 做占位符
-            Invoke(new Action(() => { SendMessage(textBox_keyword.Handle, EM_SETCUEBANNER, 0, "在这里输入 id,中文名,英文名 关键字..."); }));
+            Invoke(new Action(() => {
+                SendMessage(textBox_keyword.Handle, EM_SETCUEBANNER, 0, "在这里输入 id,中文名,英文名 关键字...");
+            }));
 
             SearchGameName();
         }
@@ -176,32 +122,42 @@ namespace NSGameDownloader
             Invoke(new Action(() =>
             {
                 toolStripProgressBar_download.Visible = true;
-                toolStripProgressBar_download.Maximum = 2;
+                toolStripProgressBar_download.Maximum = 5;
                 toolStripProgressBar_download.Value = 1;
                 button_search.Text = "下载中";
                 button_search.Enabled = false;
                 textBox_keyword.Enabled = false;
             }));
 
+
             _titlekeys = new JObject();
 
             try
             {
+                DownloadExcel();
+                Invoke(new Action(() =>
+                {
+                    toolStripProgressBar_download.Value = 2;
+                }));
+
                 ReadExcel();
                 Invoke(new Action(() =>
                 {
-                    toolStripProgressBar_download.Maximum = 2;
-                    toolStripProgressBar_download.Value = 1;
+                    toolStripProgressBar_download.Value = 3;
                 }));
+
                 ReadNutDb();
+                Invoke(new Action(() =>
+                {
+                    toolStripProgressBar_download.Value = 5;
+                }));
+
+                File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
             }
             catch (Exception e)
             {
                 MessageBox.Show(e.Message, "更新titleid出错", MessageBoxButtons.OK, MessageBoxIcon.Error);
-                return;
             }
-
-            File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
 
             Invoke(new Action(() =>
             {
@@ -213,6 +169,91 @@ namespace NSGameDownloader
             }));
         }
 
+        private void DownloadExcel()
+        {
+            try
+            {
+
+                using (var http = new GZipWebClient())
+                {
+                    http.Headers.Add("Accept: text/html,application/xhtml+xml,application/xml;q=0.9,image/webp,image/apng,*/*;q=0.8");
+                    http.Headers.Add("User-Agent: Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/70.0.3538.110 Safari/537.36");
+                    http.Headers.Add("Accept-Encoding: gzip, deflate, br");
+                    http.Headers.Add("Upgrade-Insecure-Requests: 1");
+
+                    Console.WriteLine("start download excel ...");
+                    http.DownloadFile(_config["excelDbUrl"].ToString(), ExcelPath);
+                    Console.WriteLine("download excel success!");
+                }
+            }
+            catch (Exception e)
+            {
+                MessageBox.Show("无法访问github,无法更新最新网盘地址.请检查网络", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+
+            }
+
+        }
+
+        private void ReadExcel()
+        {
+            if (!File.Exists(ExcelPath))
+            {
+                MessageBox.Show("无法访问db.xlsx,请将db.xlsx放在程序根目录", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
+                return;
+            }
+
+            Console.WriteLine("start read excel ...");
+            var fs = File.Open(ExcelPath, FileMode.Open, FileAccess.Read);
+            var er = ExcelReaderFactory.CreateReader(fs);
+
+            TitleDataSet = er.AsDataSet(new ExcelDataSetConfiguration
+            {
+                UseColumnDataType = true,
+                ConfigureDataTable = r => new ExcelDataTableConfiguration
+                {
+                    UseHeaderRow = true
+                }
+            });
+
+            //读出第一个表 
+            //0         1       2       3       4       5       6
+            //tid       iszh    cname   oname   ext     ver     havedlc
+            var dt = TitleDataSet.Tables[0];
+            foreach (DataRow row in dt.Rows)
+            {
+                var tid = row[0].ToString();
+                var iszh = row[1].ToString() != "×";
+                var cname = row[2].ToString();
+                var allnames = row[3].ToString();
+                var haveXci = row[4].ToString().Contains("XCI");
+                var haveNsp = row[4].ToString().Contains("NSP");
+                var haveUpd = row[5].ToString() != "v0";
+                var haveDlc = row[6].ToString() != "×";
+
+
+                var jtemp = new JObject
+                {
+                    ["tid"] = tid,
+                    ["iszh"] = iszh,
+                    ["cname"] = cname,
+                    ["allnames"] = allnames,
+
+                    ["xci"] = haveXci,
+                    ["nsp"] = haveNsp,
+                    ["upd"] = haveUpd,
+                    ["dlc"] = haveDlc,
+                    ["ver"] = row[5].ToString(),
+                    ["region"] = cname.Contains("（美版）") ? "US" : (cname.Contains("（日版）") ? "JP" : "US"),
+                    ["ename"] = "",
+
+                };
+                _titlekeys[tid] = jtemp;
+            }
+
+            Console.WriteLine("read excel success!");
+            fs.Close();
+        }
+
         private void ReadNutDb()
         {
             var http = new WebClient { Encoding = Encoding.UTF8 };
@@ -220,16 +261,22 @@ namespace NSGameDownloader
             ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
             ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
-            var html = http.DownloadString(NutdbUrl);
+            Console.WriteLine("start download nutdb ...");
+            var html = http.DownloadString(_config["nutDbUrl"].ToString());
             var keys = new List<string>(html.Split(new[] { "\n" }, StringSplitOptions.RemoveEmptyEntries));
             if (keys.Count == 0) throw new Exception("没有得到数据");
 
+            Invoke(new Action(() =>
+            {
+                toolStripProgressBar_download.Value = 4;
+            }));
 
+            Console.WriteLine("download nutdb success!");
             //前3行 不要
             keys.RemoveAt(0);
             keys.RemoveAt(0);
             keys.RemoveAt(0);
-            Invoke(new Action(() => { toolStripProgressBar_download.Maximum = keys.Count; }));
+
             var count = 0;
             foreach (var key in keys)
             {
@@ -249,43 +296,19 @@ namespace NSGameDownloader
                     _titlekeys[tid]["region"] = region;
                     _titlekeys[tid]["ename"] = name;
                 }
-
-                Invoke(new Action(() => { toolStripProgressBar_download.Value = ++count; }));
             }
         }
 
         private string GetPanUrl(string tid)
         {
-            return PanUrlHead + (radioButton_xci.Checked ? XciPanKey : NspPanKey)
-                              + "#list/path=/"
-                              + (radioButton_xci.Checked ? "XCI" : "Nintendo Switch Games")
-                              + (radioButton_xci.Checked ? "" : radioButton_upd.Checked ? "/UPD + DLC" : "/NSP")
-                              + "/" + tid.Substring(0, 5)
-                              + "/" + tid
-                              + "&parentPath=/";
-        }
+            return _config["panUrl"].ToString()
+                +  (radioButton_xci.Checked ? "XCI" : (radioButton_upd.Checked ? "UPD %2B DLC" : "NSP"))
+                + "/" + tid.Substring(0, 5)
+                + "/" + tid
+                + "&parentPath=/";
 
-        private void writePw(string pw)
-        {
-            //<input class="QKKaIE LxgeIt" id="zvbpPbMk" tabindex="1" type="text">
-            //得到id
-            Console.WriteLine("填密码:" + pw);
-
-            var html = panWebBrowser.DocumentText;
-            var m = Regex.Match(html, "<input class=.*id=\"([\\s\\S]*?)\" tabindex=\"1");
-            var id = m.Groups[1].Value;
-            var element = panWebBrowser.Document.GetElementById(id);
-            if (element == null) return;
-            element.SetAttribute("value", pw);
-
-
-            var alla = panWebBrowser.Document.GetElementsByTagName("a");
-            foreach (HtmlElement a in alla)
-                if (a.InnerText == "提取文件")
-                {
-                    a.InvokeMember("Click");
-                    break;
-                }
+            //链接: https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w 
+            //提取码: dupb 复制这段内容后打开百度网盘手机App，操作更方便哦
         }
 
         private void webBrowser_DocumentCompleted(object sender, WebBrowserDocumentCompletedEventArgs e)
@@ -295,22 +318,6 @@ namespace NSGameDownloader
 
             if (panWebBrowser.Document.Body == null) return;
             GetCookies();
-            //缩放页面
-            ((SHDocVw.WebBrowser)panWebBrowser.ActiveXInstance).ExecWB(SHDocVw.OLECMDID.OLECMDID_OPTICAL_ZOOM,
-                SHDocVw.OLECMDEXECOPT.OLECMDEXECOPT_DONTPROMPTUSER, 70, IntPtr.Zero);
-            /*
-            //识别是不是要输入提取码
-            if (panWebBrowser.Document.Body.InnerText.Contains("请输入提取码"))
-            {
-                if (e.Url.ToString().Contains(NspPanKey.Substring(3))) writePw(NspPw);
-                else if (e.Url.ToString().Contains(XciPanKey.Substring(3))) writePw(XciPw);
-            }
-            else
-            {
-                if (oUrl == "https://pan.baidu.com/s/1tOFTvpJwikcdo2W12Z8dEw#list/path=/" ||
-                  oUrl == "https://pan.baidu.com/s/1cwIw1-qsNOKaq6xrK0VUqQ#list/path=/")
-                    WebRefresh(); //输入密码后会再一次来到根目录,要再跳一次
-            }*/
         }
 
         private CookieContainer _cookie = new CookieContainer();
@@ -343,11 +350,9 @@ namespace NSGameDownloader
         }
 
 
-
         private void button_search_Click(object sender, EventArgs e)
         {
             //var keys = Titlekeys.Root.Where(x => x.Contains(textBox_keyword.Text.Trim()));
-
             SearchGameName(textBox_keyword.Text);
         }
 
@@ -381,6 +386,14 @@ namespace NSGameDownloader
                 }
 
                 label_count.Text = "count:" + listView1.Items.Count;
+
+                if (listView1.Items.Count > 0)
+                {
+                    listView1.SelectedItems.Clear();
+                    listView1.Items[0].Selected = true;//设定选中
+                    listView1.Items[0].Focused = true;
+                    listView1.Select();
+                }
             }));
         }
 
@@ -398,6 +411,16 @@ namespace NSGameDownloader
             if (listView1.SelectedItems.Count == 0) return;
             _curTid = listView1.SelectedItems[0].Text;
 
+            var dir = _config["localGameDir"].ToString() + "\\" + _curTid.Substring(0, 5) + "\\" + _curTid + "\\";
+            if (Directory.Exists(dir))
+            {
+                localDirLabel.Visible = true;
+                localDirLabel.Text = dir;
+            }
+            else {
+                localDirLabel.Visible = false;
+            }
+
 
             //如果点击的是dlc 或者是 upd 那要跳到upd+dlc的目录
             radioButton_upd.Enabled = _titlekeys[_curTid]["dlc"].ToObject<bool>() ||
@@ -411,9 +434,6 @@ namespace NSGameDownloader
 
             WebRefresh();
 
-
-            Console.WriteLine(_curTid);
-
             //刷新来自eshop的信息
             var t = new Thread(GetGameInfoFromEShop);
             t.Start();
@@ -421,6 +441,10 @@ namespace NSGameDownloader
 
         private void GetGameInfoFromEShop()
         {
+            Invoke(new Action(() => {
+                pictureBox_gameicon.Image = Resources.load;
+            }));
+
             //todo 从http://www.eshop-switch.com 拿数据
             var g = _titlekeys[_curTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
@@ -429,6 +453,7 @@ namespace NSGameDownloader
                     try
                     {
                         var url = $"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}";
+                        Console.WriteLine("load game info:" + url);
                         var html = web.DownloadString(url);
 
                         html = html.Split(new[] { "NXSTORE.titleDetail.jsonData = " }, StringSplitOptions.RemoveEmptyEntries)[1];
@@ -441,9 +466,11 @@ namespace NSGameDownloader
                     {
                         Invoke(new Action(() => {
                             label_info.Text = "获取简介信息错误";
-                            label_info_size.Text = "大小：获取信息错误";
-                            label_info_launch_date.Text = "发布日期：获取信息错误";
-                            label_info_support_lan.Text = "支持语言：获取信息错误";
+                            label_info_size.Text = "大小：--";
+                            label_info_launch_date.Text = "发布日期：--";
+                            label_info_support_lan.Text = "支持语言：--";
+                            label_info_type.Text = "类型：--";
+                            pictureBox_gameicon.Image = Resources.error;
                         }));
                         return;
                     }
@@ -465,11 +492,12 @@ namespace NSGameDownloader
                 label_info_launch_date.Text = $"发布日期：{launch_date}";
                 label_info_support_lan.Text = $"支持语言：{lan_str}";
                 label_info.Text = $"{info["description"]}";
+                label_info_type.Text = "类型：" + info["genre"].ToString();
             }));
 
-            if (info["hero_banner_url"] != null)
+            if (info["applications"][0]["image_url"] != null)
             {
-                GetGameImage(info["hero_banner_url"].ToString());
+                GetGameImage(info["applications"][0]["image_url"].ToString());
             }
             else
             {
@@ -479,18 +507,13 @@ namespace NSGameDownloader
 
         private void GetGameImage(String url)
         {
-            pictureBox_gameicon.Image = Resources.load;
-
             var filename = "image\\" + _curTid + ".jpg";
-
             if (File.Exists(filename))
                 try
                 {
                     pictureBox_gameicon.Image = Image.FromFile(filename);
                     return;
-                }
-                catch
-                {
+                } catch {
                     // ignored
                 }
 
@@ -505,10 +528,6 @@ namespace NSGameDownloader
             }
             catch
             {
-                if (File.Exists(filename))
-                    File.Delete(filename);
-
-
                 pictureBox_gameicon.Image = Resources.error;
             }
         }
@@ -534,26 +553,6 @@ namespace NSGameDownloader
             SearchGameName(textBox_keyword.Text);
         }
 
-        private void 更新TitleId文件ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            var t = new Thread(UpdateTitleKey);
-            t.Start();
-        }
-
-        private void 查看帮助ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader/wiki");
-        }
-
-        private void 发送反馈ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader/issues");
-        }
-
-        private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
-        }
 
         private void label_url_Click(object sender, EventArgs e)
         {
@@ -571,10 +570,6 @@ namespace NSGameDownloader
 
         private void panWebBrowser_Navigating(object sender, WebBrowserNavigatingEventArgs e)
         {
-            //使用cookie方法免写密码
-            InternetSetCookie("https://pan.baidu.com/", "BDCLND",
-                e.Url.ToString().Contains(NspPanKey.Substring(3)) ? NspCookie : XciCookie);
-
             Console.WriteLine("Navigating:" + e.Url);
         }
 
@@ -583,16 +578,50 @@ namespace NSGameDownloader
             //GetCookies();
         }
 
-        private void ToolStripStatusLabel1_Click(object sender, EventArgs e)
-        {
-            Process.Start("https://www.91wii.com/thread-104797-1-1.html");
-        }
-
         private void Label_info_shop_link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
         {
             var g = _titlekeys[_curTid].ToObject<JObject>();
             if (!g.ContainsKey("info")) { return; }
             Process.Start($"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}");
+        }
+
+        private void 更新TitleId文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            var t = new Thread(UpdateTitleKey);
+            t.Start();
+        }
+
+        private void 查看帮助ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/freedom10086/NSGameDownloader/wiki");
+        }
+
+        private void 发送反馈ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/freedom10086/NSGameDownloader/issues");
+        }
+
+        private void 关于ToolStripMenuItem_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/freedom10086/NSGameDownloader");
+        }
+
+        private void localDirLabel_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
+        {
+            if (_curTid == null) return;
+            var dir = _config["localGameDir"].ToString() + "\\" + _curTid.Substring(0, 5) + "\\" + _curTid + "\\";
+            ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe");
+            System.Diagnostics.Process.Start("explorer.exe", dir);
+        }
+
+        private void ToolStripStatusLabel1_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://www.91wii.com/space-uid-2358313.html");
+        }
+
+        private void toolStripStatusLabel2_Click(object sender, EventArgs e)
+        {
+            Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
         }
     }
 }

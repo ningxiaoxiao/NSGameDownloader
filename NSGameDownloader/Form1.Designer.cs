@@ -63,6 +63,9 @@
             this.label_info_launch_date = new System.Windows.Forms.Label();
             this.label_info_support_lan = new System.Windows.Forms.Label();
             this.label_info_shop_link = new System.Windows.Forms.LinkLabel();
+            this.localDirLabel = new System.Windows.Forms.LinkLabel();
+            this.label_info_type = new System.Windows.Forms.Label();
+            this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -92,7 +95,7 @@
             // 
             this.radioButton_nsp.AutoSize = true;
             this.radioButton_nsp.Checked = true;
-            this.radioButton_nsp.Location = new System.Drawing.Point(327, 389);
+            this.radioButton_nsp.Location = new System.Drawing.Point(397, 389);
             this.radioButton_nsp.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_nsp.Name = "radioButton_nsp";
             this.radioButton_nsp.Size = new System.Drawing.Size(82, 19);
@@ -105,7 +108,7 @@
             // radioButton_xci
             // 
             this.radioButton_xci.AutoSize = true;
-            this.radioButton_xci.Location = new System.Drawing.Point(421, 389);
+            this.radioButton_xci.Location = new System.Drawing.Point(491, 389);
             this.radioButton_xci.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_xci.Name = "radioButton_xci";
             this.radioButton_xci.Size = new System.Drawing.Size(82, 19);
@@ -127,10 +130,11 @@
             this.columnHeader7});
             this.listView1.FullRowSelect = true;
             this.listView1.GridLines = true;
+            this.listView1.LabelEdit = true;
             this.listView1.Location = new System.Drawing.Point(13, 69);
             this.listView1.Margin = new System.Windows.Forms.Padding(4);
             this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(620, 312);
+            this.listView1.Size = new System.Drawing.Size(687, 312);
             this.listView1.TabIndex = 0;
             this.listView1.UseCompatibleStateImageBehavior = false;
             this.listView1.View = System.Windows.Forms.View.Details;
@@ -139,36 +143,37 @@
             // columnHeader1
             // 
             this.columnHeader1.Text = "TID";
-            this.columnHeader1.Width = 59;
+            this.columnHeader1.Width = 104;
             // 
             // columnHeader2
             // 
             this.columnHeader2.Text = "NAME";
-            this.columnHeader2.Width = 243;
+            this.columnHeader2.Width = 194;
             // 
             // columnHeader3
             // 
             this.columnHeader3.Text = "NSP";
-            this.columnHeader3.Width = 33;
+            this.columnHeader3.Width = 36;
             // 
             // columnHeader4
             // 
             this.columnHeader4.Text = "XCI";
-            this.columnHeader4.Width = 34;
+            this.columnHeader4.Width = 40;
             // 
             // columnHeader5
             // 
             this.columnHeader5.Text = "UPD";
-            this.columnHeader5.Width = 36;
+            this.columnHeader5.Width = 37;
             // 
             // columnHeader6
             // 
             this.columnHeader6.Text = "DLC";
-            this.columnHeader6.Width = 34;
+            this.columnHeader6.Width = 38;
             // 
             // columnHeader7
             // 
             this.columnHeader7.Text = "中文";
+            this.columnHeader7.Width = 44;
             // 
             // pictureBox_gameicon
             // 
@@ -177,7 +182,7 @@
             this.pictureBox_gameicon.Location = new System.Drawing.Point(13, 421);
             this.pictureBox_gameicon.Margin = new System.Windows.Forms.Padding(4);
             this.pictureBox_gameicon.Name = "pictureBox_gameicon";
-            this.pictureBox_gameicon.Size = new System.Drawing.Size(207, 116);
+            this.pictureBox_gameicon.Size = new System.Drawing.Size(150, 150);
             this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox_gameicon.TabIndex = 7;
             this.pictureBox_gameicon.TabStop = false;
@@ -186,10 +191,10 @@
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_info.Location = new System.Drawing.Point(13, 542);
+            this.label_info.Location = new System.Drawing.Point(13, 575);
             this.label_info.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(621, 123);
+            this.label_info.Size = new System.Drawing.Size(687, 90);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "简介";
             // 
@@ -202,7 +207,7 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1651, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1526, 28);
             this.menuStrip1.TabIndex = 100;
             this.menuStrip1.Text = "menuStrip1";
             // 
@@ -269,11 +274,12 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar_download,
-            this.toolStripStatusLabel1});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 679);
+            this.toolStripStatusLabel1,
+            this.toolStripStatusLabel2});
+            this.statusStrip1.Location = new System.Drawing.Point(0, 675);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1651, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1526, 26);
             this.statusStrip1.TabIndex = 101;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -293,8 +299,8 @@
             this.toolStripStatusLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.toolStripStatusLabel1.LinkColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(283, 17);
-            this.toolStripStatusLabel1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(187, 21);
+            this.toolStripStatusLabel1.Text = "特别感谢 @ 91wii.riggzh";
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.ToolStripStatusLabel1_Click);
             // 
             // label_count
@@ -310,7 +316,7 @@
             // radioButton_upd
             // 
             this.radioButton_upd.AutoSize = true;
-            this.radioButton_upd.Location = new System.Drawing.Point(516, 389);
+            this.radioButton_upd.Location = new System.Drawing.Point(586, 389);
             this.radioButton_upd.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_upd.Name = "radioButton_upd";
             this.radioButton_upd.Size = new System.Drawing.Size(114, 19);
@@ -322,10 +328,10 @@
             // 
             // label_url
             // 
-            this.label_url.Location = new System.Drawing.Point(659, 35);
+            this.label_url.Location = new System.Drawing.Point(708, 35);
             this.label_url.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_url.Name = "label_url";
-            this.label_url.Size = new System.Drawing.Size(976, 26);
+            this.label_url.Size = new System.Drawing.Size(927, 26);
             this.label_url.TabIndex = 105;
             this.label_url.Text = "选择游戏查看下载地址";
             this.label_url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -337,11 +343,11 @@
             this.panWebBrowser.Anchor = ((System.Windows.Forms.AnchorStyles)((((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left) 
             | System.Windows.Forms.AnchorStyles.Right)));
-            this.panWebBrowser.Location = new System.Drawing.Point(659, 69);
+            this.panWebBrowser.Location = new System.Drawing.Point(708, 69);
             this.panWebBrowser.Margin = new System.Windows.Forms.Padding(4);
             this.panWebBrowser.MinimumSize = new System.Drawing.Size(27, 25);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(976, 595);
+            this.panWebBrowser.Size = new System.Drawing.Size(802, 595);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
@@ -350,7 +356,7 @@
             // label_info_size
             // 
             this.label_info_size.AutoSize = true;
-            this.label_info_size.Location = new System.Drawing.Point(235, 426);
+            this.label_info_size.Location = new System.Drawing.Point(170, 421);
             this.label_info_size.Name = "label_info_size";
             this.label_info_size.Size = new System.Drawing.Size(52, 15);
             this.label_info_size.TabIndex = 106;
@@ -359,7 +365,7 @@
             // label_info_launch_date
             // 
             this.label_info_launch_date.AutoSize = true;
-            this.label_info_launch_date.Location = new System.Drawing.Point(235, 450);
+            this.label_info_launch_date.Location = new System.Drawing.Point(170, 445);
             this.label_info_launch_date.Name = "label_info_launch_date";
             this.label_info_launch_date.Size = new System.Drawing.Size(82, 15);
             this.label_info_launch_date.TabIndex = 107;
@@ -367,9 +373,9 @@
             // 
             // label_info_support_lan
             // 
-            this.label_info_support_lan.Location = new System.Drawing.Point(235, 474);
+            this.label_info_support_lan.Location = new System.Drawing.Point(170, 493);
             this.label_info_support_lan.Name = "label_info_support_lan";
-            this.label_info_support_lan.Size = new System.Drawing.Size(399, 41);
+            this.label_info_support_lan.Size = new System.Drawing.Size(530, 41);
             this.label_info_support_lan.TabIndex = 108;
             this.label_info_support_lan.Text = "支持语言：";
             // 
@@ -378,7 +384,7 @@
             this.label_info_shop_link.ActiveLinkColor = System.Drawing.Color.Black;
             this.label_info_shop_link.AutoSize = true;
             this.label_info_shop_link.LinkColor = System.Drawing.Color.Black;
-            this.label_info_shop_link.Location = new System.Drawing.Point(235, 520);
+            this.label_info_shop_link.Location = new System.Drawing.Point(170, 556);
             this.label_info_shop_link.Name = "label_info_shop_link";
             this.label_info_shop_link.Size = new System.Drawing.Size(67, 15);
             this.label_info_shop_link.TabIndex = 109;
@@ -386,11 +392,44 @@
             this.label_info_shop_link.Text = "商店页面";
             this.label_info_shop_link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Label_info_shop_link_LinkClicked);
             // 
+            // localDirLabel
+            // 
+            this.localDirLabel.ActiveLinkColor = System.Drawing.Color.Black;
+            this.localDirLabel.AutoSize = true;
+            this.localDirLabel.LinkColor = System.Drawing.Color.Black;
+            this.localDirLabel.Location = new System.Drawing.Point(12, 389);
+            this.localDirLabel.Name = "localDirLabel";
+            this.localDirLabel.Size = new System.Drawing.Size(67, 15);
+            this.localDirLabel.TabIndex = 110;
+            this.localDirLabel.TabStop = true;
+            this.localDirLabel.Text = "本地目录";
+            this.localDirLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.localDirLabel_LinkClicked);
+            // 
+            // label_info_type
+            // 
+            this.label_info_type.AutoSize = true;
+            this.label_info_type.Location = new System.Drawing.Point(170, 469);
+            this.label_info_type.Name = "label_info_type";
+            this.label_info_type.Size = new System.Drawing.Size(52, 15);
+            this.label_info_type.TabIndex = 111;
+            this.label_info_type.Text = "类型：";
+            // 
+            // toolStripStatusLabel2
+            // 
+            this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.DimGray;
+            this.toolStripStatusLabel2.LinkColor = System.Drawing.Color.DimGray;
+            this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 21);
+            this.toolStripStatusLabel2.Text = " @ github ningxiaoxiao";
+            this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1651, 701);
+            this.ClientSize = new System.Drawing.Size(1526, 701);
+            this.Controls.Add(this.label_info_type);
+            this.Controls.Add(this.localDirLabel);
             this.Controls.Add(this.label_info_shop_link);
             this.Controls.Add(this.label_info_support_lan);
             this.Controls.Add(this.label_info_launch_date);
@@ -461,6 +500,9 @@
         private System.Windows.Forms.Label label_info_launch_date;
         private System.Windows.Forms.Label label_info_support_lan;
         private System.Windows.Forms.LinkLabel label_info_shop_link;
+        private System.Windows.Forms.LinkLabel localDirLabel;
+        private System.Windows.Forms.Label label_info_type;
+        private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
     }
 }
 

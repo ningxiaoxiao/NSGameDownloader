@@ -1,13 +1,24 @@
 # NSGameDownloader
-![](https://img.shields.io/github/downloads/ningxiaoxiao/NSGameDownloader/total.svg?label=%E7%82%B9%E5%87%BB%E4%B8%8B%E8%BD%BD&style=flat)![](https://img.shields.io/github/release/ningxiaoxiao/NSGameDownloader.svg?style=flat&label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC)  
+![](https://img.shields.io/github/downloads/freedom10086/NSGameDownloader/total.svg?label=%E7%82%B9%E5%87%BB%E4%B8%8B%E8%BD%BD&style=flat)![](https://img.shields.io/github/release/freedom10086/NSGameDownloader.svg?style=flat&label=%E6%9C%80%E6%96%B0%E7%89%88%E6%9C%AC)  
 
-
-从百度云查找游戏  
+从百度云查找NS游戏  
 这个软件并不能直接从百度云下载.只是能简化查找游戏的过程
 
-推荐使用 [超强大的网盘下载器](https://pandownload.com/)
+![](https://raw.githubusercontent.com/freedom10086/NSGameDownloader/master/screenshot.png)
 
 
-![](https://s2.ax1x.com/2019/01/15/FzoxhV.png)
+
+配置文件 `config.json`
+
+```json
+{
+  "panUrl": "百度云资源地址",
+  "nutDbUrl": "nutDb地址",
+  "excelDbUrl": "riggzh整理的excel表格地址",
+  "localGameDir": "本地下载的游戏资源目录"
+}
+```
+
+
 
 > 特别感谢@91wil.riggzh
