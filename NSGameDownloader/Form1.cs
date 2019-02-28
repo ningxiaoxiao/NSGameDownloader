@@ -32,6 +32,8 @@ namespace NSGameDownloader
         // 只显示中文游戏
         private bool _onlyShowCn;
 
+        // 显示已下载
+        private bool _showDownloaded;
 
         /**
          * panUrl: 百度盘地址
@@ -40,6 +42,7 @@ namespace NSGameDownloader
         private JObject _config;
         private JObject _titlekeys;
         private DataSet TitleDataSet;
+        private GameListViewItemComparer listSorter;
 
         public Form1()
         {
@@ -55,6 +58,13 @@ namespace NSGameDownloader
                 MessageBox.Show("无法访问config.json配置文件", "错误", MessageBoxButtons.OK, MessageBoxIcon.Error);
                 return;
             }
+
+            if (_config["localGameDir"].ToString().Length > 0 && Directory.Exists(_config["localGameDir"].ToString())) {
+                check_box_download.Visible = true;
+            }
+
+            listSorter = new GameListViewItemComparer();
+
             var tl = new Thread(ThreadLoad);
             tl.Start();
         }
@@ -129,6 +139,8 @@ namespace NSGameDownloader
                 button_search.Enabled = false;
                 checkbox_cn.Enabled = false;
                 textBox_keyword.Enabled = false;
+                label_progress.Visible = true;
+                label_progress.Text = "下载db.xlsx...";
             }));
 
 
@@ -140,12 +152,14 @@ namespace NSGameDownloader
                 Invoke(new Action(() =>
                 {
                     toolStripProgressBar_download.Value = 2;
+                    label_progress.Text = "解析db.xlsx...";
                 }));
 
                 ReadExcel();
                 Invoke(new Action(() =>
                 {
                     toolStripProgressBar_download.Value = 3;
+                    label_progress.Text = "加载nutdb...";
                 }));
 
                 ReadNutDb();
@@ -168,6 +182,7 @@ namespace NSGameDownloader
                 checkbox_cn.Enabled = true;
                 textBox_keyword.Enabled = true;
                 toolStripProgressBar_download.Visible = false;
+                label_progress.Visible = false;
                 SearchGameName();
             }));
         }
@@ -230,7 +245,7 @@ namespace NSGameDownloader
                 var allnames = row[3].ToString();
                 var haveXci = row[4].ToString().Contains("XCI");
                 var haveNsp = row[4].ToString().Contains("NSP");
-                var haveUpd = row[5].ToString() != "v0";
+                var haveUpd = !row[5].ToString().StartsWith("v0");
                 var haveDlc = row[6].ToString() != "×";
 
 
@@ -240,11 +255,9 @@ namespace NSGameDownloader
                     ["iszh"] = iszh,
                     ["cname"] = cname,
                     ["allnames"] = allnames,
-
                     ["xci"] = haveXci,
                     ["nsp"] = haveNsp,
-                    ["upd"] = haveUpd,
-                    ["dlc"] = haveDlc,
+                    ["dlc"] = haveDlc || haveUpd,
                     ["ver"] = row[5].ToString(),
                     ["region"] = cname.Contains("（美版）") ? "US" : (cname.Contains("（日版）") ? "JP" : "US"),
                     ["ename"] = "",
@@ -280,7 +293,6 @@ namespace NSGameDownloader
             keys.RemoveAt(0);
             keys.RemoveAt(0);
 
-            var count = 0;
             foreach (var key in keys)
             {
                 var kan = key.Split('|');
@@ -304,11 +316,9 @@ namespace NSGameDownloader
 
         private string GetPanUrl(string tid)
         {
-            return _config["panUrl"].ToString()
-                +  (radioButton_xci.Checked ? "XCI" : (radioButton_upd.Checked ? "UPD %2B DLC" : "NSP"))
-                + "/" + tid.Substring(0, 5)
-                + "/" + tid
-                + "&parentPath=/";
+            return (radioButton_xci.Checked ? _config["panUrlXci"].ToString() : (radioButton_upd.Checked ? _config["panUrlUpd"].ToString() : _config["panUrlNsp"].ToString()))
+                + tid.Substring(0, 5) + "/"
+                + tid + "&parentPath=/";
 
             //链接: https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w 
             //提取码: dupb 复制这段内容后打开百度网盘手机App，操作更方便哦
@@ -356,17 +366,50 @@ namespace NSGameDownloader
         private void button_search_Click(object sender, EventArgs e)
         {
             //var keys = Titlekeys.Root.Where(x => x.Contains(textBox_keyword.Text.Trim()));
+            Console.WriteLine("start serach:" + textBox_keyword.Text);
             SearchGameName(textBox_keyword.Text);
         }
 
         private void SearchGameName(string keywords = "")
         {
-            if (_titlekeys == null) return;
-            if (_titlekeys.Count == 0) return;
+            List<String> localGames = new List<String>();
+            if (!_showDownloaded)
+            {
+                if (_titlekeys == null) return;
+                if (_titlekeys.Count == 0) return;
+            }
+            else
+            {
+                try
+                {
+                    DirectoryInfo dir = new DirectoryInfo(_config["localGameDir"].ToString());
+                    DirectoryInfo[] directories = dir.GetDirectories();
+                    foreach (DirectoryInfo d in directories) {
+                        if (d.Name.Length == 5 && d.Name.StartsWith("01")) {
+                            DirectoryInfo[] subDirectories = d.GetDirectories();
+                            foreach (DirectoryInfo subD in subDirectories)
+                            {
+                                //01009A700A538000
+                                if (subD.Name.Length == 16)
+                                {
+                                    localGames.Add(subD.Name);
+                                }
+                            }
+                        }
+                    }
+
+                    Console.WriteLine("load local games count:" + localGames.Count);
+                }
+                catch(Exception e)
+                {
+                    Console.WriteLine("load local games error:" + e);
+                    return;
+                }
+            }
+            
 
             Invoke(new Action(() =>
             {
-                //todo 多关键字处理
                 listView1.Items.Clear();
                 foreach (var titlekey in _titlekeys)
                 {
@@ -377,7 +420,12 @@ namespace NSGameDownloader
                         continue;
                     }
 
-                    if (allstr.ToLower().Contains(keywords.Trim().ToLower()))
+                    if (allstr.ToLower().Contains(keywords.Trim().ToLower())) {
+                        if (_showDownloaded && !localGames.Contains(titlekey.Value["tid"].ToString()))
+                        {
+                            continue;
+                        }
+
                         listView1.Items.Add(new ListViewItem(new[]
                         {
                             titlekey.Value["tid"].ToString(),
@@ -386,10 +434,11 @@ namespace NSGameDownloader
                                 : titlekey.Value["cname"].ToString(), //防止没有中文名
                             titlekey.Value["nsp"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["xci"].ToObject<bool>() ? "●" : "",
-                            titlekey.Value["upd"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["dlc"].ToObject<bool>() ? "●" : "",
                             titlekey.Value["iszh"].ToObject<bool>() ? "●" : ""
                         }));
+                    }
+                        
                 }
 
                 label_count.Text = "count:" + listView1.Items.Count;
@@ -418,20 +467,22 @@ namespace NSGameDownloader
             if (listView1.SelectedItems.Count == 0) return;
             _curTid = listView1.SelectedItems[0].Text;
 
-            var dir = _config["localGameDir"].ToString() + "\\" + _curTid.Substring(0, 5) + "\\" + _curTid + "\\";
-            if (Directory.Exists(dir))
-            {
+            if (_config["localGameDir"].ToString().Length > 0) {
                 localDirLabel.Visible = true;
-                localDirLabel.Text = dir;
-            }
-            else {
-                localDirLabel.Visible = false;
+                var dir = _config["localGameDir"].ToString() + "\\" + _curTid.Substring(0, 5) + "\\" + _curTid + "\\";
+                if (Directory.Exists(dir))
+                {
+                    localDirLabel.Text = dir;
+                }
+                else
+                {
+                    localDirLabel.Text = "创建目录";
+                }
             }
 
 
             //如果点击的是dlc 或者是 upd 那要跳到upd+dlc的目录
-            radioButton_upd.Enabled = _titlekeys[_curTid]["dlc"].ToObject<bool>() ||
-                                   _titlekeys[_curTid]["upd"].ToObject<bool>();
+            radioButton_upd.Enabled = _titlekeys[_curTid]["dlc"].ToObject<bool>();
             radioButton_nsp.Enabled = _titlekeys[_curTid]["nsp"].ToObject<bool>();
             radioButton_xci.Enabled = _titlekeys[_curTid]["xci"].ToObject<bool>();
 
@@ -446,20 +497,76 @@ namespace NSGameDownloader
             t.Start();
         }
 
+        private void listView1_MouseDoubleClick(object sender, MouseEventArgs e)
+        {
+            ListView listview = (ListView)sender;
+            ListViewItem lstrow = listview.GetItemAt(e.X, e.Y);
+            ListViewItem.ListViewSubItem lstcol = lstrow.GetSubItemAt(e.X, e.Y);
+            string strText = lstcol.Text;
+            try
+            {
+                Clipboard.SetDataObject(strText);
+                string info = string.Format("内容【{0}】已经复制到剪贴板", strText);
+                Console.WriteLine(info);
+            }
+            catch (System.Exception ex)
+            {
+                MessageBox.Show(ex.Message, "提示", MessageBoxButtons.OK, MessageBoxIcon.Error);
+            }
+        }
+
+        private void listView1_ColumnClick(object sender, ColumnClickEventArgs e)
+        {
+            Console.WriteLine("ColumnClick:" + e.Column);
+            // 检查点击的列是不是现在的排序列.
+            if (e.Column == listSorter.sortedColumn)
+            {
+                // 重新设置此列的排序方法.
+                if (listSorter.sortOrder == SortOrder.Ascending)
+                {
+                    listSorter.sortOrder = SortOrder.Descending;
+                }
+                else
+                {
+                    listSorter.sortOrder = SortOrder.Ascending;
+                }
+            }
+            else
+            {
+                // 设置排序列，默认为正向排序
+                listSorter.sortedColumn = e.Column;
+                listSorter.sortOrder = SortOrder.Ascending;
+            }
+
+            listView1.ListViewItemSorter = listSorter;
+            // 用新的排序方法对ListView排序
+            listView1.Sort();
+        }
+
         private void GetGameInfoFromEShop()
         {
+            var backUpTid = _curTid;
             Invoke(new Action(() => {
-                pictureBox_gameicon.Image = Resources.load;
+                if (backUpTid == _curTid) {
+                    pictureBox_gameicon.Image = Resources.load;
+                    info_label_name.Text = "游戏名：...";
+                    label_info.Text = "";
+                    label_info_size.Text = "大小：...";
+                    info_label_publisher.Text = "发行商：...";
+                    label_info_launch_date.Text = "发布日期：...";
+                    label_info_support_lan.Text = "支持语言：...";
+                    label_info_type.Text = "类型：...";
+                }
             }));
 
             //todo 从http://www.eshop-switch.com 拿数据
-            var g = _titlekeys[_curTid].ToObject<JObject>();
+            var g = _titlekeys[backUpTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
                 using (var web = new WebClient { Encoding = Encoding.UTF8 })
                 {
                     try
                     {
-                        var url = $"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}";
+                        var url = $"https://ec.nintendo.com/apps/{backUpTid}/{g["region"]}";
                         Console.WriteLine("load game info:" + url);
                         var html = web.DownloadString(url);
 
@@ -467,23 +574,28 @@ namespace NSGameDownloader
                         html = html.Split(new[] { "NXSTORE.titleDetail" }, StringSplitOptions.RemoveEmptyEntries)[0];
                         html = html.Replace(";", "");
 
-                        _titlekeys[_curTid]["info"] = JObject.Parse(html);
+                        _titlekeys[backUpTid]["info"] = JObject.Parse(html);
                     }
                     catch
                     {
                         Invoke(new Action(() => {
-                            label_info.Text = "获取简介信息错误";
-                            label_info_size.Text = "大小：--";
-                            label_info_launch_date.Text = "发布日期：--";
-                            label_info_support_lan.Text = "支持语言：--";
-                            label_info_type.Text = "类型：--";
-                            pictureBox_gameicon.Image = Resources.error;
+                            if (backUpTid == _curTid)
+                            {
+                                info_label_name.Text = "游戏名：--";
+                                label_info.Text = "获取简介信息错误";
+                                label_info_size.Text = "大小：--";
+                                info_label_publisher.Text = "发行商：--";
+                                label_info_launch_date.Text = "发布日期：--";
+                                label_info_support_lan.Text = "支持语言：--";
+                                label_info_type.Text = "类型：--";
+                                pictureBox_gameicon.Image = Resources.error;
+                            }
                         }));
                         return;
                     }
                 }
 
-            var info = _titlekeys[_curTid]["info"];
+            var info = _titlekeys[backUpTid]["info"];
             var size = info["total_rom_size"].ToObject<long>();
             var launch_date = info["release_date_on_eshop"].ToString();
             var description = info["description"].ToString();
@@ -495,33 +607,47 @@ namespace NSGameDownloader
             }
 
             Invoke(new Action(() => {
-                label_info_size.Text = $"大小：{ConvertBytes(size)}";
-                label_info_launch_date.Text = $"发布日期：{launch_date}";
-                label_info_support_lan.Text = $"支持语言：{lan_str}";
-                label_info.Text = $"{info["description"]}";
-                label_info_type.Text = "类型：" + info["genre"].ToString();
+                if (backUpTid == _curTid)
+                {
+                    info_label_name.Text = "游戏名：" + info["formal_name"].ToString();
+                    info_label_publisher.Text = "发行商：" + info["publisher"]["name"].ToString();
+                    label_info_size.Text = $"大小：{ConvertBytes(size)}";
+                    label_info_launch_date.Text = $"发布日期：{launch_date}";
+                    label_info_support_lan.Text = $"支持语言：{lan_str}";
+                    label_info.Text = $"{info["description"]}";
+                    label_info_type.Text = "类型：" + info["genre"].ToString();
+                }
             }));
 
-            if (info["applications"][0]["image_url"] != null)
+            if (backUpTid == _curTid)
             {
-                GetGameImage(info["applications"][0]["image_url"].ToString());
-            }
-            else
-            {
-                pictureBox_gameicon.Image = Resources.error;
+                if (info["applications"][0]["image_url"] != null)
+                {
+                    GetGameImage(backUpTid, info["applications"][0]["image_url"].ToString());
+                }
+                else
+                {
+                    pictureBox_gameicon.Image = Resources.error;
+                }
             }
         }
 
-        private void GetGameImage(String url)
+        private void GetGameImage(String tid, String url)
         {
-            var filename = "image\\" + _curTid + ".jpg";
+            var filename = "image\\" + tid + ".jpg";
             if (File.Exists(filename))
                 try
                 {
-                    pictureBox_gameicon.Image = Image.FromFile(filename);
+                    Invoke(new Action(() => {
+                        if (tid == _curTid)
+                            pictureBox_gameicon.Image = Image.FromFile(filename);
+                    }));
+                    
                     return;
-                } catch {
-                    // ignored
+                } catch
+                {
+                    if (tid == _curTid)
+                        File.Delete(filename);
                 }
 
             var web = new WebClient { Encoding = Encoding.UTF8 };
@@ -531,11 +657,18 @@ namespace NSGameDownloader
             try
             {
                 web.DownloadFile(url, filename);
-                pictureBox_gameicon.Image = Image.FromFile(filename);
+                Invoke(new Action(() => {
+                    if (tid == _curTid)
+                        pictureBox_gameicon.Image = Image.FromFile(filename);
+                }));
+                
             }
             catch
             {
-                pictureBox_gameicon.Image = Resources.error;
+                Invoke(new Action(() => {
+                    if (tid == _curTid)
+                        pictureBox_gameicon.Image = Resources.error;
+                }));
             }
         }
 
@@ -585,13 +718,6 @@ namespace NSGameDownloader
             //GetCookies();
         }
 
-        private void Label_info_shop_link_LinkClicked(object sender, LinkLabelLinkClickedEventArgs e)
-        {
-            var g = _titlekeys[_curTid].ToObject<JObject>();
-            if (!g.ContainsKey("info")) { return; }
-            Process.Start($"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}");
-        }
-
         private void checkbox_cn_CheckedChanged(object sender, EventArgs e)
         {
             _onlyShowCn = ((CheckBox)sender).Checked;
@@ -599,7 +725,14 @@ namespace NSGameDownloader
             SearchGameName();
         }
 
-        private void 更新TitleId文件ToolStripMenuItem_Click(object sender, EventArgs e)
+        private void check_box_download_CheckedChanged(object sender, EventArgs e)
+        {
+            _showDownloaded = ((CheckBox)sender).Checked;
+            textBox_keyword.Text = "";
+            SearchGameName();
+        }
+
+        private void menu_update_game_Click(object sender, EventArgs e)
         {
             var t = new Thread(UpdateTitleKey);
             t.Start();
@@ -624,8 +757,16 @@ namespace NSGameDownloader
         {
             if (_curTid == null) return;
             var dir = _config["localGameDir"].ToString() + "\\" + _curTid.Substring(0, 5) + "\\" + _curTid + "\\";
-            ProcessStartInfo psi = new ProcessStartInfo("Explorer.exe");
-            System.Diagnostics.Process.Start("explorer.exe", dir);
+            if (Directory.Exists(dir))
+            {
+                Process.Start("Explorer.exe", dir);
+            }
+            else
+            {
+                Directory.CreateDirectory(dir);
+                Process.Start("Explorer.exe", dir);
+                localDirLabel.Text = dir;
+            }
         }
 
         private void ToolStripStatusLabel1_Click(object sender, EventArgs e)
@@ -638,5 +779,12 @@ namespace NSGameDownloader
             Process.Start("https://github.com/ningxiaoxiao/NSGameDownloader");
         }
 
+        private void pictureBox_gameicon_Click(object sender, EventArgs e)
+        {
+            if (_curTid == null) return;
+            var g = _titlekeys[_curTid].ToObject<JObject>();
+            if (!g.ContainsKey("info")) { return; }
+            Process.Start($"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}");
+        }
     }
 }

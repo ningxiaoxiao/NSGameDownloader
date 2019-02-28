@@ -33,19 +33,11 @@
             this.button_search = new System.Windows.Forms.Button();
             this.radioButton_nsp = new System.Windows.Forms.RadioButton();
             this.radioButton_xci = new System.Windows.Forms.RadioButton();
-            this.listView1 = new System.Windows.Forms.ListView();
-            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader5 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
-            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
             this.pictureBox_gameicon = new System.Windows.Forms.PictureBox();
             this.label_info = new System.Windows.Forms.Label();
             this.menuStrip1 = new System.Windows.Forms.MenuStrip();
             this.文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
-            this.更新TitleId文件ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
+            this.menu_update_game = new System.Windows.Forms.ToolStripMenuItem();
             this.帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.查看帮助ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.toolStripSeparator1 = new System.Windows.Forms.ToolStripSeparator();
@@ -54,6 +46,7 @@
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
+            this.label_progress = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel1 = new System.Windows.Forms.ToolStripStatusLabel();
             this.toolStripStatusLabel2 = new System.Windows.Forms.ToolStripStatusLabel();
             this.label_count = new System.Windows.Forms.Label();
@@ -63,10 +56,19 @@
             this.label_info_size = new System.Windows.Forms.Label();
             this.label_info_launch_date = new System.Windows.Forms.Label();
             this.label_info_support_lan = new System.Windows.Forms.Label();
-            this.label_info_shop_link = new System.Windows.Forms.LinkLabel();
             this.localDirLabel = new System.Windows.Forms.LinkLabel();
             this.label_info_type = new System.Windows.Forms.Label();
             this.checkbox_cn = new System.Windows.Forms.CheckBox();
+            this.info_label_name = new System.Windows.Forms.Label();
+            this.info_label_publisher = new System.Windows.Forms.Label();
+            this.check_box_download = new System.Windows.Forms.CheckBox();
+            this.columnHeader1 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader2 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader3 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader4 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader6 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.columnHeader7 = ((System.Windows.Forms.ColumnHeader)(new System.Windows.Forms.ColumnHeader()));
+            this.listView1 = new System.Windows.Forms.ListView();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
@@ -74,19 +76,21 @@
             // 
             // textBox_keyword
             // 
+            this.textBox_keyword.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.textBox_keyword.Location = new System.Drawing.Point(13, 35);
             this.textBox_keyword.Margin = new System.Windows.Forms.Padding(4);
             this.textBox_keyword.Name = "textBox_keyword";
-            this.textBox_keyword.Size = new System.Drawing.Size(327, 25);
+            this.textBox_keyword.Size = new System.Drawing.Size(327, 27);
             this.textBox_keyword.TabIndex = 99;
             this.textBox_keyword.KeyPress += new System.Windows.Forms.KeyPressEventHandler(this.textBox_keyword_KeyPress);
             // 
             // button_search
             // 
-            this.button_search.Location = new System.Drawing.Point(413, 35);
+            this.button_search.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.button_search.Location = new System.Drawing.Point(497, 34);
             this.button_search.Margin = new System.Windows.Forms.Padding(4);
             this.button_search.Name = "button_search";
-            this.button_search.Size = new System.Drawing.Size(84, 26);
+            this.button_search.Size = new System.Drawing.Size(84, 28);
             this.button_search.TabIndex = 1;
             this.button_search.Text = "搜索";
             this.button_search.UseVisualStyleBackColor = true;
@@ -96,12 +100,12 @@
             // 
             this.radioButton_nsp.AutoSize = true;
             this.radioButton_nsp.Checked = true;
-            this.radioButton_nsp.Location = new System.Drawing.Point(397, 389);
+            this.radioButton_nsp.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.radioButton_nsp.Location = new System.Drawing.Point(379, 389);
             this.radioButton_nsp.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_nsp.Name = "radioButton_nsp";
-            this.radioButton_nsp.Size = new System.Drawing.Size(82, 19);
+            this.radioButton_nsp.Size = new System.Drawing.Size(90, 24);
             this.radioButton_nsp.TabIndex = 3;
-            this.radioButton_nsp.TabStop = true;
             this.radioButton_nsp.Text = "查看NSP";
             this.radioButton_nsp.UseVisualStyleBackColor = true;
             this.radioButton_nsp.Click += new System.EventHandler(this.radioButton_Click);
@@ -109,76 +113,20 @@
             // radioButton_xci
             // 
             this.radioButton_xci.AutoSize = true;
-            this.radioButton_xci.Location = new System.Drawing.Point(491, 389);
+            this.radioButton_xci.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.radioButton_xci.Location = new System.Drawing.Point(477, 389);
             this.radioButton_xci.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_xci.Name = "radioButton_xci";
-            this.radioButton_xci.Size = new System.Drawing.Size(82, 19);
+            this.radioButton_xci.Size = new System.Drawing.Size(84, 24);
             this.radioButton_xci.TabIndex = 4;
-            this.radioButton_xci.TabStop = true;
             this.radioButton_xci.Text = "查看XCI";
             this.radioButton_xci.UseVisualStyleBackColor = true;
             this.radioButton_xci.Click += new System.EventHandler(this.radioButton_Click);
             // 
-            // listView1
-            // 
-            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
-            this.columnHeader1,
-            this.columnHeader2,
-            this.columnHeader3,
-            this.columnHeader4,
-            this.columnHeader5,
-            this.columnHeader6,
-            this.columnHeader7});
-            this.listView1.FullRowSelect = true;
-            this.listView1.GridLines = true;
-            this.listView1.LabelEdit = true;
-            this.listView1.Location = new System.Drawing.Point(13, 69);
-            this.listView1.Margin = new System.Windows.Forms.Padding(4);
-            this.listView1.Name = "listView1";
-            this.listView1.Size = new System.Drawing.Size(687, 312);
-            this.listView1.TabIndex = 0;
-            this.listView1.UseCompatibleStateImageBehavior = false;
-            this.listView1.View = System.Windows.Forms.View.Details;
-            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
-            // 
-            // columnHeader1
-            // 
-            this.columnHeader1.Text = "TID";
-            this.columnHeader1.Width = 104;
-            // 
-            // columnHeader2
-            // 
-            this.columnHeader2.Text = "NAME";
-            this.columnHeader2.Width = 194;
-            // 
-            // columnHeader3
-            // 
-            this.columnHeader3.Text = "NSP";
-            this.columnHeader3.Width = 36;
-            // 
-            // columnHeader4
-            // 
-            this.columnHeader4.Text = "XCI";
-            this.columnHeader4.Width = 40;
-            // 
-            // columnHeader5
-            // 
-            this.columnHeader5.Text = "UPD";
-            this.columnHeader5.Width = 37;
-            // 
-            // columnHeader6
-            // 
-            this.columnHeader6.Text = "DLC";
-            this.columnHeader6.Width = 38;
-            // 
-            // columnHeader7
-            // 
-            this.columnHeader7.Text = "中文";
-            this.columnHeader7.Width = 44;
-            // 
             // pictureBox_gameicon
             // 
             this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
+            this.pictureBox_gameicon.Cursor = System.Windows.Forms.Cursors.Hand;
             this.pictureBox_gameicon.ImageLocation = "";
             this.pictureBox_gameicon.Location = new System.Drawing.Point(13, 421);
             this.pictureBox_gameicon.Margin = new System.Windows.Forms.Padding(4);
@@ -187,15 +135,17 @@
             this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
             this.pictureBox_gameicon.TabIndex = 7;
             this.pictureBox_gameicon.TabStop = false;
+            this.pictureBox_gameicon.Click += new System.EventHandler(this.pictureBox_gameicon_Click);
             // 
             // label_info
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_info.Location = new System.Drawing.Point(13, 575);
+            this.label_info.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info.Location = new System.Drawing.Point(16, 575);
             this.label_info.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(687, 90);
+            this.label_info.Size = new System.Drawing.Size(684, 97);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "简介";
             // 
@@ -208,24 +158,24 @@
             this.menuStrip1.Location = new System.Drawing.Point(0, 0);
             this.menuStrip1.Name = "menuStrip1";
             this.menuStrip1.Padding = new System.Windows.Forms.Padding(8, 2, 0, 2);
-            this.menuStrip1.Size = new System.Drawing.Size(1526, 28);
+            this.menuStrip1.Size = new System.Drawing.Size(1420, 28);
             this.menuStrip1.TabIndex = 100;
             this.menuStrip1.Text = "menuStrip1";
             // 
             // 文件ToolStripMenuItem
             // 
             this.文件ToolStripMenuItem.DropDownItems.AddRange(new System.Windows.Forms.ToolStripItem[] {
-            this.更新TitleId文件ToolStripMenuItem});
+            this.menu_update_game});
             this.文件ToolStripMenuItem.Name = "文件ToolStripMenuItem";
             this.文件ToolStripMenuItem.Size = new System.Drawing.Size(51, 24);
             this.文件ToolStripMenuItem.Text = "文件";
             // 
-            // 更新TitleId文件ToolStripMenuItem
+            // menu_update_game
             // 
-            this.更新TitleId文件ToolStripMenuItem.Name = "更新TitleId文件ToolStripMenuItem";
-            this.更新TitleId文件ToolStripMenuItem.Size = new System.Drawing.Size(190, 26);
-            this.更新TitleId文件ToolStripMenuItem.Text = "更新TitleId文件";
-            this.更新TitleId文件ToolStripMenuItem.Click += new System.EventHandler(this.更新TitleId文件ToolStripMenuItem_Click);
+            this.menu_update_game.Name = "menu_update_game";
+            this.menu_update_game.Size = new System.Drawing.Size(216, 26);
+            this.menu_update_game.Text = "更新游戏库";
+            this.menu_update_game.Click += new System.EventHandler(this.menu_update_game_Click);
             // 
             // 帮助ToolStripMenuItem
             // 
@@ -275,12 +225,13 @@
             this.statusStrip1.ImageScalingSize = new System.Drawing.Size(20, 20);
             this.statusStrip1.Items.AddRange(new System.Windows.Forms.ToolStripItem[] {
             this.toolStripProgressBar_download,
+            this.label_progress,
             this.toolStripStatusLabel1,
             this.toolStripStatusLabel2});
-            this.statusStrip1.Location = new System.Drawing.Point(0, 679);
+            this.statusStrip1.Location = new System.Drawing.Point(0, 676);
             this.statusStrip1.Name = "statusStrip1";
             this.statusStrip1.Padding = new System.Windows.Forms.Padding(1, 0, 19, 0);
-            this.statusStrip1.Size = new System.Drawing.Size(1526, 22);
+            this.statusStrip1.Size = new System.Drawing.Size(1420, 25);
             this.statusStrip1.TabIndex = 101;
             this.statusStrip1.Text = "statusStrip1";
             // 
@@ -291,38 +242,48 @@
             this.toolStripProgressBar_download.Size = new System.Drawing.Size(133, 20);
             this.toolStripProgressBar_download.Visible = false;
             // 
+            // label_progress
+            // 
+            this.label_progress.ForeColor = System.Drawing.Color.DimGray;
+            this.label_progress.LinkColor = System.Drawing.Color.DimGray;
+            this.label_progress.Name = "label_progress";
+            this.label_progress.Size = new System.Drawing.Size(93, 20);
+            this.label_progress.Text = "正在下载xxx";
+            this.label_progress.Visible = false;
+            // 
             // toolStripStatusLabel1
             // 
             this.toolStripStatusLabel1.AccessibleRole = System.Windows.Forms.AccessibleRole.Cursor;
-            this.toolStripStatusLabel1.Font = new System.Drawing.Font("宋体", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.toolStripStatusLabel1.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.toolStripStatusLabel1.ForeColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel1.IsLink = true;
             this.toolStripStatusLabel1.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.toolStripStatusLabel1.LinkColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel1.Name = "toolStripStatusLabel1";
-            this.toolStripStatusLabel1.Size = new System.Drawing.Size(187, 17);
+            this.toolStripStatusLabel1.Size = new System.Drawing.Size(180, 20);
             this.toolStripStatusLabel1.Text = "特别感谢 @ 91wii.riggzh";
             this.toolStripStatusLabel1.Click += new System.EventHandler(this.ToolStripStatusLabel1_Click);
             // 
             // toolStripStatusLabel2
             // 
             this.toolStripStatusLabel2.AccessibleRole = System.Windows.Forms.AccessibleRole.Cursor;
-            this.toolStripStatusLabel2.Font = new System.Drawing.Font("宋体", 9F);
+            this.toolStripStatusLabel2.Font = new System.Drawing.Font("Microsoft YaHei UI", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.toolStripStatusLabel2.ForeColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel2.IsLink = true;
             this.toolStripStatusLabel2.LinkBehavior = System.Windows.Forms.LinkBehavior.NeverUnderline;
             this.toolStripStatusLabel2.LinkColor = System.Drawing.Color.DimGray;
             this.toolStripStatusLabel2.Name = "toolStripStatusLabel2";
-            this.toolStripStatusLabel2.Size = new System.Drawing.Size(183, 17);
+            this.toolStripStatusLabel2.Size = new System.Drawing.Size(176, 20);
             this.toolStripStatusLabel2.Text = " @ github ningxiaoxiao";
             this.toolStripStatusLabel2.Click += new System.EventHandler(this.toolStripStatusLabel2_Click);
             // 
             // label_count
             // 
-            this.label_count.Location = new System.Drawing.Point(583, 35);
+            this.label_count.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_count.Location = new System.Drawing.Point(592, 35);
             this.label_count.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_count.Name = "label_count";
-            this.label_count.Size = new System.Drawing.Size(117, 26);
+            this.label_count.Size = new System.Drawing.Size(111, 26);
             this.label_count.TabIndex = 103;
             this.label_count.Text = "count: 计算中";
             this.label_count.TextAlign = System.Drawing.ContentAlignment.MiddleRight;
@@ -330,22 +291,25 @@
             // radioButton_upd
             // 
             this.radioButton_upd.AutoSize = true;
-            this.radioButton_upd.Location = new System.Drawing.Point(586, 389);
+            this.radioButton_upd.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.radioButton_upd.Location = new System.Drawing.Point(569, 389);
             this.radioButton_upd.Margin = new System.Windows.Forms.Padding(4);
             this.radioButton_upd.Name = "radioButton_upd";
-            this.radioButton_upd.Size = new System.Drawing.Size(114, 19);
+            this.radioButton_upd.Size = new System.Drawing.Size(131, 24);
             this.radioButton_upd.TabIndex = 104;
-            this.radioButton_upd.TabStop = true;
             this.radioButton_upd.Text = "查看UPD+DLC";
             this.radioButton_upd.UseVisualStyleBackColor = true;
             this.radioButton_upd.Click += new System.EventHandler(this.radioButton_Click);
             // 
             // label_url
             // 
-            this.label_url.Location = new System.Drawing.Point(708, 35);
+            this.label_url.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Left) 
+            | System.Windows.Forms.AnchorStyles.Right)));
+            this.label_url.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_url.Location = new System.Drawing.Point(704, 36);
             this.label_url.Margin = new System.Windows.Forms.Padding(4, 0, 4, 0);
             this.label_url.Name = "label_url";
-            this.label_url.Size = new System.Drawing.Size(927, 26);
+            this.label_url.Size = new System.Drawing.Size(700, 26);
             this.label_url.TabIndex = 105;
             this.label_url.Text = "选择游戏查看下载地址";
             this.label_url.TextAlign = System.Drawing.ContentAlignment.MiddleLeft;
@@ -361,7 +325,7 @@
             this.panWebBrowser.Margin = new System.Windows.Forms.Padding(4);
             this.panWebBrowser.MinimumSize = new System.Drawing.Size(27, 25);
             this.panWebBrowser.Name = "panWebBrowser";
-            this.panWebBrowser.Size = new System.Drawing.Size(802, 595);
+            this.panWebBrowser.Size = new System.Drawing.Size(696, 603);
             this.panWebBrowser.TabIndex = 2;
             this.panWebBrowser.DocumentCompleted += new System.Windows.Forms.WebBrowserDocumentCompletedEventHandler(this.webBrowser_DocumentCompleted);
             this.panWebBrowser.Navigated += new System.Windows.Forms.WebBrowserNavigatedEventHandler(this.panWebBrowser_Navigated);
@@ -370,84 +334,171 @@
             // label_info_size
             // 
             this.label_info_size.AutoSize = true;
-            this.label_info_size.Location = new System.Drawing.Point(170, 421);
+            this.label_info_size.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info_size.Location = new System.Drawing.Point(394, 441);
             this.label_info_size.Name = "label_info_size";
-            this.label_info_size.Size = new System.Drawing.Size(52, 15);
+            this.label_info_size.Size = new System.Drawing.Size(54, 20);
             this.label_info_size.TabIndex = 106;
             this.label_info_size.Text = "大小：";
             // 
             // label_info_launch_date
             // 
             this.label_info_launch_date.AutoSize = true;
-            this.label_info_launch_date.Location = new System.Drawing.Point(170, 445);
+            this.label_info_launch_date.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info_launch_date.Location = new System.Drawing.Point(170, 444);
             this.label_info_launch_date.Name = "label_info_launch_date";
-            this.label_info_launch_date.Size = new System.Drawing.Size(82, 15);
+            this.label_info_launch_date.Size = new System.Drawing.Size(84, 20);
             this.label_info_launch_date.TabIndex = 107;
             this.label_info_launch_date.Text = "发布日期：";
             // 
             // label_info_support_lan
             // 
-            this.label_info_support_lan.Location = new System.Drawing.Point(170, 493);
+            this.label_info_support_lan.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info_support_lan.Location = new System.Drawing.Point(170, 513);
             this.label_info_support_lan.Name = "label_info_support_lan";
             this.label_info_support_lan.Size = new System.Drawing.Size(530, 41);
             this.label_info_support_lan.TabIndex = 108;
             this.label_info_support_lan.Text = "支持语言：";
             // 
-            // label_info_shop_link
-            // 
-            this.label_info_shop_link.ActiveLinkColor = System.Drawing.Color.Black;
-            this.label_info_shop_link.AutoSize = true;
-            this.label_info_shop_link.LinkColor = System.Drawing.Color.Black;
-            this.label_info_shop_link.Location = new System.Drawing.Point(170, 556);
-            this.label_info_shop_link.Name = "label_info_shop_link";
-            this.label_info_shop_link.Size = new System.Drawing.Size(67, 15);
-            this.label_info_shop_link.TabIndex = 109;
-            this.label_info_shop_link.TabStop = true;
-            this.label_info_shop_link.Text = "商店页面";
-            this.label_info_shop_link.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.Label_info_shop_link_LinkClicked);
-            // 
             // localDirLabel
             // 
             this.localDirLabel.ActiveLinkColor = System.Drawing.Color.Black;
             this.localDirLabel.AutoSize = true;
+            this.localDirLabel.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.localDirLabel.LinkColor = System.Drawing.Color.Black;
             this.localDirLabel.Location = new System.Drawing.Point(12, 389);
             this.localDirLabel.Name = "localDirLabel";
-            this.localDirLabel.Size = new System.Drawing.Size(67, 15);
+            this.localDirLabel.Size = new System.Drawing.Size(69, 20);
             this.localDirLabel.TabIndex = 110;
             this.localDirLabel.TabStop = true;
             this.localDirLabel.Text = "本地目录";
+            this.localDirLabel.Visible = false;
             this.localDirLabel.LinkClicked += new System.Windows.Forms.LinkLabelLinkClickedEventHandler(this.localDirLabel_LinkClicked);
             // 
             // label_info_type
             // 
             this.label_info_type.AutoSize = true;
-            this.label_info_type.Location = new System.Drawing.Point(170, 469);
+            this.label_info_type.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info_type.Location = new System.Drawing.Point(170, 467);
             this.label_info_type.Name = "label_info_type";
-            this.label_info_type.Size = new System.Drawing.Size(52, 15);
+            this.label_info_type.Size = new System.Drawing.Size(54, 20);
             this.label_info_type.TabIndex = 111;
             this.label_info_type.Text = "类型：";
             // 
             // checkbox_cn
             // 
             this.checkbox_cn.AutoSize = true;
+            this.checkbox_cn.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
             this.checkbox_cn.Location = new System.Drawing.Point(347, 38);
             this.checkbox_cn.Name = "checkbox_cn";
-            this.checkbox_cn.Size = new System.Drawing.Size(59, 19);
+            this.checkbox_cn.Size = new System.Drawing.Size(61, 24);
             this.checkbox_cn.TabIndex = 112;
             this.checkbox_cn.Text = "中文";
             this.checkbox_cn.UseVisualStyleBackColor = true;
             this.checkbox_cn.CheckedChanged += new System.EventHandler(this.checkbox_cn_CheckedChanged);
             // 
+            // info_label_name
+            // 
+            this.info_label_name.AutoSize = true;
+            this.info_label_name.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.info_label_name.Location = new System.Drawing.Point(170, 421);
+            this.info_label_name.Name = "info_label_name";
+            this.info_label_name.Size = new System.Drawing.Size(69, 20);
+            this.info_label_name.TabIndex = 113;
+            this.info_label_name.Text = "游戏名：";
+            // 
+            // info_label_publisher
+            // 
+            this.info_label_publisher.AutoSize = true;
+            this.info_label_publisher.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.info_label_publisher.Location = new System.Drawing.Point(170, 490);
+            this.info_label_publisher.Name = "info_label_publisher";
+            this.info_label_publisher.Size = new System.Drawing.Size(69, 20);
+            this.info_label_publisher.TabIndex = 114;
+            this.info_label_publisher.Text = "发行商：";
+            // 
+            // check_box_download
+            // 
+            this.check_box_download.AutoSize = true;
+            this.check_box_download.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.check_box_download.Location = new System.Drawing.Point(414, 38);
+            this.check_box_download.Name = "check_box_download";
+            this.check_box_download.Size = new System.Drawing.Size(76, 24);
+            this.check_box_download.TabIndex = 115;
+            this.check_box_download.Text = "已下载";
+            this.check_box_download.UseVisualStyleBackColor = true;
+            this.check_box_download.Visible = false;
+            this.check_box_download.CheckedChanged += new System.EventHandler(this.check_box_download_CheckedChanged);
+            // 
+            // columnHeader1
+            // 
+            this.columnHeader1.Text = "TID";
+            this.columnHeader1.Width = 160;
+            // 
+            // columnHeader2
+            // 
+            this.columnHeader2.Text = "NAME";
+            this.columnHeader2.Width = 260;
+            // 
+            // columnHeader3
+            // 
+            this.columnHeader3.Text = "NSP";
+            this.columnHeader3.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader3.Width = 44;
+            // 
+            // columnHeader4
+            // 
+            this.columnHeader4.Text = "XCI";
+            this.columnHeader4.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader4.Width = 44;
+            // 
+            // columnHeader6
+            // 
+            this.columnHeader6.Text = "UPD/DLC";
+            this.columnHeader6.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader6.Width = 44;
+            // 
+            // columnHeader7
+            // 
+            this.columnHeader7.Text = "中文";
+            this.columnHeader7.TextAlign = System.Windows.Forms.HorizontalAlignment.Center;
+            this.columnHeader7.Width = 44;
+            // 
+            // listView1
+            // 
+            this.listView1.Columns.AddRange(new System.Windows.Forms.ColumnHeader[] {
+            this.columnHeader1,
+            this.columnHeader2,
+            this.columnHeader3,
+            this.columnHeader4,
+            this.columnHeader6,
+            this.columnHeader7});
+            this.listView1.Font = new System.Drawing.Font("微软雅黑", 9F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.listView1.FullRowSelect = true;
+            this.listView1.GridLines = true;
+            this.listView1.LabelEdit = true;
+            this.listView1.Location = new System.Drawing.Point(13, 69);
+            this.listView1.Margin = new System.Windows.Forms.Padding(4);
+            this.listView1.Name = "listView1";
+            this.listView1.Size = new System.Drawing.Size(687, 312);
+            this.listView1.TabIndex = 0;
+            this.listView1.UseCompatibleStateImageBehavior = false;
+            this.listView1.View = System.Windows.Forms.View.Details;
+            this.listView1.ColumnClick += new System.Windows.Forms.ColumnClickEventHandler(this.listView1_ColumnClick);
+            this.listView1.SelectedIndexChanged += new System.EventHandler(this.listView1_SelectedIndexChanged);
+            this.listView1.MouseDoubleClick += new System.Windows.Forms.MouseEventHandler(this.listView1_MouseDoubleClick);
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(8F, 15F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
-            this.ClientSize = new System.Drawing.Size(1526, 701);
+            this.ClientSize = new System.Drawing.Size(1420, 701);
+            this.Controls.Add(this.check_box_download);
+            this.Controls.Add(this.info_label_publisher);
+            this.Controls.Add(this.info_label_name);
             this.Controls.Add(this.checkbox_cn);
             this.Controls.Add(this.label_info_type);
             this.Controls.Add(this.localDirLabel);
-            this.Controls.Add(this.label_info_shop_link);
             this.Controls.Add(this.label_info_support_lan);
             this.Controls.Add(this.label_info_launch_date);
             this.Controls.Add(this.label_info_size);
@@ -488,15 +539,11 @@
         private System.Windows.Forms.WebBrowser panWebBrowser;
         private System.Windows.Forms.RadioButton radioButton_nsp;
         private System.Windows.Forms.RadioButton radioButton_xci;
-        private System.Windows.Forms.ListView listView1;
         private System.Windows.Forms.PictureBox pictureBox_gameicon;
-        private System.Windows.Forms.ColumnHeader columnHeader1;
-        private System.Windows.Forms.ColumnHeader columnHeader2;
         private System.Windows.Forms.Label label_info;
-        private System.Windows.Forms.ColumnHeader columnHeader3;
         private System.Windows.Forms.MenuStrip menuStrip1;
         private System.Windows.Forms.ToolStripMenuItem 文件ToolStripMenuItem;
-        private System.Windows.Forms.ToolStripMenuItem 更新TitleId文件ToolStripMenuItem;
+        private System.Windows.Forms.ToolStripMenuItem menu_update_game;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_download;
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
@@ -505,22 +552,28 @@
         private System.Windows.Forms.ToolStripSeparator toolStripSeparator1;
         private System.Windows.Forms.ToolStripSeparator toolStripMenuItem1;
         private System.Windows.Forms.ToolStripMenuItem 关于ToolStripMenuItem;
-        private System.Windows.Forms.ColumnHeader columnHeader4;
         private System.Windows.Forms.Label label_count;
         private System.Windows.Forms.RadioButton radioButton_upd;
-        private System.Windows.Forms.ColumnHeader columnHeader5;
-        private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
-        private System.Windows.Forms.ColumnHeader columnHeader7;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel1;
         private System.Windows.Forms.Label label_info_size;
         private System.Windows.Forms.Label label_info_launch_date;
         private System.Windows.Forms.Label label_info_support_lan;
-        private System.Windows.Forms.LinkLabel label_info_shop_link;
         private System.Windows.Forms.LinkLabel localDirLabel;
         private System.Windows.Forms.Label label_info_type;
         private System.Windows.Forms.ToolStripStatusLabel toolStripStatusLabel2;
         private System.Windows.Forms.CheckBox checkbox_cn;
+        private System.Windows.Forms.Label info_label_name;
+        private System.Windows.Forms.Label info_label_publisher;
+        private System.Windows.Forms.CheckBox check_box_download;
+        private System.Windows.Forms.ColumnHeader columnHeader1;
+        private System.Windows.Forms.ColumnHeader columnHeader2;
+        private System.Windows.Forms.ColumnHeader columnHeader3;
+        private System.Windows.Forms.ColumnHeader columnHeader4;
+        private System.Windows.Forms.ColumnHeader columnHeader6;
+        private System.Windows.Forms.ColumnHeader columnHeader7;
+        private System.Windows.Forms.ListView listView1;
+        private System.Windows.Forms.ToolStripStatusLabel label_progress;
     }
 }
 

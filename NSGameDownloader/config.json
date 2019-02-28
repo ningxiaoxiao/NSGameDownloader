@@ -1,6 +1,8 @@
 ﻿{
-  "panUrl": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/",
+  "panUrlXci": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/XCI/",
+  "panUrlNsp": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/NSP/",
+  "panUrlUpd": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/UPD + DLC/",
   "nutDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/NUTDB.txt",
   "excelDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/db.xlsx",
-  "localGameDir": "D:\\迅雷下载"
+  "localGameDir": "E:\\SwitchGame"
 }
