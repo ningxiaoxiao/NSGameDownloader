@@ -1,7 +1,7 @@
 ﻿{
-  "panUrlXci": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/XCI/",
-  "panUrlNsp": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/NSP/",
-  "panUrlUpd": "https://pan.baidu.com/s/1uE06kZ2N-EHIBa5Q_X-K1w#list/path=/Nintendo Switch Games/UPD + DLC/",
+  "panUrlXci": "https://pan.baidu.com/s/13h3QtK5jtdDfx3FkujmaGA#list/path=%2FXCI/",
+  "panUrlNsp": "https://pan.baidu.com/s/1YPq08Dwox8y8uGKGePndgQ#list/path=%2FNintendo%20Switch%20Games%2FNSP/",
+  "panUrlUpd": "https://pan.baidu.com/s/1YPq08Dwox8y8uGKGePndgQ#list/path=%2FNintendo%20Switch%20Games%2FUPD%20%2B%20DLC/",
   "nutDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/NUTDB.txt",
   "excelDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/db.xlsx",
   "localGameDir": "E:\\SwitchGame"

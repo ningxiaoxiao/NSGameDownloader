@@ -23,8 +23,8 @@ namespace NSGameDownloader
     {
         private const string ConfigPath = "config.json";
         private const string TitleKeysPath = "keys.json";
+        private const string CookiePath = "cookie.json";
         private const string ExcelPath = "db.xlsx";
-        private const string CookiePath = "cookie\\cookie";
         private const int EM_SETCUEBANNER = 0x1501;
 
         private string _curTid;
@@ -63,6 +63,7 @@ namespace NSGameDownloader
                 check_box_download.Visible = true;
             }
 
+           
             listSorter = new GameListViewItemComparer();
 
             var tl = new Thread(ThreadLoad);
@@ -74,10 +75,8 @@ namespace NSGameDownloader
         /// </summary>
         private void ThreadLoad()
         {
-            if (!Directory.Exists("cookie"))
-                Directory.CreateDirectory("cookie");
 
-            // ReadCookieFile();
+            ReadCookieFile();
 
             if (!File.Exists(TitleKeysPath))
             {
@@ -101,24 +100,8 @@ namespace NSGameDownloader
         private void Form1_FormClosing(object sender, FormClosingEventArgs e)
         {
             File.WriteAllText(TitleKeysPath, _titlekeys.ToString());
-            // WriteCookieFile();
-        }
 
-        private void WriteCookieFile()
-        {
-            File.WriteAllText(CookiePath, JsonConvert.SerializeObject(_cookie));
-        }
-
-        private void ReadCookieFile()
-        {
-            if (File.Exists(CookiePath))
-                _cookie = JsonConvert.DeserializeObject<CookieContainer>(File.ReadAllText(CookiePath));
-            /*
-            var cs = _cookie.GetCookies(new Uri("https://pan.baidu.com"));
-            foreach (Cookie cookie in cs)
-            {
-                InternetSetCookie("https://pan.baidu.com", cookie.Name, cookie.Value);
-            }*/
+            WriteCookieFile();
         }
 
 
@@ -330,19 +313,38 @@ namespace NSGameDownloader
             label_url.Text = oUrl;
 
             if (panWebBrowser.Document.Body == null) return;
-            GetCookies();
+            UpdateCookies(radioButton_nsp.Checked ? "nsp_cookie" : radioButton_xci.Checked ? "xci_cookie" : "upd_dlc_cookie");
         }
 
-        private CookieContainer _cookie = new CookieContainer();
-        private void GetCookies()
+
+        private JObject _cookies = new JObject();
+
+        private void ReadCookieFile()
+        {
+            if (File.Exists(CookiePath))
+                _cookies = JObject.Parse(File.ReadAllText(CookiePath));
+            else
+                _cookies = new JObject();
+        }
+
+        private void WriteCookieFile()
+        {
+            Console.WriteLine("save cookie to file");
+            File.WriteAllText(CookiePath, JsonConvert.SerializeObject(_cookies));
+        }
+
+
+        private void UpdateCookies(String cookieType)
         {
             var str = panWebBrowser.Document.Cookie.Replace(",", "%2C");
             var cookies = str.Split(';');
             foreach (var c in cookies)
             {
                 var kv = c.Split('=');
-                var cookie = new Cookie(kv[0].Trim(), kv.Length == 0 ? "" : kv[1].Trim());
-                _cookie.Add(new Uri("https://pan.baidu.com"), cookie);
+                if (kv[0].Trim().Equals("BDCLND")) {
+                    _cookies[cookieType] = kv.Length == 0 ? "" : kv[1].Trim();
+                    Console.WriteLine("update cookie,"+ cookieType + ":" + (kv.Length == 0 ? "" : kv[1].Trim()));
+                }
             }
         }
 
@@ -351,6 +353,17 @@ namespace NSGameDownloader
             if (_curTid == null) return;
             var url = GetPanUrl(_curTid);
             Console.WriteLine("打开:" + url);
+
+            String cookie = "";
+            JToken jt = _cookies[radioButton_nsp.Checked ? "nsp_cookie" : radioButton_xci.Checked ? "xci_cookie" : "upd_dlc_cookie"];
+            if (jt != null) {
+                cookie = jt.ToString();
+            }
+            //使用cookie方法免写密码,只有手动时 才更新cookie
+            InternetSetCookie("https://pan.baidu.com/", "BDCLND", cookie);
+            Console.WriteLine("set cookie BDCLND:" + cookie);
+
+            //panWebBrowser.Navigate (url, "_self" , null, "User-Agent: Mozilla/5.0 (iPhone; CPU iPhone OS 12_1_4 like Mac OS X) AppleWebKit/605.1.15 (KHTMsL, like Gecko) Version/12.0 Mobile/15E148 Safari/604.1");
             panWebBrowser.Navigate(url); //点击刷新 只找本体
         }
 
@@ -481,16 +494,22 @@ namespace NSGameDownloader
             }
 
 
-            //如果点击的是dlc 或者是 upd 那要跳到upd+dlc的目录
             radioButton_upd.Enabled = _titlekeys[_curTid]["dlc"].ToObject<bool>();
             radioButton_nsp.Enabled = _titlekeys[_curTid]["nsp"].ToObject<bool>();
             radioButton_xci.Enabled = _titlekeys[_curTid]["xci"].ToObject<bool>();
 
-            if (!radioButton_nsp.Enabled && radioButton_nsp.Checked) radioButton_xci.Checked = true;
-            if (!radioButton_xci.Enabled && radioButton_xci.Checked) radioButton_nsp.Checked = true;
+            if (!radioButton_upd.Enabled && radioButton_upd.Checked) radioButton_nsp.Checked = radioButton_nsp.Enabled;
+            if (!radioButton_nsp.Enabled && radioButton_nsp.Checked) radioButton_xci.Checked = radioButton_xci.Enabled;
+            if (!radioButton_xci.Enabled && radioButton_xci.Checked) radioButton_nsp.Checked = radioButton_nsp.Enabled;
 
-
-            WebRefresh();
+            if (!radioButton_nsp.Checked && !radioButton_xci.Checked && !radioButton_upd.Checked)
+            {
+                panWebBrowser.Url = null;
+            }
+            else
+            {
+                WebRefresh();
+            }
 
             //刷新来自eshop的信息
             var t = new Thread(GetGameInfoFromEShop);
