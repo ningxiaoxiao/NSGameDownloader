@@ -97,6 +97,9 @@ namespace NSGameDownloader
 
         private void Form1_Load(object sender, EventArgs e)
         {
+            // 解决WebClient不能通过https下载内容问题
+            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
 
             LoadConfigFormGithub();
 
@@ -402,15 +405,13 @@ namespace NSGameDownloader
             var t = new Thread(GetGameInfoFromEShop);
             t.Start();
 
-
-            //得到图片
-            //todo 更好的图片地址
-            t = new Thread(GetGameImage);
-            t.Start();
         }
 
         private void GetGameInfoFromEShop()
         {
+            pictureBox_gameicon.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox_gameicon.Image = Resources.load;
+
             //todo 从http://www.eshop-switch.com 拿数据
             var g = _titlekeys[_curTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
@@ -419,6 +420,7 @@ namespace NSGameDownloader
                     try
                     {
                         var url = $"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}";
+                        Console.WriteLine(url);
                         var html = web.DownloadString(url);
 
                         html = html.Split(new[] { "NXSTORE.titleDetail.jsonData = " }, StringSplitOptions.RemoveEmptyEntries)[1];
@@ -437,43 +439,53 @@ namespace NSGameDownloader
             var info = _titlekeys[_curTid]["info"];
             var size = info["total_rom_size"].ToObject<long>();
             Invoke(new Action(() => { label_info.Text = $"{ConvertBytes(size)}\n{info["description"]}"; }));
+            if (!GetGameImage())
+            {
+
+                pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox_gameicon.Image = Resources.error;
+            }
+
+
         }
 
-        private void GetGameImage()
+        private bool GetGameImage()
         {
-            pictureBox_gameicon.Image = Resources.load;
-
-
             var filename = "image\\" + _curTid + ".jpg";
 
             if (File.Exists(filename))
                 try
-                {
+                {//有时会有0kb的图片
+                    pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
                     pictureBox_gameicon.Image = Image.FromFile(filename);
-                    return;
+                    return true;
                 }
                 catch
                 {
                     // ignored
                 }
 
-            var web = new WebClient { Encoding = Encoding.UTF8 };
-            // 解决WebClient不能通过https下载内容问题
-            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            try
+            using (var web = new WebClient { Encoding = Encoding.UTF8 })
             {
-                web.DownloadFile("https://terannet.sirv.com/CDNSP/" + _curTid.ToLower() + ".jpg", filename);
-                pictureBox_gameicon.Image = Image.FromFile(filename);
-            }
-            catch
-            {
-                if (File.Exists(filename))
-                    File.Delete(filename);
+
+                try
+                {
+                    var imageurl = _titlekeys[_curTid]["info"]["applications"][0]["image_url"].ToString();
+                    web.DownloadFile(imageurl, filename);
+                    pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
+                    pictureBox_gameicon.Image = Image.FromFile(filename);
+                    return true;
+                }
+                catch
+                {
+                    if (File.Exists(filename))
+                        File.Delete(filename);
+                    return false;
+                }
 
 
-                pictureBox_gameicon.Image = Resources.error;
             }
+
         }
 
         /// <summary>
