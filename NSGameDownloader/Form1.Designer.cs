@@ -54,13 +54,16 @@
             this.关于ToolStripMenuItem = new System.Windows.Forms.ToolStripMenuItem();
             this.statusStrip1 = new System.Windows.Forms.StatusStrip();
             this.toolStripProgressBar_download = new System.Windows.Forms.ToolStripProgressBar();
-            this.label1 = new System.Windows.Forms.Label();
             this.label_count = new System.Windows.Forms.Label();
             this.radioButton_upd = new System.Windows.Forms.RadioButton();
             this.label_url = new System.Windows.Forms.Label();
+            this.flowLayoutPanel1 = new System.Windows.Forms.FlowLayoutPanel();
+            this.pictureBox1 = new System.Windows.Forms.PictureBox();
             ((System.ComponentModel.ISupportInitialize)(this.pictureBox_gameicon)).BeginInit();
             this.menuStrip1.SuspendLayout();
             this.statusStrip1.SuspendLayout();
+            this.flowLayoutPanel1.SuspendLayout();
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).BeginInit();
             this.SuspendLayout();
             // 
             // textBox_keyword
@@ -173,7 +176,7 @@
             // 
             this.pictureBox_gameicon.BackColor = System.Drawing.SystemColors.ActiveBorder;
             this.pictureBox_gameicon.ImageLocation = "";
-            this.pictureBox_gameicon.Location = new System.Drawing.Point(10, 337);
+            this.pictureBox_gameicon.Location = new System.Drawing.Point(36, 311);
             this.pictureBox_gameicon.Name = "pictureBox_gameicon";
             this.pictureBox_gameicon.Size = new System.Drawing.Size(100, 100);
             this.pictureBox_gameicon.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
@@ -184,9 +187,10 @@
             // 
             this.label_info.Anchor = ((System.Windows.Forms.AnchorStyles)(((System.Windows.Forms.AnchorStyles.Top | System.Windows.Forms.AnchorStyles.Bottom) 
             | System.Windows.Forms.AnchorStyles.Left)));
-            this.label_info.Location = new System.Drawing.Point(118, 337);
+            this.label_info.Font = new System.Drawing.Font("微软雅黑", 12F, System.Drawing.FontStyle.Regular, System.Drawing.GraphicsUnit.Point, ((byte)(134)));
+            this.label_info.Location = new System.Drawing.Point(12, 427);
             this.label_info.Name = "label_info";
-            this.label_info.Size = new System.Drawing.Size(358, 182);
+            this.label_info.Size = new System.Drawing.Size(143, 92);
             this.label_info.TabIndex = 8;
             this.label_info.Text = "0GB";
             // 
@@ -276,19 +280,6 @@
             this.toolStripProgressBar_download.Size = new System.Drawing.Size(100, 16);
             this.toolStripProgressBar_download.Visible = false;
             // 
-            // label1
-            // 
-            this.label1.Anchor = ((System.Windows.Forms.AnchorStyles)((System.Windows.Forms.AnchorStyles.Bottom | System.Windows.Forms.AnchorStyles.Left)));
-            this.label1.AutoSize = true;
-            this.label1.Cursor = System.Windows.Forms.Cursors.Hand;
-            this.label1.ForeColor = System.Drawing.Color.DimGray;
-            this.label1.Location = new System.Drawing.Point(8, 519);
-            this.label1.Name = "label1";
-            this.label1.Size = new System.Drawing.Size(215, 12);
-            this.label1.TabIndex = 102;
-            this.label1.Text = "特别感谢 @ 91wii.riggzh  github.bob";
-            this.label1.Click += new System.EventHandler(this.label1_Click);
-            // 
             // label_count
             // 
             this.label_count.Location = new System.Drawing.Point(386, 28);
@@ -322,15 +313,38 @@
             this.label_url.UseMnemonic = false;
             this.label_url.Click += new System.EventHandler(this.label_url_Click);
             // 
+            // flowLayoutPanel1
+            // 
+            this.flowLayoutPanel1.AutoScroll = true;
+            this.flowLayoutPanel1.AutoScrollMinSize = new System.Drawing.Size(50, 0);
+            this.flowLayoutPanel1.Controls.Add(this.pictureBox1);
+            this.flowLayoutPanel1.Location = new System.Drawing.Point(161, 333);
+            this.flowLayoutPanel1.Name = "flowLayoutPanel1";
+            this.flowLayoutPanel1.Size = new System.Drawing.Size(313, 198);
+            this.flowLayoutPanel1.TabIndex = 107;
+            this.flowLayoutPanel1.WrapContents = false;
+            // 
+            // pictureBox1
+            // 
+            this.pictureBox1.BackColor = System.Drawing.SystemColors.ActiveCaptionText;
+            this.pictureBox1.ErrorImage = global::NSGameDownloader.Properties.Resources.error;
+            this.pictureBox1.InitialImage = global::NSGameDownloader.Properties.Resources.load;
+            this.pictureBox1.Location = new System.Drawing.Point(3, 3);
+            this.pictureBox1.Name = "pictureBox1";
+            this.pictureBox1.Size = new System.Drawing.Size(302, 171);
+            this.pictureBox1.SizeMode = System.Windows.Forms.PictureBoxSizeMode.StretchImage;
+            this.pictureBox1.TabIndex = 107;
+            this.pictureBox1.TabStop = false;
+            // 
             // Form1
             // 
             this.AutoScaleDimensions = new System.Drawing.SizeF(6F, 12F);
             this.AutoScaleMode = System.Windows.Forms.AutoScaleMode.Font;
             this.ClientSize = new System.Drawing.Size(1238, 561);
+            this.Controls.Add(this.flowLayoutPanel1);
             this.Controls.Add(this.label_url);
             this.Controls.Add(this.radioButton_upd);
             this.Controls.Add(this.label_count);
-            this.Controls.Add(this.label1);
             this.Controls.Add(this.statusStrip1);
             this.Controls.Add(this.menuStrip1);
             this.Controls.Add(this.label_info);
@@ -352,6 +366,8 @@
             this.menuStrip1.PerformLayout();
             this.statusStrip1.ResumeLayout(false);
             this.statusStrip1.PerformLayout();
+            this.flowLayoutPanel1.ResumeLayout(false);
+            ((System.ComponentModel.ISupportInitialize)(this.pictureBox1)).EndInit();
             this.ResumeLayout(false);
             this.PerformLayout();
 
@@ -375,7 +391,6 @@
         private System.Windows.Forms.ToolStripMenuItem 更新TitleId文件ToolStripMenuItem;
         private System.Windows.Forms.StatusStrip statusStrip1;
         private System.Windows.Forms.ToolStripProgressBar toolStripProgressBar_download;
-        private System.Windows.Forms.Label label1;
         private System.Windows.Forms.ToolStripMenuItem 帮助ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 查看帮助ToolStripMenuItem;
         private System.Windows.Forms.ToolStripMenuItem 发送反馈ToolStripMenuItem;
@@ -388,6 +403,8 @@
         private System.Windows.Forms.ColumnHeader columnHeader5;
         private System.Windows.Forms.ColumnHeader columnHeader6;
         private System.Windows.Forms.Label label_url;
+        private System.Windows.Forms.FlowLayoutPanel flowLayoutPanel1;
+        private System.Windows.Forms.PictureBox pictureBox1;
     }
 }
 
