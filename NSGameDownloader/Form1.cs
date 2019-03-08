@@ -132,7 +132,7 @@ namespace NSGameDownloader
             {
                 try
                 {
-                    var jstr = http.DownloadString("https://raw.githubusercontent.com/ningxiaoxiao/NSGameDownloader/master/NSGameDownloader/config.json");
+                    var jstr = http.DownloadString("https://raw.githubusercontent.com/riggzh/NSGameDownloader/master/NSGameDownloader/config.json");
                     _config = JsonConvert.DeserializeObject<Config>(jstr);
                 }
                 catch
