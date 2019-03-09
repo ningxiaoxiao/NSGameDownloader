@@ -5,8 +5,10 @@ using System.Diagnostics;
 using System.Drawing;
 using System.IO;
 using System.Net;
+using System.Reflection;
 using System.Runtime.InteropServices;
 using System.Text;
+using System.Text.RegularExpressions;
 using System.Threading;
 using System.Windows.Forms;
 using ExcelDataReader;
@@ -30,7 +32,7 @@ namespace NSGameDownloader
         private string _curTid;
 
         private JObject _titlekeys;
-
+        private List<PictureBox> _pictureBoxs = new List<PictureBox>();
         public Form1()
         {
             InitializeComponent();
@@ -95,8 +97,18 @@ namespace NSGameDownloader
             fs.Close();
         }
 
+
         private void Form1_Load(object sender, EventArgs e)
         {
+            // 解决WebClient不能通过https下载内容问题
+            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
+            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
+            pictureBox1.Visible = false;
+            _pictureBoxs.Add(pictureBox1);
+            for (int i = 0; i < 10; i++)
+            {
+                _pictureBoxs.Add(pictureBox1.Clone());
+            }
 
             LoadConfigFormGithub();
 
@@ -402,15 +414,13 @@ namespace NSGameDownloader
             var t = new Thread(GetGameInfoFromEShop);
             t.Start();
 
-
-            //得到图片
-            //todo 更好的图片地址
-            t = new Thread(GetGameImage);
-            t.Start();
         }
 
         private void GetGameInfoFromEShop()
         {
+            pictureBox_gameicon.SizeMode = PictureBoxSizeMode.CenterImage;
+            pictureBox_gameicon.Image = Resources.load;
+
             //todo 从http://www.eshop-switch.com 拿数据
             var g = _titlekeys[_curTid].ToObject<JObject>();
             if (!g.ContainsKey("info"))
@@ -419,61 +429,112 @@ namespace NSGameDownloader
                     try
                     {
                         var url = $"https://ec.nintendo.com/apps/{_curTid}/{g["region"]}";
-                        var html = web.DownloadString(url);
+                        Console.WriteLine(url);
+                        var ohtml = web.DownloadString(url);
 
-                        html = html.Split(new[] { "NXSTORE.titleDetail.jsonData = " }, StringSplitOptions.RemoveEmptyEntries)[1];
+                        var html = ohtml.Split(new[] { "NXSTORE.titleDetail.jsonData = " }, StringSplitOptions.RemoveEmptyEntries)[1];
                         html = html.Split(new[] { "NXSTORE.titleDetail" }, StringSplitOptions.RemoveEmptyEntries)[0];
                         html = html.Replace(";", "");
 
                         _titlekeys[_curTid]["info"] = JObject.Parse(html);
+                        var id = _titlekeys[_curTid]["info"]["id"];
+                        //
+                        var pricesjstr = web.DownloadString($"https://ec.nintendo.com/api/{g["region"]}/en/guest_prices?ns_uids={id}");
+
+                        var p = JArray.Parse(pricesjstr);
+                        _titlekeys[_curTid]["info"]["price"] =
+                            p[0]["price"]["regular_price"]["currency"] + ":" +
+                            p[0]["price"]["regular_price"]["formatted_value"];
+
                     }
                     catch
                     {
-                        Invoke(new Action(() => { label_info.Text = "0KB\n获取信息错误"; }));
+                        Invoke(new Action(() => { label_info.Text = "获取信息错误"; }));
                         return;
                     }
                 }
 
             var info = _titlekeys[_curTid]["info"];
             var size = info["total_rom_size"].ToObject<long>();
-            Invoke(new Action(() => { label_info.Text = $"{ConvertBytes(size)}\n{info["description"]}"; }));
+
+            if (!GetGameImage())
+            {
+
+                pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
+                pictureBox_gameicon.Image = Resources.error;
+            }
+
+            Invoke(new Action(() =>
+            {
+                var lans = "";
+                foreach (var v in info["languages"])
+                {
+                    lans += v["name"] + " ";
+                }
+                label_info.Text = $"{info["price"]}\n{lans}";
+
+                foreach (var pictureBox in _pictureBoxs)
+                {
+                    pictureBox.Visible = false;
+                }
+
+
+                var screenshots = _titlekeys[_curTid]["info"]["screenshots"].ToObject<JArray>();
+                //算出长度
+
+
+                flowLayoutPanel1.AutoScrollMinSize = new Size((pictureBox1.Width + 10) * screenshots.Count, 0);
+                var index = 0;
+                foreach (var screenshot in screenshots)
+                {
+                    // pictureBox1.ImageLocation = 
+                    _pictureBoxs[index].ImageLocation = screenshot["images"][0]["url"].ToString();
+                    _pictureBoxs[index].Visible = true;
+                    index++;
+                }
+
+            }));
+
+
         }
 
-        private void GetGameImage()
+        private bool GetGameImage()
         {
-            pictureBox_gameicon.Image = Resources.load;
-
-
             var filename = "image\\" + _curTid + ".jpg";
 
             if (File.Exists(filename))
                 try
-                {
+                {//有时会有0kb的图片
+                    pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
                     pictureBox_gameicon.Image = Image.FromFile(filename);
-                    return;
+                    return true;
                 }
                 catch
                 {
                     // ignored
                 }
 
-            var web = new WebClient { Encoding = Encoding.UTF8 };
-            // 解决WebClient不能通过https下载内容问题
-            ServicePointManager.ServerCertificateValidationCallback += delegate { return true; };
-            ServicePointManager.SecurityProtocol = SecurityProtocolType.Tls12;
-            try
+            using (var web = new WebClient { Encoding = Encoding.UTF8 })
             {
-                web.DownloadFile("https://terannet.sirv.com/CDNSP/" + _curTid.ToLower() + ".jpg", filename);
-                pictureBox_gameicon.Image = Image.FromFile(filename);
-            }
-            catch
-            {
-                if (File.Exists(filename))
-                    File.Delete(filename);
+
+                try
+                {
+                    var imageurl = _titlekeys[_curTid]["info"]["applications"][0]["image_url"].ToString();
+                    web.DownloadFile(imageurl, filename);
+                    pictureBox_gameicon.SizeMode = PictureBoxSizeMode.StretchImage;
+                    pictureBox_gameicon.Image = Image.FromFile(filename);
+                    return true;
+                }
+                catch
+                {
+                    if (File.Exists(filename))
+                        File.Delete(filename);
+                    return false;
+                }
 
 
-                pictureBox_gameicon.Image = Resources.error;
             }
+
         }
 
         /// <summary>
@@ -547,6 +608,27 @@ namespace NSGameDownloader
         private void panWebBrowser_Navigated(object sender, WebBrowserNavigatedEventArgs e)
         {
             //GetCookies();
+        }
+    }
+    public static class ControlExtensions
+    {
+        public static T Clone<T>(this T controlToClone)
+            where T : Control
+        {
+            PropertyInfo[] controlProperties = typeof(T).GetProperties(BindingFlags.Public | BindingFlags.Instance);
+
+            T instance = Activator.CreateInstance<T>();
+
+            foreach (PropertyInfo propInfo in controlProperties)
+            {
+                if (propInfo.CanWrite)
+                {
+                    if (propInfo.Name != "WindowTarget")
+                        propInfo.SetValue(instance, propInfo.GetValue(controlToClone, null), null);
+                }
+            }
+
+            return instance;
         }
     }
 }
