@@ -454,10 +454,12 @@ namespace NSGameDownloader
 
                 // 补全主动搜索
                 // 01006C900CC60000
-                if (listView1.Items.Count == 0 && keywords.Length == 16 && keywords.EndsWith("000")) {
+                if (listView1.Items.Count == 0 && keywords.Length == 16 && (keywords.EndsWith("000")|| keywords.EndsWith("800"))) {
+                    // change update to base
+                    String newKeyword = keywords.Substring(0, 13) + "000";
                     listView1.Items.Add(new ListViewItem(new[]
                         {
-                            keywords,
+                            newKeyword,
                             keywords, //防止没有中文名
                             "●",
                             "●",
