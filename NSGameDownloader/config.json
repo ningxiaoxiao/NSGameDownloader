@@ -1,8 +1,8 @@
 ﻿{
   "panUrlXci": "https://pan.baidu.com/s/13h3QtK5jtdDfx3FkujmaGA#list/path=%2FXCI/",
-  "panUrlNsp": "https://pan.baidu.com/s/1YPq08Dwox8y8uGKGePndgQ#list/path=%2FNintendo%20Switch%20Games%2FNSP/",
-  "panUrlUpd": "https://pan.baidu.com/s/1YPq08Dwox8y8uGKGePndgQ#list/path=%2FNintendo%20Switch%20Games%2FUPD%20%2B%20DLC/",
+  "panUrlNsp": "https://pan.baidu.com/s/1KNXZhkJJ_bhy5wZPDXIMVw#list/path=%2FNintendo%20Switch%20Games%2FNSP/",
+  "panUrlUpd": "https://pan.baidu.com/s/1KNXZhkJJ_bhy5wZPDXIMVw#list/path=%2FNintendo%20Switch%20Games%2FUPD%20%2B%20DLC/",
   "nutDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/NUTDB.txt",
   "excelDbUrl": "https://raw.githubusercontent.com/riggzh/ns/master/db.xlsx",
-  "localGameDir": "E:\\SwitchGame"
+  "localGameDir": "F:\\Switch游戏"
 }
